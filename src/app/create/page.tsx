@@ -96,7 +96,7 @@ export default function CreatePage() {
       }
 
       // Save to database
-      const { data, error: dbError } = await supabase
+      const { error: dbError } = await supabase
         .from('business_cards')
         .insert({
           id: cardId,

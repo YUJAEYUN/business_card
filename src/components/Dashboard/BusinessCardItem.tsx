@@ -184,7 +184,7 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
           >
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Delete Business Card</h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete "{card.title}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{card.title}&quot;? This action cannot be undone.
             </p>
             <div className="flex space-x-3">
               <button

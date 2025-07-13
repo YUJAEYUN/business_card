@@ -56,7 +56,7 @@ export default function ImageUpload({
       onImageSelect(file, result)
     }
     reader.readAsDataURL(file)
-  }, [onImageSelect, maxSize])
+  }, [onImageSelect, maxSize, validateFile])
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()

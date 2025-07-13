@@ -18,7 +18,7 @@ export async function uploadBusinessCardImage(
     const filePath = `${userId}/${fileName}`
 
     // Upload file to Supabase Storage
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from('business-cards')
       .upload(filePath, file, {
         cacheControl: '3600',
@@ -61,9 +61,9 @@ export async function deleteBusinessCardImage(path: string): Promise<void> {
 
 export function getOptimizedImageUrl(
   originalUrl: string,
-  width?: number,
-  height?: number,
-  quality?: number
+  _width?: number,
+  _height?: number,
+  _quality?: number
 ): string {
   // For now, return the original URL
   // TODO: Implement image optimization using Supabase Transform or external service

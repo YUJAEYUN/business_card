@@ -11,7 +11,7 @@ export default function AuthCodeError() {
             Authentication Error
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Sorry, we couldn't sign you in. Please try again.
+            Sorry, we couldn&apos;t sign you in. Please try again.
           </p>
         </div>
         <div className="mt-8 space-y-6">

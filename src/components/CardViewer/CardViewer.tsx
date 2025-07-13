@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import FlipCard from '@/components/BusinessCard/FlipCard'
 import ShareButtons from '@/components/Share/ShareButtons'
 import { Database } from '@/lib/supabase'
@@ -99,7 +100,7 @@ export default function CardViewer({ card }: CardViewerProps) {
             Share
           </button>
 
-          <a
+          <Link
             href="/"
             className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors"
           >
@@ -107,7 +108,7 @@ export default function CardViewer({ card }: CardViewerProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
             Create Your Own
-          </a>
+          </Link>
         </motion.div>
 
         {/* Share Options */}

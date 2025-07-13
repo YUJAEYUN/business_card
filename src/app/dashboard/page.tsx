@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
@@ -19,7 +19,6 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const t = useTranslations('dashboard')
-  const tCommon = useTranslations('common')
   const tAuth = useTranslations('auth')
 
   // Redirect if not authenticated
@@ -29,14 +28,7 @@ export default function DashboardPage() {
     }
   }, [user, loading, router])
 
-  // Fetch user's business cards
-  useEffect(() => {
-    if (user) {
-      fetchBusinessCards()
-    }
-  }, [user])
-
-  const fetchBusinessCards = async () => {
+  const fetchBusinessCards = useCallback(async () => {
     if (!user) return
 
     try {
@@ -55,7 +47,14 @@ export default function DashboardPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [user, t])
+
+  // Fetch user's business cards
+  useEffect(() => {
+    if (user) {
+      fetchBusinessCards()
+    }
+  }, [user, fetchBusinessCards])
 
   const handleDeleteCard = async (cardId: string) => {
     try {

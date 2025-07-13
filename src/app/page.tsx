@@ -11,7 +11,6 @@ export default function Home() {
   const { user, loading } = useAuth()
   const t = useTranslations('home')
   const tNav = useTranslations('navigation')
-  const tAuth = useTranslations('auth')
 
   if (loading) {
     return (
