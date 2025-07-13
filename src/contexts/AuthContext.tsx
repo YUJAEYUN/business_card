@@ -31,6 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state change:', { event, session: !!session, user: !!session?.user })
       setSession(session)
       setUser(session?.user ?? null)
       setLoading(false)
@@ -58,6 +59,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
+      // 로그아웃 후 루트 페이지로 이동
+      window.location.href = '/'
     } catch (error) {
       console.error('Error signing out:', error)
       throw error

@@ -8,7 +8,7 @@ import ImageUpload from '@/components/Upload/ImageUpload'
 import FlipCard from '@/components/BusinessCard/FlipCard'
 import { uploadBusinessCardImage, compressImage } from '@/lib/storage'
 import { supabase } from '@/lib/supabase'
-import { useTranslations } from 'next-intl'
+import { useTranslation } from '@/hooks/useTranslation'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import Link from 'next/link'
 
@@ -36,8 +36,7 @@ export default function CreatePage() {
   })
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const t = useTranslations('create')
-  const tCommon = useTranslations('common')
+  const { t } = useTranslation()
 
   // Redirect if not authenticated
   if (!loading && !user) {
@@ -135,7 +134,7 @@ export default function CreatePage() {
         <div className="text-center mb-8">
           <div className="flex justify-between items-center mb-4">
             <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 transition-colors">
-              ← {tCommon('back')}
+              ← {t('back')}
             </Link>
             <LanguageSwitcher />
           </div>
@@ -204,7 +203,7 @@ export default function CreatePage() {
               <ImageUpload
                 onImageSelect={handleBackImageSelect}
                 currentImage={cardData.backImage.preview || undefined}
-                label={`${t('backImage')} (${tCommon('optional')})`}
+                label={`${t('backImage')} (${t('optional')})`}
                 className="mb-6"
               />
 

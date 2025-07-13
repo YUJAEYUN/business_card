@@ -4,13 +4,12 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import LoginButton from '@/components/auth/LoginButton'
-import { useTranslations } from 'next-intl'
+import { useTranslation } from '@/hooks/useTranslation'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export default function Home() {
   const { user, loading } = useAuth()
-  const t = useTranslations('home')
-  const tNav = useTranslations('navigation')
+  const { t } = useTranslation()
 
   if (loading) {
     return (
@@ -37,13 +36,13 @@ export default function Home() {
                     href="/dashboard"
                     className="text-gray-600 hover:text-gray-900 transition-colors"
                   >
-                    {tNav('dashboard')}
+                    {t('dashboard')}
                   </Link>
                   <Link
                     href="/create"
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
                   >
-                    {tNav('create')}
+                    {t('createCard')}
                   </Link>
                 </>
               ) : (

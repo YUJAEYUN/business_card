@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase, Database } from '@/lib/supabase'
 import BusinessCardItem from '@/components/Dashboard/BusinessCardItem'
-import { useTranslations } from 'next-intl'
+import { useTranslation } from '@/hooks/useTranslation'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 type BusinessCard = Database['public']['Tables']['business_cards']['Row']
@@ -18,15 +18,13 @@ export default function DashboardPage() {
   const [cards, setCards] = useState<BusinessCard[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const t = useTranslations('dashboard')
-  const tAuth = useTranslations('auth')
+  const { t } = useTranslation()
 
   // Redirect if not authenticated
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/')
-    }
-  }, [user, loading, router])
+  if (!loading && !user) {
+    router.push('/')
+    return null
+  }
 
   const fetchBusinessCards = useCallback(async () => {
     if (!user) return
@@ -43,11 +41,11 @@ export default function DashboardPage() {
       setCards(data || [])
     } catch (error) {
       console.error('Error fetching business cards:', error)
-      setError(t('failedToLoadCards'))
+      setError('Failed to load business cards') // 하드코딩된 에러 메시지
     } finally {
       setIsLoading(false)
     }
-  }, [user, t])
+  }, [user]) // t 의존성 제거
 
   // Fetch user's business cards
   useEffect(() => {
@@ -106,7 +104,7 @@ export default function DashboardPage() {
               <p className="text-gray-600">{t('subtitle')}</p>
               {user && (
                 <p className="text-lg font-medium text-blue-600 mt-2">
-                  {t('welcome', { name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User' })}
+                  {t('welcome')} {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}!
                 </p>
               )}
             </div>
@@ -122,7 +120,7 @@ export default function DashboardPage() {
                 onClick={handleSignOut}
                 className="text-gray-600 hover:text-gray-900 transition-colors"
               >
-                {tAuth('signOut')}
+                {t('signOut')}
               </button>
             </div>
           </div>

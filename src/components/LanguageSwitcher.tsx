@@ -1,29 +1,23 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslation, type Locale } from '@/hooks/useTranslation'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const languages = [
-  { code: 'ko', name: '한국어', flag: '🇰🇷' },
-  { code: 'ja', name: '日本語', flag: '🇯🇵' },
-  { code: 'en', name: 'English', flag: '🇺🇸' }
+  { code: 'ko' as Locale, name: '한국어', flag: '🇰🇷' },
+  { code: 'ja' as Locale, name: '日本語', flag: '🇯🇵' },
+  { code: 'en' as Locale, name: 'English', flag: '🇺🇸' }
 ]
 
 export default function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false)
-  const router = useRouter()
-
-  const locale = useLocale()
-  const t = useTranslations('languages')
+  const { locale, changeLocale, t } = useTranslation()
 
   const currentLanguage = languages.find(lang => lang.code === locale) || languages[0]
 
-  const handleLanguageChange = (newLocale: string) => {
-    // Set locale cookie and refresh page
-    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`
-    router.refresh()
+  const handleLanguageChange = (newLocale: Locale) => {
+    changeLocale(newLocale)
     setIsOpen(false)
   }
 
@@ -74,7 +68,7 @@ export default function LanguageSwitcher() {
                   }`}
                 >
                   <span className="text-lg">{language.flag}</span>
-                  <span className="text-sm font-medium">{t(language.code)}</span>
+                  <span className="text-sm font-medium">{language.name}</span>
                   {locale === language.code && (
                     <svg className="w-4 h-4 ml-auto text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
