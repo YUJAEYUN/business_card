@@ -11,6 +11,14 @@ export default function Home() {
   const { user, loading } = useAuth()
   const { t } = useTranslation()
 
+  // 환경 변수 확인
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return <div>Missing NEXT_PUBLIC_SUPABASE_URL</div>
+  }
+  if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return <div>Missing NEXT_PUBLIC_SUPABASE_ANON_KEY</div>
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
