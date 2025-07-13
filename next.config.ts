@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Vercel 배포를 위한 설정
+  trailingSlash: false,
+  output: 'standalone',
 };
 
 export default nextConfig;
