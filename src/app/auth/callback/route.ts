@@ -25,30 +25,8 @@ export async function GET(request: NextRequest) {
     console.log('Code exchange result:', { error })
 
     if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host')
-      const forwardedProto = request.headers.get('x-forwarded-proto')
-      const host = request.headers.get('host')
-      const isLocalEnv = process.env.NODE_ENV === 'development'
-
-      // Determine the correct redirect URL
-      let redirectUrl: string
-
-      if (isLocalEnv) {
-        // Local development - use origin as is
-        redirectUrl = `${origin}${next}`
-      } else if (forwardedHost && forwardedProto) {
-        // Production with proper forwarded headers
-        redirectUrl = `${forwardedProto}://${forwardedHost}${next}`
-      } else if (forwardedHost) {
-        // Production with forwarded host but no proto (assume https)
-        redirectUrl = `https://${forwardedHost}${next}`
-      } else if (host) {
-        // Fallback to host header
-        redirectUrl = `https://${host}${next}`
-      } else {
-        // Final fallback to origin
-        redirectUrl = `${origin}${next}`
-      }
+      // Vercel에서는 간단하게 origin 사용
+      const redirectUrl = `${origin}${next}`
 
       console.log('Redirecting to:', redirectUrl)
       return NextResponse.redirect(redirectUrl)
