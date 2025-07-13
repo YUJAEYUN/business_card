@@ -98,23 +98,24 @@ export default function DashboardPage() {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center py-4 md:py-6 space-y-4 md:space-y-0">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
-              <p className="text-gray-600">{t('subtitle')}</p>
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900">{t('title')}</h1>
+              <p className="text-sm md:text-base text-gray-600">{t('subtitle')}</p>
               {user && (
-                <p className="text-lg font-medium text-blue-600 mt-2">
+                <p className="text-base md:text-lg font-medium text-blue-600 mt-1 md:mt-2">
                   {t('welcome')} {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}!
                 </p>
               )}
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center justify-between md:justify-end space-x-2 md:space-x-4">
               <LanguageSwitcher />
               <Link
                 href="/create"
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                className="bg-blue-600 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm md:text-base"
               >
-                {t('createNewCard')}
+                <span className="hidden sm:inline">{t('createNewCard')}</span>
+                <span className="sm:hidden">+</span>
               </Link>
               <button
                 onClick={handleSignOut}
@@ -170,7 +171,7 @@ export default function DashboardPage() {
             </Link>
           </motion.div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
             {cards.map((card, index) => (
               <motion.div
                 key={card.id}
@@ -193,10 +194,10 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="mt-12 bg-white rounded-lg shadow-md p-6"
+            className="mt-8 md:mt-12 bg-white rounded-lg shadow-md p-4 md:p-6"
           >
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('statistics')}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <h2 className="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4">{t('statistics')}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-blue-600">{cards.length}</div>
                 <div className="text-sm text-gray-600">{t('totalCards')}</div>

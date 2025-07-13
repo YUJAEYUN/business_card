@@ -55,15 +55,18 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
         {/* Card Preview */}
         <div className="relative">
           <div className={`
-            relative mx-auto mt-4
-            ${card.card_type === 'horizontal' ? 'w-40 h-24' : 'w-24 h-40'}
+            relative mx-auto mt-3 md:mt-4
+            ${card.card_type === 'horizontal'
+              ? 'w-32 h-20 md:w-40 md:h-24'
+              : 'w-20 h-32 md:w-24 md:h-40'
+            }
           `}>
             <Image
               src={card.front_image_url}
               alt={card.title}
               fill
               className="object-cover rounded-lg shadow-sm"
-              sizes="(max-width: 768px) 100vw, 200px"
+              sizes="(max-width: 768px) 160px, 200px"
             />
           </div>
           
@@ -91,11 +94,11 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
         </div>
 
         {/* Card Info */}
-        <div className="p-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">
+        <div className="p-3 md:p-4">
+          <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-1 truncate">
             {card.title}
           </h3>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-xs md:text-sm text-gray-600 mb-3 md:mb-4">
             Created {formatDate(card.created_at)}
           </p>
 
@@ -104,13 +107,13 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
             <div className="flex space-x-2">
               <Link
                 href={`/my-card/${card.id}`}
-                className="flex-1 bg-blue-600 text-white text-center py-2 px-3 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                className="flex-1 bg-blue-600 text-white text-center py-2 px-2 md:px-3 rounded-md text-xs md:text-sm font-medium hover:bg-blue-700 transition-colors"
               >
                 Manage
               </Link>
               <button
                 onClick={handleCopyUrl}
-                className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                className={`flex-1 py-2 px-2 md:px-3 rounded-md text-xs md:text-sm font-medium transition-colors ${
                   copySuccess
                     ? 'bg-green-600 text-white hover:bg-green-700'
                     : 'bg-gray-600 text-white hover:bg-gray-700'

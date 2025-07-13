@@ -32,29 +32,30 @@ export default function Home() {
       {/* Navigation */}
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex justify-between items-center py-4 md:py-6">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+              <h1 className="text-lg md:text-2xl font-bold text-gray-900">{t('title')}</h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4">
               <LanguageSwitcher />
               {user ? (
                 <>
                   <Link
                     href="/dashboard"
-                    className="text-gray-600 hover:text-gray-900 transition-colors"
+                    className="hidden sm:block text-gray-600 hover:text-gray-900 transition-colors"
                   >
                     {t('dashboard')}
                   </Link>
                   <Link
                     href="/create"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                    className="bg-blue-600 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm md:text-base"
                   >
-                    {t('createCard')}
+                    <span className="hidden sm:inline">{t('createCard')}</span>
+                    <span className="sm:hidden">+</span>
                   </Link>
                 </>
               ) : (
-                <div className="w-64">
+                <div className="w-48 md:w-64">
                   <LoginButton />
                 </div>
               )}
@@ -64,18 +65,18 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
         <div className="text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-gray-900 mb-4 md:mb-6">
               {t('heroTitle')}
               <span className="text-blue-600 block">{t('heroSubtitle')}</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8 max-w-3xl mx-auto px-4">
               {t('heroDescription')}
             </p>
           </motion.div>
