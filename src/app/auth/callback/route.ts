@@ -10,7 +10,12 @@ export async function GET(request: NextRequest) {
     code: code ? 'present' : 'missing',
     searchParams: Object.fromEntries(searchParams.entries()),
     origin,
-    next
+    next,
+    headers: {
+      'x-forwarded-host': request.headers.get('x-forwarded-host'),
+      'x-forwarded-proto': request.headers.get('x-forwarded-proto'),
+      'host': request.headers.get('host')
+    }
   })
 
   if (code) {
@@ -20,19 +25,33 @@ export async function GET(request: NextRequest) {
     console.log('Code exchange result:', { error })
 
     if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host') // original origin before load balancer
+      const forwardedHost = request.headers.get('x-forwarded-host')
+      const forwardedProto = request.headers.get('x-forwarded-proto')
+      const host = request.headers.get('host')
       const isLocalEnv = process.env.NODE_ENV === 'development'
 
-      console.log('Redirecting to:', `${origin}${next}`)
+      // Determine the correct redirect URL
+      let redirectUrl: string
 
       if (isLocalEnv) {
-        // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
-        return NextResponse.redirect(`${origin}${next}`)
+        // Local development - use origin as is
+        redirectUrl = `${origin}${next}`
+      } else if (forwardedHost && forwardedProto) {
+        // Production with proper forwarded headers
+        redirectUrl = `${forwardedProto}://${forwardedHost}${next}`
       } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`)
+        // Production with forwarded host but no proto (assume https)
+        redirectUrl = `https://${forwardedHost}${next}`
+      } else if (host) {
+        // Fallback to host header
+        redirectUrl = `https://${host}${next}`
       } else {
-        return NextResponse.redirect(`${origin}${next}`)
+        // Final fallback to origin
+        redirectUrl = `${origin}${next}`
       }
+
+      console.log('Redirecting to:', redirectUrl)
+      return NextResponse.redirect(redirectUrl)
     } else {
       console.error('OAuth code exchange failed:', error)
     }
