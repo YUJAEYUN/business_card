@@ -5,7 +5,6 @@ import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 
 export default function LoginButton() {
-
   return (
     <div className="w-full">
       <Auth
@@ -27,9 +26,15 @@ export default function LoginButton() {
           },
         }}
         providers={['google']}
-        redirectTo={`${typeof window !== 'undefined' ? window.location.origin : ''}/dashboard`}
+        redirectTo={`${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback`}
         onlyThirdPartyProviders
         view="sign_in"
+        providerScopes={{
+          google: 'openid email profile'
+        }}
+        // 팝업 대신 리다이렉트 사용 (모바일 호환)
+        socialLayout="vertical"
+        theme="default"
       />
     </div>
   )

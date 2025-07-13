@@ -42,13 +42,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     try {
+      console.log('Starting Google OAuth with redirect flow')
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+          // 팝업 대신 리다이렉트 사용 (모바일 호환)
+          skipBrowserRedirect: false,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'select_account'
+          }
         },
       })
-      if (error) throw error
+
+      if (error) {
+        console.error('OAuth error:', error)
+        throw error
+      }
     } catch (error) {
       console.error('Error signing in with Google:', error)
       throw error

@@ -3,7 +3,15 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    // 모바일 호환성을 위한 설정
+    flowType: 'pkce',
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    persistSession: true
+  }
+})
 
 export type Database = {
   public: {
