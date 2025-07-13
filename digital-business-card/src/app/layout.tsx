@@ -1,7 +1,5 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,36 +11,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Digital Business Card - Create & Share Beautiful Cards",
-  description: "Create stunning digital business cards with flip animations. Upload your card images and share them with a unique URL and QR code.",
-  keywords: "digital business card, business card, QR code, card flip animation, professional networking",
-  authors: [{ name: "Digital Business Card" }],
-  openGraph: {
-    title: "Digital Business Card - Create & Share Beautiful Cards",
-    description: "Create stunning digital business cards with flip animations. Upload your card images and share them with a unique URL and QR code.",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Digital Business Card - Create & Share Beautiful Cards",
-    description: "Create stunning digital business cards with flip animations. Upload your card images and share them with a unique URL and QR code.",
-  },
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        {children}
       </body>
     </html>
   );

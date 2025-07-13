@@ -7,6 +7,8 @@ import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase, Database } from '@/lib/supabase'
 import BusinessCardItem from '@/components/Dashboard/BusinessCardItem'
+import { useTranslations } from 'next-intl'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 type BusinessCard = Database['public']['Tables']['business_cards']['Row']
 
@@ -16,6 +18,9 @@ export default function DashboardPage() {
   const [cards, setCards] = useState<BusinessCard[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const t = useTranslations('dashboard')
+  const tCommon = useTranslations('common')
+  const tAuth = useTranslations('auth')
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -46,7 +51,7 @@ export default function DashboardPage() {
       setCards(data || [])
     } catch (error) {
       console.error('Error fetching business cards:', error)
-      setError('Failed to load business cards')
+      setError(t('failedToLoadCards'))
     } finally {
       setIsLoading(false)
     }
@@ -66,7 +71,7 @@ export default function DashboardPage() {
       setCards(prev => prev.filter(card => card.id !== cardId))
     } catch (error) {
       console.error('Error deleting business card:', error)
-      setError('Failed to delete business card')
+      setError(t('failedToDeleteCard'))
     }
   }
 
@@ -98,21 +103,27 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">My Business Cards</h1>
-              <p className="text-gray-600">Manage your digital business cards</p>
+              <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+              <p className="text-gray-600">{t('subtitle')}</p>
+              {user && (
+                <p className="text-lg font-medium text-blue-600 mt-2">
+                  {t('welcome', { name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User' })}
+                </p>
+              )}
             </div>
             <div className="flex items-center space-x-4">
+              <LanguageSwitcher />
               <Link
                 href="/create"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                Create New Card
+                {t('createNewCard')}
               </Link>
               <button
                 onClick={handleSignOut}
                 className="text-gray-600 hover:text-gray-900 transition-colors"
               >
-                Sign Out
+                {tAuth('signOut')}
               </button>
             </div>
           </div>
@@ -147,9 +158,9 @@ export default function DashboardPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No business cards yet</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">{t('noCards')}</h3>
             <p className="text-gray-600 mb-6">
-              Create your first digital business card to get started
+              {t('noCardsDescription')}
             </p>
             <Link
               href="/create"
@@ -158,7 +169,7 @@ export default function DashboardPage() {
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
-              Create Your First Card
+              {t('createFirstCard')}
             </Link>
           </motion.div>
         ) : (
@@ -187,23 +198,23 @@ export default function DashboardPage() {
             transition={{ delay: 0.3 }}
             className="mt-12 bg-white rounded-lg shadow-md p-6"
           >
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Statistics</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('statistics')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-blue-600">{cards.length}</div>
-                <div className="text-sm text-gray-600">Total Cards</div>
+                <div className="text-sm text-gray-600">{t('totalCards')}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
                   {cards.filter(card => card.back_image_url).length}
                 </div>
-                <div className="text-sm text-gray-600">Double-sided Cards</div>
+                <div className="text-sm text-gray-600">{t('doubleSidedCards')}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-purple-600">
                   {cards.filter(card => card.card_type === 'horizontal').length}
                 </div>
-                <div className="text-sm text-gray-600">Horizontal Cards</div>
+                <div className="text-sm text-gray-600">{t('horizontalCards')}</div>
               </div>
             </div>
           </motion.div>

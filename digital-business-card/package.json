@@ -16,6 +16,7 @@
     "@types/qrcode.react": "^1.0.5",
     "framer-motion": "^12.23.3",
     "next": "15.3.5",
+    "next-intl": "^4.3.4",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

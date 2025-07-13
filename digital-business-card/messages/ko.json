@@ -1,0 +1,79 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "편집",
+    "create": "생성",
+    "back": "뒤로",
+    "next": "다음",
+    "previous": "이전",
+    "close": "닫기",
+    "confirm": "확인"
+  },
+  "auth": {
+    "signIn": "로그인",
+    "signOut": "로그아웃",
+    "signUp": "회원가입",
+    "signInWithGoogle": "Google로 로그인",
+    "welcomeBack": "다시 오신 것을 환영합니다!",
+    "signInToAccount": "계정에 로그인하세요"
+  },
+  "dashboard": {
+    "title": "내 명함",
+    "subtitle": "디지털 명함을 관리하세요",
+    "welcome": "환영합니다 {name}님!",
+    "createNewCard": "새 명함 만들기",
+    "noCards": "아직 명함이 없습니다",
+    "noCardsDescription": "첫 번째 디지털 명함을 만들어 시작하세요",
+    "createFirstCard": "첫 번째 명함 만들기",
+    "statistics": "통계",
+    "totalCards": "전체 명함",
+    "doubleSidedCards": "양면 명함",
+    "horizontalCards": "가로형 명함",
+    "deleteCardConfirm": "이 명함을 삭제하시겠습니까?",
+    "cardDeleted": "명함이 삭제되었습니다",
+    "failedToLoadCards": "명함을 불러오는데 실패했습니다",
+    "failedToDeleteCard": "명함 삭제에 실패했습니다"
+  },
+  "create": {
+    "title": "새 명함 만들기",
+    "subtitle": "디지털 명함을 생성하세요",
+    "cardTitle": "명함 제목",
+    "cardTitlePlaceholder": "명함 제목을 입력하세요",
+    "cardType": "명함 타입",
+    "horizontal": "가로형",
+    "vertical": "세로형",
+    "frontImage": "앞면 이미지",
+    "backImage": "뒷면 이미지",
+    "uploadFrontImage": "앞면 이미지 업로드",
+    "uploadBackImage": "뒷면 이미지 업로드",
+    "preview": "미리보기",
+    "createCard": "명함 만들기",
+    "creating": "명함 생성 중...",
+    "cardCreated": "명함이 생성되었습니다!",
+    "fillRequiredFields": "필수 항목을 모두 입력해주세요",
+    "failedToCreateCard": "명함 생성에 실패했습니다"
+  },
+  "card": {
+    "clickToFlip": "클릭하여 뒤집기",
+    "shareCard": "명함 공유",
+    "copyUrl": "URL 복사",
+    "downloadQR": "QR 코드 다운로드",
+    "urlCopied": "URL이 복사되었습니다",
+    "qrDownloaded": "QR 코드가 다운로드되었습니다"
+  },
+  "navigation": {
+    "home": "홈",
+    "dashboard": "대시보드",
+    "create": "명함 만들기",
+    "language": "언어"
+  },
+  "languages": {
+    "ko": "한국어",
+    "ja": "日本語",
+    "en": "English"
+  }
+}

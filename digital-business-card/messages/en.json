@@ -1,0 +1,79 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signUp": "Sign Up",
+    "signInWithGoogle": "Sign in with Google",
+    "welcomeBack": "Welcome back!",
+    "signInToAccount": "Sign in to your account"
+  },
+  "dashboard": {
+    "title": "My Business Cards",
+    "subtitle": "Manage your digital business cards",
+    "welcome": "Welcome {name}!",
+    "createNewCard": "Create New Card",
+    "noCards": "No business cards yet",
+    "noCardsDescription": "Create your first digital business card to get started",
+    "createFirstCard": "Create Your First Card",
+    "statistics": "Statistics",
+    "totalCards": "Total Cards",
+    "doubleSidedCards": "Double-sided Cards",
+    "horizontalCards": "Horizontal Cards",
+    "deleteCardConfirm": "Are you sure you want to delete this card?",
+    "cardDeleted": "Card has been deleted",
+    "failedToLoadCards": "Failed to load business cards",
+    "failedToDeleteCard": "Failed to delete business card"
+  },
+  "create": {
+    "title": "Create New Card",
+    "subtitle": "Create your digital business card",
+    "cardTitle": "Card Title",
+    "cardTitlePlaceholder": "Enter card title",
+    "cardType": "Card Type",
+    "horizontal": "Horizontal",
+    "vertical": "Vertical",
+    "frontImage": "Front Image",
+    "backImage": "Back Image",
+    "uploadFrontImage": "Upload Front Image",
+    "uploadBackImage": "Upload Back Image",
+    "preview": "Preview",
+    "createCard": "Create Card",
+    "creating": "Creating card...",
+    "cardCreated": "Card created successfully!",
+    "fillRequiredFields": "Please fill in all required fields",
+    "failedToCreateCard": "Failed to create card"
+  },
+  "card": {
+    "clickToFlip": "Click to flip",
+    "shareCard": "Share Card",
+    "copyUrl": "Copy URL",
+    "downloadQR": "Download QR Code",
+    "urlCopied": "URL copied to clipboard",
+    "qrDownloaded": "QR code downloaded"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "create": "Create Card",
+    "language": "Language"
+  },
+  "languages": {
+    "ko": "한국어",
+    "ja": "日本語",
+    "en": "English"
+  }
+}
