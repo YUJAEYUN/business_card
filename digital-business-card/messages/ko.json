@@ -11,7 +11,8 @@
     "next": "다음",
     "previous": "이전",
     "close": "닫기",
-    "confirm": "확인"
+    "confirm": "확인",
+    "optional": "선택사항"
   },
   "auth": {
     "signIn": "로그인",
@@ -75,5 +76,23 @@
     "ko": "한국어",
     "ja": "日本語",
     "en": "English"
+  },
+  "home": {
+    "title": "Digital Business Card",
+    "heroTitle": "멋진 디지털 명함을",
+    "heroSubtitle": "만들어보세요",
+    "heroDescription": "기존 명함을 아름다운 플립 애니메이션, QR 코드, 간편한 공유 기능이 있는 인터랙티브 디지털 경험으로 변환하세요.",
+    "createYourCard": "명함 만들기",
+    "viewDashboard": "대시보드 보기",
+    "signInToStart": "시작하려면 로그인하세요",
+    "easyUpload": "간편한 업로드",
+    "easyUploadDesc": "기존 명함 이미지를 업로드하기만 하면 나머지는 저희가 처리합니다.",
+    "flipAnimation": "플립 애니메이션",
+    "flipAnimationDesc": "모든 기기에서 완벽하게 작동하는 아름다운 카드 플립 애니메이션.",
+    "easySharing": "간편한 공유",
+    "easySharingDesc": "URL, QR 코드 또는 소셜 미디어를 통해 공유하세요. 네트워킹 이벤트에 완벽합니다.",
+    "cardPreview": "명함 미리보기",
+    "uploadToSee": "명함을 업로드하여 마법을 경험해보세요!",
+    "footerText": "더 나은 네트워킹을 위해 ❤️로 만들었습니다."
   }
 }

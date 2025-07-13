@@ -6,9 +6,10 @@ import { Database } from '@/lib/supabase'
 type BusinessCard = Database['public']['Tables']['business_cards']['Row']
 
 interface CardPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+    locale: string
+  }>
 }
 
 async function getBusinessCard(id: string): Promise<BusinessCard | null> {
@@ -28,7 +29,8 @@ async function getBusinessCard(id: string): Promise<BusinessCard | null> {
 }
 
 export async function generateMetadata({ params }: CardPageProps) {
-  const card = await getBusinessCard(params.id)
+  const { id } = await params
+  const card = await getBusinessCard(id)
   
   if (!card) {
     return {
@@ -55,7 +57,8 @@ export async function generateMetadata({ params }: CardPageProps) {
 }
 
 export default async function CardPage({ params }: CardPageProps) {
-  const card = await getBusinessCard(params.id)
+  const { id } = await params
+  const card = await getBusinessCard(id)
 
   if (!card) {
     notFound()

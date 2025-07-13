@@ -11,7 +11,8 @@
     "next": "次へ",
     "previous": "前へ",
     "close": "閉じる",
-    "confirm": "確認"
+    "confirm": "確認",
+    "optional": "任意"
   },
   "auth": {
     "signIn": "ログイン",
@@ -75,5 +76,23 @@
     "ko": "한국어",
     "ja": "日本語",
     "en": "English"
+  },
+  "home": {
+    "title": "Digital Business Card",
+    "heroTitle": "美しいデジタル名刺を",
+    "heroSubtitle": "作成しましょう",
+    "heroDescription": "従来の名刺を美しいフリップアニメーション、QRコード、簡単な共有機能を備えたインタラクティブなデジタル体験に変換します。",
+    "createYourCard": "名刺を作成",
+    "viewDashboard": "ダッシュボードを見る",
+    "signInToStart": "開始するにはログインしてください",
+    "easyUpload": "簡単アップロード",
+    "easyUploadDesc": "既存の名刺画像をアップロードするだけで、残りは私たちが処理します。",
+    "flipAnimation": "フリップアニメーション",
+    "flipAnimationDesc": "すべてのデバイスで完璧に動作する美しいカードフリップアニメーション。",
+    "easySharing": "簡単共有",
+    "easySharingDesc": "URL、QRコード、またはソーシャルメディアで共有。ネットワーキングイベントに最適です。",
+    "cardPreview": "名刺プレビュー",
+    "uploadToSee": "名刺をアップロードして魔法を体験してください！",
+    "footerText": "より良いネットワーキングのために❤️で作られました。"
   }
 }

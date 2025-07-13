@@ -11,7 +11,8 @@
     "next": "Next",
     "previous": "Previous",
     "close": "Close",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "optional": "Optional"
   },
   "auth": {
     "signIn": "Sign In",
@@ -75,5 +76,23 @@
     "ko": "한국어",
     "ja": "日本語",
     "en": "English"
+  },
+  "home": {
+    "title": "Digital Business Card",
+    "heroTitle": "Create Stunning",
+    "heroSubtitle": "Digital Business Cards",
+    "heroDescription": "Transform your traditional business cards into interactive digital experiences with beautiful flip animations, QR codes, and easy sharing.",
+    "createYourCard": "Create Your Card",
+    "viewDashboard": "View Dashboard",
+    "signInToStart": "Sign in to get started",
+    "easyUpload": "Easy Upload",
+    "easyUploadDesc": "Simply upload your existing business card images and we'll handle the rest.",
+    "flipAnimation": "Flip Animation",
+    "flipAnimationDesc": "Beautiful card flip animations that work perfectly on all devices.",
+    "easySharing": "Easy Sharing",
+    "easySharingDesc": "Share via URL, QR code, or social media. Perfect for networking events.",
+    "cardPreview": "Your Card Preview",
+    "uploadToSee": "Upload your business card to see the magic happen!",
+    "footerText": "Made with ❤️ for better networking."
   }
 }

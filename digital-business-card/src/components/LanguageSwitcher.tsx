@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -14,18 +14,16 @@ const languages = [
 export default function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
-  const pathname = usePathname()
+
   const locale = useLocale()
   const t = useTranslations('languages')
 
   const currentLanguage = languages.find(lang => lang.code === locale) || languages[0]
 
   const handleLanguageChange = (newLocale: string) => {
-    // Remove current locale from pathname and add new locale
-    const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '') || '/'
-    const newPath = `/${newLocale}${pathWithoutLocale}`
-    
-    router.push(newPath)
+    // Set locale cookie and refresh page
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`
+    router.refresh()
     setIsOpen(false)
   }
 

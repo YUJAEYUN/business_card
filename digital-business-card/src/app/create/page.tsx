@@ -8,6 +8,9 @@ import ImageUpload from '@/components/Upload/ImageUpload'
 import FlipCard from '@/components/BusinessCard/FlipCard'
 import { uploadBusinessCardImage, compressImage } from '@/lib/storage'
 import { supabase } from '@/lib/supabase'
+import { useTranslations } from 'next-intl'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import Link from 'next/link'
 
 interface CardData {
   title: string
@@ -33,6 +36,8 @@ export default function CreatePage() {
   })
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const t = useTranslations('create')
+  const tCommon = useTranslations('common')
 
   // Redirect if not authenticated
   if (!loading && !user) {
@@ -58,7 +63,7 @@ export default function CreatePage() {
     e.preventDefault()
     
     if (!user || !cardData.frontImage.file || !cardData.title.trim()) {
-      setError('Please fill in all required fields')
+      setError(t('fillRequiredFields'))
       return
     }
 
@@ -110,7 +115,7 @@ export default function CreatePage() {
       router.push(`/card/${cardId}`)
     } catch (error) {
       console.error('Error creating business card:', error)
-      setError('Failed to create business card. Please try again.')
+      setError(t('failedToCreateCard'))
     } finally {
       setIsCreating(false)
     }
@@ -128,8 +133,14 @@ export default function CreatePage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Create Digital Business Card</h1>
-          <p className="mt-2 text-gray-600">Upload your business card images and create a shareable digital version</p>
+          <div className="flex justify-between items-center mb-4">
+            <Link href="/dashboard" className="text-blue-600 hover:text-blue-800 transition-colors">
+              ← {tCommon('back')}
+            </Link>
+            <LanguageSwitcher />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
+          <p className="mt-2 text-gray-600">{t('subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -139,14 +150,14 @@ export default function CreatePage() {
               {/* Title Input */}
               <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                  Card Title *
+                  {t('cardTitle')} *
                 </label>
                 <input
                   type="text"
                   id="title"
                   value={cardData.title}
                   onChange={(e) => setCardData(prev => ({ ...prev, title: e.target.value }))}
-                  placeholder="e.g., John Doe - Software Engineer"
+                  placeholder={t('cardTitlePlaceholder')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
@@ -155,7 +166,7 @@ export default function CreatePage() {
               {/* Card Type Selection */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Card Orientation
+                  {t('cardType')}
                 </label>
                 <div className="flex space-x-4">
                   <label className="flex items-center">
@@ -166,7 +177,7 @@ export default function CreatePage() {
                       onChange={(e) => setCardData(prev => ({ ...prev, cardType: e.target.value as 'horizontal' | 'vertical' }))}
                       className="mr-2"
                     />
-                    Horizontal
+                    {t('horizontal')}
                   </label>
                   <label className="flex items-center">
                     <input
@@ -176,7 +187,7 @@ export default function CreatePage() {
                       onChange={(e) => setCardData(prev => ({ ...prev, cardType: e.target.value as 'horizontal' | 'vertical' }))}
                       className="mr-2"
                     />
-                    Vertical
+                    {t('vertical')}
                   </label>
                 </div>
               </div>
@@ -185,7 +196,7 @@ export default function CreatePage() {
               <ImageUpload
                 onImageSelect={handleFrontImageSelect}
                 currentImage={cardData.frontImage.preview || undefined}
-                label="Front Side Image *"
+                label={`${t('frontImage')} *`}
                 className="mb-6"
               />
 
@@ -193,7 +204,7 @@ export default function CreatePage() {
               <ImageUpload
                 onImageSelect={handleBackImageSelect}
                 currentImage={cardData.backImage.preview || undefined}
-                label="Back Side Image (Optional)"
+                label={`${t('backImage')} (${tCommon('optional')})`}
                 className="mb-6"
               />
 
@@ -216,14 +227,14 @@ export default function CreatePage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                {isCreating ? 'Creating...' : 'Create Business Card'}
+                {isCreating ? t('creating') : t('createCard')}
               </motion.button>
             </form>
           </div>
 
           {/* Preview Section */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Preview</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('preview')}</h2>
             <div className="flex justify-center">
               {cardData.frontImage.preview ? (
                 <FlipCard
@@ -237,7 +248,7 @@ export default function CreatePage() {
                   border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center
                 `}>
                   <p className="text-gray-500 text-center">
-                    Upload front image<br />to see preview
+                    {t('uploadFrontImage')}<br />{t('preview').toLowerCase()}
                   </p>
                 </div>
               )}
