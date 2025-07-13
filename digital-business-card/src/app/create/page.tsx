@@ -111,8 +111,8 @@ export default function CreatePage() {
 
       if (dbError) throw dbError
 
-      // Redirect to card view
-      router.push(`/card/${cardId}`)
+      // Redirect to card management view
+      router.push(`/my-card/${cardId}`)
     } catch (error) {
       console.error('Error creating business card:', error)
       setError(t('failedToCreateCard'))

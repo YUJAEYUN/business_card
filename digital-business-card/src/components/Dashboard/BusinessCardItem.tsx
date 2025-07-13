@@ -17,15 +17,19 @@ interface BusinessCardItemProps {
 export default function BusinessCardItem({ card, onDelete }: BusinessCardItemProps) {
   const [showQRCode, setShowQRCode] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [copySuccess, setCopySuccess] = useState(false)
   const cardUrl = `${window.location.origin}/card/${card.id}`
 
   const handleCopyUrl = async () => {
     try {
       await navigator.clipboard.writeText(cardUrl)
       // TODO: Show success toast
-      console.log('URL copied to clipboard')
+      setCopySuccess(true)
+      // Hide success message after 2 seconds
+      setTimeout(() => setCopySuccess(false), 2000)
     } catch (error) {
       console.error('Failed to copy URL:', error)
+      // Could add error state here if needed
     }
   }
 
@@ -99,16 +103,29 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
           <div className="space-y-2">
             <div className="flex space-x-2">
               <Link
-                href={`/card/${card.id}`}
+                href={`/my-card/${card.id}`}
                 className="flex-1 bg-blue-600 text-white text-center py-2 px-3 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
               >
-                View
+                Manage
               </Link>
               <button
                 onClick={handleCopyUrl}
-                className="flex-1 bg-gray-600 text-white py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors"
+                className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                  copySuccess
+                    ? 'bg-green-600 text-white hover:bg-green-700'
+                    : 'bg-gray-600 text-white hover:bg-gray-700'
+                }`}
               >
-                Copy Link
+                {copySuccess ? (
+                  <span className="flex items-center justify-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Copied!
+                  </span>
+                ) : (
+                  'Copy Link'
+                )}
               </button>
             </div>
             

@@ -14,13 +14,16 @@ interface CardViewerProps {
 
 export default function CardViewer({ card }: CardViewerProps) {
   const [showShareOptions, setShowShareOptions] = useState(false)
+  const [copySuccess, setCopySuccess] = useState(false)
   const cardUrl = `${window.location.origin}/card/${card.id}`
 
   const handleCopyUrl = async () => {
     try {
       await navigator.clipboard.writeText(cardUrl)
       // TODO: Show success toast
-      console.log('URL copied to clipboard')
+      setCopySuccess(true)
+      // Hide success message after 2 seconds
+      setTimeout(() => setCopySuccess(false), 2000)
     } catch (error) {
       console.error('Failed to copy URL:', error)
     }
@@ -63,12 +66,27 @@ export default function CardViewer({ card }: CardViewerProps) {
         >
           <button
             onClick={handleCopyUrl}
-            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-colors ${
+              copySuccess
+                ? 'bg-green-600 text-white hover:bg-green-700'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-            Copy Link
+            {copySuccess ? (
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Copied!
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Copy Link
+              </>
+            )}
           </button>
 
           <button

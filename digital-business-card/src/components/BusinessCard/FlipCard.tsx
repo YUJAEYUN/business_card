@@ -10,6 +10,7 @@ interface FlipCardProps {
   cardType: 'horizontal' | 'vertical'
   className?: string
   onClick?: () => void
+  hideIndicator?: boolean
 }
 
 export default function FlipCard({
@@ -18,6 +19,7 @@ export default function FlipCard({
   cardType,
   className = '',
   onClick,
+  hideIndicator = false,
 }: FlipCardProps) {
   const [isFlipped, setIsFlipped] = useState(false)
 
@@ -47,11 +49,17 @@ export default function FlipCard({
     <div
       className={`relative ${dimensions.width} ${dimensions.height} cursor-pointer ${className}`}
       onClick={handleClick}
-      style={{ perspective: '1000px' }}
+      style={{
+        perspective: '1000px',
+        backgroundColor: 'transparent'
+      }}
     >
       <motion.div
         className="relative w-full h-full"
-        style={{ transformStyle: 'preserve-3d' }}
+        style={{
+          transformStyle: 'preserve-3d',
+          backgroundColor: 'transparent'
+        }}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         transition={{
           duration: 0.6,
@@ -61,7 +69,10 @@ export default function FlipCard({
         {/* Front Side */}
         <motion.div
           className="absolute inset-0 w-full h-full rounded-lg shadow-lg overflow-hidden"
-          style={{ backfaceVisibility: 'hidden' }}
+          style={{
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden'
+          }}
         >
           <Image
             src={frontImageUrl}
@@ -79,6 +90,7 @@ export default function FlipCard({
             className="absolute inset-0 w-full h-full rounded-lg shadow-lg overflow-hidden"
             style={{
               backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
               transform: 'rotateY(180deg)',
             }}
           >
@@ -93,7 +105,7 @@ export default function FlipCard({
         )}
 
         {/* Flip Indicator */}
-        {backImageUrl && (
+        {backImageUrl && !hideIndicator && (
           <div className="absolute bottom-2 right-2 z-10">
             <motion.div
               className="bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-full"

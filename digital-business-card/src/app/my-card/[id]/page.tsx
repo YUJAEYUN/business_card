@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
-import SharedCardViewer from '@/components/CardViewer/SharedCardViewer'
+import MyCardWrapper from '@/components/CardViewer/MyCardWrapper'
 import { Database } from '@/lib/supabase'
 
 type BusinessCard = Database['public']['Tables']['business_cards']['Row']
 
-interface CardPageProps {
+interface MyCardPageProps {
   params: Promise<{
     id: string
     locale: string
@@ -28,7 +28,9 @@ async function getBusinessCard(id: string): Promise<BusinessCard | null> {
   return data
 }
 
-export async function generateMetadata({ params }: CardPageProps) {
+
+
+export async function generateMetadata({ params }: MyCardPageProps) {
   const { id } = await params
   const card = await getBusinessCard(id)
   
@@ -39,24 +41,12 @@ export async function generateMetadata({ params }: CardPageProps) {
   }
 
   return {
-    title: `${card.title} - Digital Business Card`,
-    description: `View ${card.title}'s digital business card`,
-    openGraph: {
-      title: `${card.title} - Digital Business Card`,
-      description: `View ${card.title}'s digital business card`,
-      images: [card.front_image_url],
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${card.title} - Digital Business Card`,
-      description: `View ${card.title}'s digital business card`,
-      images: [card.front_image_url],
-    },
+    title: `Manage ${card.title} - Digital Business Card`,
+    description: `Manage and share ${card.title}'s digital business card`,
   }
 }
 
-export default async function CardPage({ params }: CardPageProps) {
+export default async function MyCardPage({ params }: MyCardPageProps) {
   const { id } = await params
   const card = await getBusinessCard(id)
 
@@ -64,5 +54,5 @@ export default async function CardPage({ params }: CardPageProps) {
     notFound()
   }
 
-  return <SharedCardViewer card={card} />
+  return <MyCardWrapper card={card} />
 }
