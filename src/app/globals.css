@@ -25,6 +25,25 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* 모바일 최적화 */
+@media (max-width: 640px) {
+  /* 터치 영역 최적화 */
+  button, a {
+    min-height: 44px;
+  }
+
+  /* 텍스트 가독성 개선 */
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* 스크롤 성능 개선 */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* Supabase Auth UI Custom Styles */
 .auth-container {
   width: 100%;

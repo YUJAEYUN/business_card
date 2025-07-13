@@ -98,24 +98,66 @@ export default function DashboardPage() {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center py-4 md:py-6 space-y-4 md:space-y-0">
+          {/* 모바일 상단 바 */}
+          <div className="flex items-center justify-between py-4 md:hidden">
+            <div className="flex-1">
+              <h1 className="text-lg font-bold text-gray-900">{t('title')}</h1>
+              <p className="text-xs text-gray-600">{t('subtitle')}</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <LanguageSwitcher />
+              <button
+                onClick={handleSignOut}
+                className="text-gray-600 hover:text-gray-900 transition-colors p-2"
+                aria-label="로그아웃"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* 모바일 환영 메시지 */}
+          <div className="pb-4 md:hidden">
+            {user && (
+              <p className="text-sm font-medium text-blue-600">
+                {t('welcome')} {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}!
+              </p>
+            )}
+          </div>
+
+          {/* 모바일 액션 버튼 */}
+          <div className="pb-4 md:hidden">
+            <Link
+              href="/create"
+              className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors text-center flex items-center justify-center space-x-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              <span>{t('createNewCard')}</span>
+            </Link>
+          </div>
+
+          {/* 데스크톱 레이아웃 */}
+          <div className="hidden md:flex md:justify-between md:items-center py-6">
             <div>
-              <h1 className="text-xl md:text-2xl font-bold text-gray-900">{t('title')}</h1>
-              <p className="text-sm md:text-base text-gray-600">{t('subtitle')}</p>
+              <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+              <p className="text-base text-gray-600">{t('subtitle')}</p>
               {user && (
-                <p className="text-base md:text-lg font-medium text-blue-600 mt-1 md:mt-2">
+                <p className="text-lg font-medium text-blue-600 mt-2">
                   {t('welcome')} {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}!
                 </p>
               )}
             </div>
-            <div className="flex items-center justify-between md:justify-end space-x-2 md:space-x-4">
+            <div className="flex items-center space-x-4">
               <LanguageSwitcher />
               <Link
                 href="/create"
-                className="bg-blue-600 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm md:text-base"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                <span className="hidden sm:inline">{t('createNewCard')}</span>
-                <span className="sm:hidden">+</span>
+                {t('createNewCard')}
               </Link>
               <button
                 onClick={handleSignOut}

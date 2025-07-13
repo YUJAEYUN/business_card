@@ -33,29 +33,29 @@ export default function Home() {
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4 md:py-6">
-            <div className="flex items-center">
-              <h1 className="text-lg md:text-2xl font-bold text-gray-900">{t('title')}</h1>
+            <div className="flex items-center flex-1">
+              <h1 className="text-base sm:text-lg md:text-2xl font-bold text-gray-900 truncate">{t('title')}</h1>
             </div>
-            <div className="flex items-center space-x-2 md:space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
               <LanguageSwitcher />
               {user ? (
                 <>
                   <Link
                     href="/dashboard"
-                    className="hidden sm:block text-gray-600 hover:text-gray-900 transition-colors"
+                    className="hidden sm:block text-gray-600 hover:text-gray-900 transition-colors whitespace-nowrap"
                   >
                     {t('dashboard')}
                   </Link>
                   <Link
                     href="/create"
-                    className="bg-blue-600 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm md:text-base"
+                    className="bg-blue-600 text-white px-2 py-2 sm:px-3 sm:py-2 md:px-4 md:py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors text-xs sm:text-sm md:text-base whitespace-nowrap"
                   >
                     <span className="hidden sm:inline">{t('createCard')}</span>
                     <span className="sm:hidden">+</span>
                   </Link>
                 </>
               ) : (
-                <div className="w-48 md:w-64">
+                <div className="w-32 sm:w-48 md:w-64">
                   <LoginButton />
                 </div>
               )}
