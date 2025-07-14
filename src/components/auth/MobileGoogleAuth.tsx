@@ -12,17 +12,12 @@ export default function MobileGoogleAuth() {
     try {
       setIsLoading(true)
       setError(null)
-      
-      // 모바일에서 새 탭으로 OAuth 열기
-      const currentUrl = window.location.href
-      
-      // 현재 URL을 세션 스토리지에 저장
-      sessionStorage.setItem('oauth_return_url', currentUrl)
-      
+
       await signInWithGoogle()
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Mobile Google Auth Error:', err)
-      setError(err.message || '로그인 중 오류가 발생했습니다.')
+      const errorMessage = err instanceof Error ? err.message : '로그인 중 오류가 발생했습니다.'
+      setError(errorMessage)
     } finally {
       setIsLoading(false)
     }

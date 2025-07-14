@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
-import { supabase, Database } from '@/lib/supabase'
+import { Database } from '@/lib/supabase'
 import BusinessCardItem from '@/components/Dashboard/BusinessCardItem'
 import { useTranslation } from '@/hooks/useTranslation'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
@@ -20,34 +20,35 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null)
   const { t } = useTranslation()
 
-  // Redirect if not authenticated
-  if (!loading && !user) {
-    router.push('/')
-    return null
-  }
-
   const fetchBusinessCards = useCallback(async () => {
-    if (!user) return
+    if (!user?.email) return
 
     try {
       setIsLoading(true)
-      const { data, error } = await supabase
-        .from('business_cards')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
+      const response = await fetch('/api/business-cards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: user.email,
+          name: user.name || '',
+          image: user.image || ''
+        })
+      })
 
-      if (error) throw error
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
       setCards(data || [])
-    } catch (error) {
-      console.error('Error fetching business cards:', error)
-      setError('Failed to load business cards') // 하드코딩된 에러 메시지
+    } catch {
+      setError('Failed to load business cards')
     } finally {
       setIsLoading(false)
     }
-  }, [user]) // t 의존성 제거
-
-  // Fetch user's business cards
+  }, [user])
   useEffect(() => {
     if (user) {
       fetchBusinessCards()
@@ -55,19 +56,26 @@ export default function DashboardPage() {
   }, [user, fetchBusinessCards])
 
   const handleDeleteCard = async (cardId: string) => {
+    if (!user?.email) return
+
     try {
-      const { error } = await supabase
-        .from('business_cards')
-        .delete()
-        .eq('id', cardId)
-        .eq('user_id', user?.id)
+      const response = await fetch('/api/business-cards/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          cardId,
+          email: user.email
+        })
+      })
 
-      if (error) throw error
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
 
-      // Remove from local state
       setCards(prev => prev.filter(card => card.id !== cardId))
-    } catch (error) {
-      console.error('Error deleting business card:', error)
+    } catch {
       setError(t('failedToDeleteCard'))
     }
   }
@@ -79,6 +87,12 @@ export default function DashboardPage() {
     } catch (error) {
       console.error('Error signing out:', error)
     }
+  }
+
+  // Redirect if not authenticated
+  if (!loading && !user) {
+    router.push('/')
+    return null
   }
 
   if (loading || isLoading) {
@@ -122,7 +136,7 @@ export default function DashboardPage() {
           <div className="pb-4 md:hidden">
             {user && (
               <p className="text-sm font-medium text-blue-600">
-                {t('welcome')} {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}!
+                {t('welcome')} {user.name || user.email?.split('@')[0] || 'User'}!
               </p>
             )}
           </div>
@@ -147,7 +161,7 @@ export default function DashboardPage() {
               <p className="text-base text-gray-600">{t('subtitle')}</p>
               {user && (
                 <p className="text-lg font-medium text-blue-600 mt-2">
-                  {t('welcome')} {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}!
+                  {t('welcome')} {user.name || user.email?.split('@')[0] || 'User'}!
                 </p>
               )}
             </div>

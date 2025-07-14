@@ -1,11 +1,11 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { User, Session } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
+import { useSession, signIn, signOut as nextAuthSignOut } from 'next-auth/react'
+import { Session } from 'next-auth'
 
 interface AuthContextType {
-  user: User | null
+  user: Session['user'] | null
   session: Session | null
   loading: boolean
   signInWithGoogle: () => Promise<void>
@@ -15,52 +15,20 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [session, setSession] = useState<Session | null>(null)
+  const { data: session, status } = useSession()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state change:', { event, session: !!session, user: !!session?.user })
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
+    setLoading(status === 'loading')
+  }, [status])
 
   const signInWithGoogle = async () => {
     try {
-      console.log('Starting Google OAuth with redirect flow')
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          // 팝업 대신 리다이렉트 사용 (모바일 호환)
-          skipBrowserRedirect: false,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'select_account'
-          }
-        },
+      console.log('Starting Google OAuth with NextAuth.js')
+      await signIn('google', {
+        callbackUrl: '/dashboard',
+        redirect: true
       })
-
-      if (error) {
-        console.error('OAuth error:', error)
-        throw error
-      }
     } catch (error) {
       console.error('Error signing in with Google:', error)
       throw error
@@ -69,10 +37,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
-      // 로그아웃 후 루트 페이지로 이동
-      window.location.href = '/'
+      await nextAuthSignOut({
+        callbackUrl: '/',
+        redirect: true
+      })
     } catch (error) {
       console.error('Error signing out:', error)
       throw error
@@ -80,7 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const value = {
-    user,
+    user: session?.user || null,
     session,
     loading,
     signInWithGoogle,

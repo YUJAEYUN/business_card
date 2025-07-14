@@ -9,13 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@supabase/auth-ui-react": "^0.4.7",
-    "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.50.5",
     "@types/qrcode.react": "^1.0.5",
     "framer-motion": "^12.23.3",
     "next": "15.3.5",
+    "next-auth": "^4.24.11",
     "next-intl": "^4.3.4",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
