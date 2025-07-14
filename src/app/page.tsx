@@ -38,7 +38,7 @@ export default function Home() {
             </div>
             <div className="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
               <LanguageSwitcher />
-              {user ? (
+              {user && (
                 <>
                   <Link
                     href="/dashboard"
@@ -54,10 +54,6 @@ export default function Home() {
                     <span className="sm:hidden">+</span>
                   </Link>
                 </>
-              ) : (
-                <div className="w-32 sm:w-48 md:w-64">
-                  <LoginButton />
-                </div>
               )}
             </div>
           </div>

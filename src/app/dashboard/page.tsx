@@ -230,35 +230,7 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Stats */}
-        {cards.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mt-8 md:mt-12 bg-white rounded-lg shadow-md p-4 md:p-6"
-          >
-            <h2 className="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4">{t('statistics')}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{cards.length}</div>
-                <div className="text-sm text-gray-600">{t('totalCards')}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">
-                  {cards.filter(card => card.back_image_url).length}
-                </div>
-                <div className="text-sm text-gray-600">{t('doubleSidedCards')}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">
-                  {cards.filter(card => card.card_type === 'horizontal').length}
-                </div>
-                <div className="text-sm text-gray-600">{t('horizontalCards')}</div>
-              </div>
-            </div>
-          </motion.div>
-        )}
+
       </main>
     </div>
   )
