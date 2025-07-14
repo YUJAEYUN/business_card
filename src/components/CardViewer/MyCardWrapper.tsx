@@ -18,23 +18,49 @@ export default function MyCardWrapper({ card }: MyCardWrapperProps) {
   const [isChecking, setIsChecking] = useState(true)
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        // User not logged in, redirect to public view
-        router.push(`/card/${card.id}`)
-        return
-      }
+    const checkOwnership = async () => {
+      if (!loading) {
+        if (!user) {
+          // User not logged in, redirect to public view
+          router.push(`/card/${card.id}`)
+          return
+        }
 
-      if (card.user_id !== user.id) {
-        // User doesn't own this card, redirect to public view
-        router.push(`/card/${card.id}`)
-        return
-      }
+        // Check ownership using email instead of direct ID comparison
+        try {
+          const response = await fetch('/api/business-cards', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              email: user.email,
+              name: user.name || '',
+              image: user.image || ''
+            })
+          })
 
-      // User owns this card, show the management interface
-      setIsChecking(false)
+          const userCards = await response.json()
+
+          // Check if this card belongs to the user
+          const userOwnsCard = Array.isArray(userCards) && userCards.some((userCard: BusinessCard) => userCard.id === card.id)
+
+          if (!userOwnsCard) {
+            router.push(`/card/${card.id}`)
+            return
+          }
+
+          // User owns this card, show the management interface
+          setIsChecking(false)
+        } catch (error) {
+          console.error('Error checking card ownership:', error)
+          router.push(`/card/${card.id}`)
+        }
+      }
     }
-  }, [user, loading, card.user_id, card.id, router])
+
+    checkOwnership()
+  }, [user, loading, card.id, router])
 
   if (loading || isChecking) {
     return (

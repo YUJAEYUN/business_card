@@ -65,7 +65,6 @@ export default function QRCodeGenerator({
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(url)
-      // TODO: Show success toast
       console.log('URL copied to clipboard')
     } catch (error) {
       console.error('Failed to copy URL:', error)

@@ -27,7 +27,7 @@ export const authOptions: NextAuthOptions = {
       }
       return session
     },
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account }) {
       // JWT 토큰에 사용자 정보 추가
       if (account) {
         token.accessToken = account.access_token

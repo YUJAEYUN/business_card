@@ -65,8 +65,6 @@ export function getOptimizedImageUrl(
   _height?: number,
   _quality?: number
 ): string {
-  // For now, return the original URL
-  // TODO: Implement image optimization using Supabase Transform or external service
   return originalUrl
 }
 

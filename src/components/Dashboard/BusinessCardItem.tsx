@@ -23,13 +23,10 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
   const handleCopyUrl = async () => {
     try {
       await navigator.clipboard.writeText(cardUrl)
-      // TODO: Show success toast
       setCopySuccess(true)
-      // Hide success message after 2 seconds
       setTimeout(() => setCopySuccess(false), 2000)
     } catch (error) {
       console.error('Failed to copy URL:', error)
-      // Could add error state here if needed
     }
   }
 

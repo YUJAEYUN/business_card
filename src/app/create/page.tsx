@@ -70,6 +70,31 @@ export default function CreatePage() {
     setError(null)
 
     try {
+      // Get the correct Supabase user ID from profiles table
+      let { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', user.email)
+        .single()
+
+      if (!profile) {
+        // Create profile if it doesn't exist
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            email: user.email!,
+            full_name: user.name || null,
+            avatar_url: user.image || null
+          })
+          .select('id')
+          .single()
+
+        if (createError) {
+          throw new Error('Failed to create user profile')
+        }
+        profile = newProfile
+      }
+
       // Generate card ID
       const cardId = crypto.randomUUID()
 
@@ -77,7 +102,7 @@ export default function CreatePage() {
       const compressedFrontImage = await compressImage(cardData.frontImage.file)
       const frontImageResult = await uploadBusinessCardImage(
         compressedFrontImage,
-        user.id,
+        profile.id,
         cardId,
         'front'
       )
@@ -87,7 +112,7 @@ export default function CreatePage() {
         const compressedBackImage = await compressImage(cardData.backImage.file)
         const backImageResult = await uploadBusinessCardImage(
           compressedBackImage,
-          user.id,
+          profile.id,
           cardId,
           'back'
         )
@@ -99,7 +124,7 @@ export default function CreatePage() {
         .from('business_cards')
         .insert({
           id: cardId,
-          user_id: user.id,
+          user_id: profile.id,
           title: cardData.title.trim(),
           front_image_url: frontImageResult.url,
           back_image_url: backImageUrl,

@@ -24,7 +24,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     try {
-      console.log('Starting Google OAuth with NextAuth.js')
       await signIn('google', {
         callbackUrl: '/dashboard',
         redirect: true

@@ -13,9 +13,9 @@ export default function LoginButton() {
       setIsLoading(true)
       setError(null)
       await signInWithGoogle()
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Google Auth Error:', err)
-      setError(err.message || '로그인 중 오류가 발생했습니다.')
+      setError(err instanceof Error ? err.message : '로그인 중 오류가 발생했습니다.')
     } finally {
       setIsLoading(false)
     }

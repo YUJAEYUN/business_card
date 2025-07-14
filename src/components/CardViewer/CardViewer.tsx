@@ -21,9 +21,7 @@ export default function CardViewer({ card }: CardViewerProps) {
   const handleCopyUrl = async () => {
     try {
       await navigator.clipboard.writeText(cardUrl)
-      // TODO: Show success toast
       setCopySuccess(true)
-      // Hide success message after 2 seconds
       setTimeout(() => setCopySuccess(false), 2000)
     } catch (error) {
       console.error('Failed to copy URL:', error)

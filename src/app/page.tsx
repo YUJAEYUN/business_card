@@ -76,10 +76,9 @@ export default function Home() {
     if (video && !loading) {
       const timer = setTimeout(() => {
         if (video.paused) {
-          console.log('Restarting video after navigation')
           video.play().catch(console.error)
         }
-      }, 500) // Longer delay to ensure page is fully loaded
+      }, 500)
 
       return () => clearTimeout(timer)
     }
@@ -138,12 +137,7 @@ export default function Home() {
               console.error('Video failed to load:', e)
               e.currentTarget.style.display = 'none'
             }}
-            onLoadStart={() => console.log('Video loading started')}
-            onCanPlay={() => console.log('Video can play')}
-            onPlay={() => console.log('Video play event fired')}
-            onPause={() => console.log('Video pause event fired')}
-            onStalled={() => console.log('Video stalled')}
-            onWaiting={() => console.log('Video waiting')}
+
           >
             <source src="/landing_video.mp4" type="video/mp4" />
             <source src="/landing_video.webm" type="video/webm" />
@@ -278,7 +272,7 @@ export default function Home() {
       <footer className="bg-gray-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <p>&copy; 2024 {t('title')}. {t('footerText')}</p>
+            <p>&copy; 2025 {t('title')}. {t('footerText')}</p>
           </div>
         </div>
       </footer>
