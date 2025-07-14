@@ -13,7 +13,7 @@ const languages = [
 export default function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  const { locale, changeLocale, t } = useTranslation()
+  const { locale, changeLocale } = useTranslation()
 
   const currentLanguage = languages.find(lang => lang.code === locale) || languages[0]
 
@@ -38,11 +38,11 @@ export default function LanguageSwitcher() {
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center space-x-1 px-2 py-2 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors bg-white"
+          className="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-lg transition-colors flex items-center space-x-1 min-w-0"
           aria-label="Change language"
         >
-          <span className="text-base">{currentLanguage.flag}</span>
-          <span className="text-xs font-medium text-gray-700">
+          <span className="text-sm">{currentLanguage.flag}</span>
+          <span className="text-xs font-medium">
             {currentLanguage.code.toUpperCase()}
           </span>
         </button>
@@ -103,15 +103,15 @@ export default function LanguageSwitcher() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors bg-white"
+        className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg transition-colors flex items-center space-x-2 font-medium"
         aria-label="Change language"
       >
         <span className="text-lg">{currentLanguage.flag}</span>
-        <span className="text-sm font-medium text-gray-700">
+        <span className="text-sm font-medium">
           {currentLanguage.code.toUpperCase()}
         </span>
         <svg
-          className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

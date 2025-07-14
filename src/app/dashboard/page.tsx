@@ -113,19 +113,30 @@ export default function DashboardPage() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* 모바일 상단 바 */}
-          <div className="flex items-center justify-between py-4 md:hidden">
-            <div className="flex-1">
-              <h1 className="text-lg font-bold text-gray-900">{t('title')}</h1>
-              <p className="text-xs text-gray-600">{t('subtitle')}</p>
+          <div className="flex items-center justify-between py-3 md:hidden">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg font-bold text-gray-900 truncate">{t('title')}</h1>
+              <p className="text-xs text-gray-600 truncate">{t('subtitle')}</p>
             </div>
-            <div className="flex items-center space-x-2">
-              <LanguageSwitcher />
+            <div className="flex items-center space-x-1 ml-2">
+              <div className="flex-shrink-0">
+                <LanguageSwitcher />
+              </div>
+              <Link
+                href="/"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-lg transition-colors flex-shrink-0"
+                aria-label="홈으로"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </Link>
               <button
                 onClick={handleSignOut}
-                className="text-gray-600 hover:text-gray-900 transition-colors p-2"
+                className="bg-red-100 hover:bg-red-200 text-red-700 p-2 rounded-lg transition-colors flex-shrink-0"
                 aria-label="로그아웃"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
               </button>
@@ -165,8 +176,17 @@ export default function DashboardPage() {
                 </p>
               )}
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <LanguageSwitcher />
+              <Link
+                href="/"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg transition-colors flex items-center space-x-2 font-medium"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span>홈</span>
+              </Link>
               <Link
                 href="/create"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
@@ -175,7 +195,7 @@ export default function DashboardPage() {
               </Link>
               <button
                 onClick={handleSignOut}
-                className="text-gray-600 hover:text-gray-900 transition-colors"
+                className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-2 rounded-lg transition-colors font-medium"
               >
                 {t('signOut')}
               </button>
