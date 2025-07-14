@@ -7,7 +7,6 @@ import LoginButton from '@/components/auth/LoginButton'
 import { useTranslation } from '@/hooks/useTranslation'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { useEffect, useRef } from 'react'
-
 export default function Home() {
   const { user, loading } = useAuth()
   const { t } = useTranslation()
@@ -15,61 +14,76 @@ export default function Home() {
 
   useEffect(() => {
     const video = videoRef.current
-    if (video) {
-      const playVideo = async () => {
-        try {
-          console.log('Attempting to play video...')
+    if (!video) return
 
-          video.currentTime = 0
-          await video.play()
-          console.log('✅ Video started playing successfully')
+    const playVideo = async () => {
+      try {
+        console.log('Attempting to play video...')
+        video.currentTime = 0
+        await video.play()
+        console.log('✅ Video started playing successfully')
 
-          // Hide fallback if video plays
-          const fallback = document.querySelector('.video-fallback') as HTMLElement
-          if (fallback) {
-            fallback.style.display = 'none'
-          }
-        } catch (error) {
-          console.error('❌ Video autoplay failed:', error)
-          // Force show fallback background
-          const fallback = document.querySelector('.video-fallback') as HTMLElement
-          if (fallback) {
-            fallback.style.display = 'block'
-          }
+        // Hide fallback if video plays
+        const fallback = document.querySelector('.video-fallback') as HTMLElement
+        if (fallback) {
+          fallback.style.display = 'none'
         }
-      }
-
-      const handleCanPlay = () => {
-        console.log('Video can play')
-        playVideo()
-      }
-
-      const handleError = () => {
-        console.error('Video error occurred')
-        video.style.display = 'none'
+      } catch (error) {
+        console.error('❌ Video autoplay failed:', error)
+        // Force show fallback background
         const fallback = document.querySelector('.video-fallback') as HTMLElement
         if (fallback) {
           fallback.style.display = 'block'
         }
       }
+    }
 
-      // Set up event listeners
-      video.addEventListener('canplay', handleCanPlay)
-      video.addEventListener('error', handleError)
-      video.addEventListener('loadeddata', playVideo)
+    const handleCanPlay = () => {
+      console.log('Video can play')
+      playVideo()
+    }
 
-      // Try to play immediately if video is already loaded
-      if (video.readyState >= 3) {
-        playVideo()
-      }
-
-      return () => {
-        video.removeEventListener('canplay', handleCanPlay)
-        video.removeEventListener('error', handleError)
-        video.removeEventListener('loadeddata', playVideo)
+    const handleError = () => {
+      console.error('Video error occurred')
+      video.style.display = 'none'
+      const fallback = document.querySelector('.video-fallback') as HTMLElement
+      if (fallback) {
+        fallback.style.display = 'block'
       }
     }
+
+    // Set up event listeners
+    video.addEventListener('canplay', handleCanPlay)
+    video.addEventListener('error', handleError)
+    video.addEventListener('loadeddata', playVideo)
+
+    // Try to play immediately if video is already loaded
+    if (video.readyState >= 3) {
+      playVideo()
+    }
+
+    // Cleanup
+    return () => {
+      video.removeEventListener('canplay', handleCanPlay)
+      video.removeEventListener('error', handleError)
+      video.removeEventListener('loadeddata', playVideo)
+    }
   }, [])
+
+  // Simple effect to restart video when coming back to page
+  useEffect(() => {
+    const video = videoRef.current
+    if (video && !loading) {
+      const timer = setTimeout(() => {
+        if (video.paused) {
+          console.log('Restarting video after navigation')
+          video.play().catch(console.error)
+        }
+      }, 500) // Longer delay to ensure page is fully loaded
+
+      return () => clearTimeout(timer)
+    }
+  }, [loading])
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
     return <div>Missing NEXT_PUBLIC_SUPABASE_URL</div>
