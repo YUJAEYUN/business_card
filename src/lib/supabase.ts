@@ -24,6 +24,12 @@ export type Database = {
           front_image_url: string
           back_image_url: string | null
           card_type: 'horizontal' | 'vertical'
+          custom_slug: string | null
+          view_count: number
+          is_public: boolean
+          seo_title: string | null
+          seo_description: string | null
+          version_number: number
           created_at: string
           updated_at: string
         }
@@ -33,7 +39,13 @@ export type Database = {
           title: string
           front_image_url: string
           back_image_url?: string | null
-          card_type: 'horizontal' | 'vertical'
+          card_type?: 'horizontal' | 'vertical'
+          custom_slug?: string | null
+          view_count?: number
+          is_public?: boolean
+          seo_title?: string | null
+          seo_description?: string | null
+          version_number?: number
           created_at?: string
           updated_at?: string
         }
@@ -44,6 +56,12 @@ export type Database = {
           front_image_url?: string
           back_image_url?: string | null
           card_type?: 'horizontal' | 'vertical'
+          custom_slug?: string | null
+          view_count?: number
+          is_public?: boolean
+          seo_title?: string | null
+          seo_description?: string | null
+          version_number?: number
           created_at?: string
           updated_at?: string
         }
@@ -72,6 +90,210 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           updated_at?: string
+        }
+      }
+      business_card_ocr_data: {
+        Row: {
+          id: string
+          business_card_id: string
+          extracted_text: string | null
+          confidence_score: number | null
+          language_detected: string | null
+          extraction_method: string
+          raw_data: Record<string, unknown> | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          business_card_id: string
+          extracted_text?: string | null
+          confidence_score?: number | null
+          language_detected?: string | null
+          extraction_method?: string
+          raw_data?: Record<string, unknown> | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          business_card_id?: string
+          extracted_text?: string | null
+          confidence_score?: number | null
+          language_detected?: string | null
+          extraction_method?: string
+          raw_data?: Record<string, unknown> | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      interactive_zones: {
+        Row: {
+          id: string
+          business_card_id: string
+          zone_type: string
+          zone_data: Record<string, unknown>
+          coordinates: Record<string, unknown>
+          is_active: boolean
+          click_count: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          business_card_id: string
+          zone_type: string
+          zone_data: Record<string, unknown>
+          coordinates: Record<string, unknown>
+          is_active?: boolean
+          click_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          business_card_id?: string
+          zone_type?: string
+          zone_data?: Record<string, unknown>
+          coordinates?: Record<string, unknown>
+          is_active?: boolean
+          click_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      custom_slugs: {
+        Row: {
+          id: string
+          business_card_id: string
+          slug: string
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          business_card_id: string
+          slug: string
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          business_card_id?: string
+          slug?: string
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      business_card_wallet: {
+        Row: {
+          id: string
+          user_id: string
+          business_card_id: string
+          nickname: string | null
+          tags: string[] | null
+          is_favorite: boolean
+          notes: string | null
+          saved_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          business_card_id: string
+          nickname?: string | null
+          tags?: string[] | null
+          is_favorite?: boolean
+          notes?: string | null
+          saved_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          business_card_id?: string
+          nickname?: string | null
+          tags?: string[] | null
+          is_favorite?: boolean
+          notes?: string | null
+          saved_at?: string
+          updated_at?: string
+        }
+      }
+      business_card_analytics: {
+        Row: {
+          id: string
+          business_card_id: string
+          event_type: string
+          event_data: Record<string, unknown> | null
+          ip_address: string | null
+          user_agent: string | null
+          referrer: string | null
+          country: string | null
+          city: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          business_card_id: string
+          event_type: string
+          event_data?: Record<string, unknown> | null
+          ip_address?: string | null
+          user_agent?: string | null
+          referrer?: string | null
+          country?: string | null
+          city?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          business_card_id?: string
+          event_type?: string
+          event_data?: Record<string, unknown> | null
+          ip_address?: string | null
+          user_agent?: string | null
+          referrer?: string | null
+          country?: string | null
+          city?: string | null
+          created_at?: string
+        }
+      }
+      business_card_versions: {
+        Row: {
+          id: string
+          business_card_id: string
+          version_number: number
+          front_image_url: string
+          back_image_url: string | null
+          card_type: string
+          change_description: string | null
+          is_current: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          business_card_id: string
+          version_number: number
+          front_image_url: string
+          back_image_url?: string | null
+          card_type?: string
+          change_description?: string | null
+          is_current?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          business_card_id?: string
+          version_number?: number
+          front_image_url?: string
+          back_image_url?: string | null
+          card_type?: string
+          change_description?: string | null
+          is_current?: boolean
+          created_at?: string
         }
       }
     }

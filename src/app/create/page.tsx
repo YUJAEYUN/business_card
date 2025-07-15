@@ -11,6 +11,8 @@ import { supabase } from '@/lib/supabase'
 import { useTranslation } from '@/hooks/useTranslation'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import Link from 'next/link'
+import OCRProcessor from '@/components/OCR/OCRProcessor'
+import { BusinessCardData } from '@/lib/ocr/types'
 
 interface CardData {
   title: string
@@ -23,6 +25,8 @@ interface CardData {
     file: File | null
     preview: string | null
   }
+  ocrData?: BusinessCardData
+  showOCR?: boolean
 }
 
 export default function CreatePage() {
@@ -36,7 +40,11 @@ export default function CreatePage() {
   })
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [tempCardId, setTempCardId] = useState<string | null>(null)
   const { t } = useTranslation()
+
+  // OCR 기능 활성화 여부 확인
+  const isOCREnabled = process.env.NEXT_PUBLIC_ENABLE_OCR === 'true'
 
   // Redirect if not authenticated
   if (!loading && !user) {
@@ -49,12 +57,37 @@ export default function CreatePage() {
       ...prev,
       frontImage: { file, preview }
     }))
+
+    // Generate temporary card ID for OCR processing
+    if (!tempCardId) {
+      setTempCardId(crypto.randomUUID())
+    }
   }
 
   const handleBackImageSelect = (file: File, preview: string) => {
     setCardData(prev => ({
       ...prev,
       backImage: { file, preview }
+    }))
+  }
+
+  const handleOCRComplete = (ocrData: BusinessCardData) => {
+    setCardData(prev => ({
+      ...prev,
+      ocrData,
+      title: ocrData.name || prev.title || 'Business Card'
+    }))
+  }
+
+  const handleOCRError = (error: string) => {
+    console.error('OCR Error:', error)
+    setError(`OCR processing failed: ${error}`)
+  }
+
+  const toggleOCR = () => {
+    setCardData(prev => ({
+      ...prev,
+      showOCR: !prev.showOCR
     }))
   }
 
@@ -95,8 +128,8 @@ export default function CreatePage() {
         profile = newProfile
       }
 
-      // Generate card ID
-      const cardId = crypto.randomUUID()
+      // Use existing card ID or generate new one
+      const cardId = tempCardId || crypto.randomUUID()
 
       // Compress and upload front image
       const compressedFrontImage = await compressImage(cardData.frontImage.file)
@@ -254,6 +287,80 @@ export default function CreatePage() {
                 label={`${t('backImage')} (${t('optional')})`}
                 className="mb-6"
               />
+
+              {/* OCR Section */}
+              {isOCREnabled && cardData.frontImage.file && (
+                <div className="border-t pt-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-medium text-gray-900">
+                      Smart Text Recognition
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={toggleOCR}
+                      className="bg-blue-100 text-blue-700 px-3 py-1 rounded-md text-sm hover:bg-blue-200 transition-colors"
+                    >
+                      {cardData.showOCR ? 'Hide OCR' : 'Show OCR'}
+                    </button>
+                  </div>
+
+                  {cardData.showOCR && tempCardId && (
+                    <OCRProcessor
+                      businessCardId={tempCardId}
+                      imageFile={cardData.frontImage.file}
+                      imageUrl={cardData.frontImage.preview || undefined}
+                      onComplete={handleOCRComplete}
+                      onError={handleOCRError}
+                    />
+                  )}
+
+                  {cardData.ocrData && (
+                    <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <h4 className="font-medium text-green-900 mb-2">
+                        Extracted Information
+                      </h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                        {cardData.ocrData.name && (
+                          <div>
+                            <span className="font-medium text-green-800">Name:</span>
+                            <span className="ml-1 text-green-700">{cardData.ocrData.name}</span>
+                          </div>
+                        )}
+                        {cardData.ocrData.title && (
+                          <div>
+                            <span className="font-medium text-green-800">Title:</span>
+                            <span className="ml-1 text-green-700">{cardData.ocrData.title}</span>
+                          </div>
+                        )}
+                        {cardData.ocrData.company && (
+                          <div>
+                            <span className="font-medium text-green-800">Company:</span>
+                            <span className="ml-1 text-green-700">{cardData.ocrData.company}</span>
+                          </div>
+                        )}
+                        {cardData.ocrData.email && (
+                          <div>
+                            <span className="font-medium text-green-800">Email:</span>
+                            <span className="ml-1 text-green-700">{cardData.ocrData.email}</span>
+                          </div>
+                        )}
+                        {cardData.ocrData.phone && (
+                          <div>
+                            <span className="font-medium text-green-800">Phone:</span>
+                            <span className="ml-1 text-green-700">{cardData.ocrData.phone}</span>
+                          </div>
+                        )}
+                        {cardData.ocrData.website && (
+                          <div>
+                            <span className="font-medium text-green-800">Website:</span>
+                            <span className="ml-1 text-green-700">{cardData.ocrData.website}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Error Message */}
               {error && (
