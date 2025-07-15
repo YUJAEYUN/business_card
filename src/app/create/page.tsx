@@ -1,17 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/contexts/AuthContext'
 import ImageUpload from '@/components/Upload/ImageUpload'
 import FlipCard from '@/components/BusinessCard/FlipCard'
 import { uploadBusinessCardImage, compressImage } from '@/lib/storage'
-import { supabase } from '@/lib/supabase'
 import { useTranslation } from '@/hooks/useTranslation'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import Link from 'next/link'
-import OCRProcessor from '@/components/OCR/OCRProcessor'
+import DualOCRProcessor from '@/components/OCR/DualOCRProcessor'
 import { BusinessCardData } from '@/lib/ocr/types'
 
 interface CardData {
@@ -41,6 +40,7 @@ export default function CreatePage() {
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [tempCardId, setTempCardId] = useState<string | null>(null)
+
   const { t } = useTranslation()
 
   // OCR 기능 활성화 여부 확인
@@ -71,25 +71,43 @@ export default function CreatePage() {
     }))
   }
 
-  const handleOCRComplete = (ocrData: BusinessCardData) => {
-    setCardData(prev => ({
-      ...prev,
-      ocrData,
-      title: ocrData.name || prev.title || 'Business Card'
-    }))
+  const startAutoOCR = async () => {
+    if (!tempCardId) return;
+
+    // 디버깅: 현재 이미지 상태 확인
+    console.log('Starting OCR with images:', {
+      frontImage: {
+        hasFile: !!cardData.frontImage.file,
+        fileName: cardData.frontImage.file?.name,
+        hasPreview: !!cardData.frontImage.preview
+      },
+      backImage: {
+        hasFile: !!cardData.backImage.file,
+        fileName: cardData.backImage.file?.name,
+        hasPreview: !!cardData.backImage.preview
+      }
+    });
+
+    setCardData(prev => ({ ...prev, showOCR: true }));
   }
 
-  const handleOCRError = (error: string) => {
-    console.error('OCR Error:', error)
-    setError(`OCR processing failed: ${error}`)
-  }
-
-  const toggleOCR = () => {
+  const handleOCRComplete = useCallback((result: BusinessCardData) => {
     setCardData(prev => ({
       ...prev,
-      showOCR: !prev.showOCR
-    }))
-  }
+      ocrData: result,
+      title: result.name || prev.title || 'Business Card'
+    }));
+  }, []);
+
+  const handleOCRError = useCallback((error: string) => {
+    setError(`OCR processing failed: ${error}`);
+  }, []);
+
+
+
+
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -103,31 +121,6 @@ export default function CreatePage() {
     setError(null)
 
     try {
-      // Get the correct Supabase user ID from profiles table
-      let { data: profile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', user.email)
-        .single()
-
-      if (!profile) {
-        // Create profile if it doesn't exist
-        const { data: newProfile, error: createError } = await supabase
-          .from('profiles')
-          .insert({
-            email: user.email!,
-            full_name: user.name || null,
-            avatar_url: user.image || null
-          })
-          .select('id')
-          .single()
-
-        if (createError) {
-          throw new Error('Failed to create user profile')
-        }
-        profile = newProfile
-      }
-
       // Use existing card ID or generate new one
       const cardId = tempCardId || crypto.randomUUID()
 
@@ -135,44 +128,54 @@ export default function CreatePage() {
       const compressedFrontImage = await compressImage(cardData.frontImage.file)
       const frontImageResult = await uploadBusinessCardImage(
         compressedFrontImage,
-        profile.id,
+        'temp', // 임시 사용자 ID - API에서 실제 사용자 ID로 처리됨
         cardId,
         'front'
       )
+      console.log('Front image upload result:', frontImageResult)
 
       let backImageUrl = null
       if (cardData.backImage.file) {
         const compressedBackImage = await compressImage(cardData.backImage.file)
         const backImageResult = await uploadBusinessCardImage(
           compressedBackImage,
-          profile.id,
+          'temp', // 임시 사용자 ID - API에서 실제 사용자 ID로 처리됨
           cardId,
           'back'
         )
         backImageUrl = backImageResult.url
       }
 
-      // Save to database
-      const { error: dbError } = await supabase
-        .from('business_cards')
-        .insert({
-          id: cardId,
-          user_id: profile.id,
-          title: cardData.title.trim(),
-          front_image_url: frontImageResult.url,
-          back_image_url: backImageUrl,
-          card_type: cardData.cardType,
-        })
-        .select()
-        .single()
+      // Create business card via API
+      const requestData = {
+        title: cardData.title.trim(),
+        frontImageUrl: frontImageResult.url,
+        backImageUrl: backImageUrl,
+        cardType: cardData.cardType,
+        ocrData: cardData.ocrData
+      };
+      console.log('Creating business card with data:', requestData);
 
-      if (dbError) throw dbError
+      const response = await fetch('/api/business-cards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to create business card')
+      }
+
+      const result = await response.json()
 
       // Redirect to card management view
-      router.push(`/my-card/${cardId}`)
+      router.push(`/my-card/${result.card.id}`)
     } catch (error) {
       console.error('Error creating business card:', error)
-      setError(t('failedToCreateCard'))
+      setError(error instanceof Error ? error.message : t('failedToCreateCard'))
     } finally {
       setIsCreating(false)
     }
@@ -297,18 +300,32 @@ export default function CreatePage() {
                     </h3>
                     <button
                       type="button"
-                      onClick={toggleOCR}
-                      className="bg-blue-100 text-blue-700 px-3 py-1 rounded-md text-sm hover:bg-blue-200 transition-colors"
+                      onClick={startAutoOCR}
+                      disabled={cardData.showOCR}
+                      className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                      {cardData.showOCR ? 'Hide OCR' : 'Show OCR'}
+                      {cardData.showOCR ? 'Processing...' : '🔍 Extract Information'}
                     </button>
                   </div>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {cardData.backImage.file
+                      ? 'Automatically extract contact information from both sides of your business card.'
+                      : 'Automatically extract contact information from your business card image.'
+                    }
+                  </p>
 
                   {cardData.showOCR && tempCardId && (
-                    <OCRProcessor
+                    <DualOCRProcessor
+                      key={`ocr-${tempCardId}`} // 고유한 key로 변경
                       businessCardId={tempCardId}
-                      imageFile={cardData.frontImage.file}
-                      imageUrl={cardData.frontImage.preview || undefined}
+                      frontImage={{
+                        file: cardData.frontImage.file!,
+                        url: cardData.frontImage.preview || undefined
+                      }}
+                      backImage={cardData.backImage.file ? {
+                        file: cardData.backImage.file,
+                        url: cardData.backImage.preview || undefined
+                      } : undefined}
                       onComplete={handleOCRComplete}
                       onError={handleOCRError}
                     />
@@ -359,6 +376,78 @@ export default function CreatePage() {
                       </div>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* OCR Information Display */}
+              {cardData.ocrData && (cardData.ocrData.phone || cardData.ocrData.email || cardData.ocrData.website || cardData.ocrData.company) && (
+                <div className="border-t pt-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-medium text-gray-900">
+                      📋 Extracted Information
+                    </h3>
+                    <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">
+                      Auto-detected
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Phone */}
+                    {cardData.ocrData.phone && (
+                      <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                        <div className="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm">📞</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-green-900">Phone</p>
+                          <p className="text-green-700">{cardData.ocrData.phone}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Email */}
+                    {cardData.ocrData.email && (
+                      <div className="flex items-center space-x-3 p-3 bg-red-50 rounded-lg border border-red-200">
+                        <div className="flex-shrink-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm">📧</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-red-900">Email</p>
+                          <p className="text-red-700">{cardData.ocrData.email}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Website */}
+                    {cardData.ocrData.website && (
+                      <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm">🌐</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-blue-900">Website</p>
+                          <p className="text-blue-700">{cardData.ocrData.website}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Company */}
+                    {cardData.ocrData.company && (
+                      <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                        <div className="flex-shrink-0 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm">🏢</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-purple-900">Company</p>
+                          <p className="text-purple-700">{cardData.ocrData.company}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <p className="text-xs text-gray-600 mt-4">
+                    💡 This information will be available as clickable contact options on your shared card
+                  </p>
                 </div>
               )}
 

@@ -26,18 +26,13 @@ export default function MyCardWrapper({ card }: MyCardWrapperProps) {
           return
         }
 
-        // Check ownership using email instead of direct ID comparison
+        // Check ownership using GET request
         try {
           const response = await fetch('/api/business-cards', {
-            method: 'POST',
+            method: 'GET',
             headers: {
               'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              email: user.email,
-              name: user.name || '',
-              image: user.image || ''
-            })
+            }
           })
 
           const userCards = await response.json()

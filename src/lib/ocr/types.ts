@@ -26,29 +26,11 @@ export interface BusinessCardData {
   email?: string;
   website?: string;
   address?: string;
+  qr_code_url?: string;
   social?: {
     platform: string;
     handle: string;
   }[];
-  clickable_zones?: InteractiveZone[];
-}
-
-export interface InteractiveZone {
-  id?: string;
-  type: 'phone' | 'email' | 'website' | 'address' | 'social' | 'custom';
-  coordinates: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    side: 'front' | 'back';
-  };
-  data: {
-    value: string;
-    label?: string;
-    action?: string; // tel:, mailto:, https:// 등
-  };
-  confidence?: number;
 }
 
 export interface OCRProcessingOptions {

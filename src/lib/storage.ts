@@ -12,35 +12,31 @@ export async function uploadBusinessCardImage(
   side: 'front' | 'back'
 ): Promise<UploadResult> {
   try {
-    // Generate unique filename
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${cardId}_${side}.${fileExt}`
-    const filePath = `${userId}/${fileName}`
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('userId', userId);
+    formData.append('cardId', cardId);
+    formData.append('side', side);
 
-    // Upload file to Supabase Storage
-    const { error } = await supabase.storage
-      .from('business-cards')
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: true, // Replace if exists
-      })
+    const response = await fetch('/api/upload/business-card', {
+      method: 'POST',
+      body: formData,
+    });
 
-    if (error) {
-      throw error
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Upload failed');
     }
 
-    // Get public URL
-    const { data: urlData } = supabase.storage
-      .from('business-cards')
-      .getPublicUrl(filePath)
+    const result = await response.json();
 
     return {
-      url: urlData.publicUrl,
-      path: filePath,
-    }
+      url: result.url,
+      path: result.path,
+    };
   } catch (error) {
-    console.error('Error uploading image:', error)
-    throw new Error('Failed to upload image')
+    console.error('Error uploading image:', error);
+    throw new Error('Failed to upload image');
   }
 }
 

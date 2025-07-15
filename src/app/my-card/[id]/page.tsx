@@ -13,8 +13,8 @@ interface MyCardPageProps {
 }
 
 async function getBusinessCard(id: string): Promise<BusinessCard | null> {
-  const supabase = createClient()
-  
+  const supabase = await createClient()
+
   const { data, error } = await supabase
     .from('business_cards')
     .select('*')

@@ -14,7 +14,7 @@ export class OCRProcessor {
 
   constructor(options: OCRProcessingOptions = {}) {
     this.options = {
-      enableTesseract: true,
+      enableTesseract: false, // Tesseract 비활성화
       enableOpenAI: true,
       imagePreprocessing: false,
       language: ['eng', 'kor', 'jpn'],
@@ -34,31 +34,27 @@ export class OCRProcessor {
     let method: 'tesseract' | 'openai' | 'hybrid' = 'hybrid';
 
     try {
-      // Tesseract.js 처리
-      if (this.options.enableTesseract) {
-        try {
-          tesseractResult = await this.processTesseract(imageFile);
-          console.log('[OCR] Tesseract processing completed');
-        } catch (error) {
-          console.warn('[OCR] Tesseract processing failed:', error);
-        }
-      }
-
-      // OpenAI Vision API 처리
+      // OpenAI Vision API 처리만 사용 (Tesseract 비활성화)
       if (this.options.enableOpenAI && imageUrl) {
         try {
           openaiResult = await analyzeBusinessCardWithOpenAI(imageUrl);
           console.log('[OCR] OpenAI processing completed');
         } catch (error) {
           console.warn('[OCR] OpenAI processing failed:', error);
+          throw new Error('OCR processing failed: OpenAI Vision API error');
         }
+      } else {
+        throw new Error('OCR processing failed: OpenAI Vision API not available');
       }
 
-      // 결과 통합
-      const integration = this.integrateResults(tesseractResult, openaiResult);
-      finalResult = integration.data;
-      confidence = integration.confidence;
-      method = integration.method;
+      // OpenAI 결과 사용
+      if (openaiResult) {
+        finalResult = openaiResult;
+        confidence = 0.9; // OpenAI Vision API 기본 신뢰도
+        method = 'openai';
+      } else {
+        throw new Error('No OCR results available');
+      }
 
     } catch (error) {
       console.error('[OCR] Processing failed:', error);
@@ -205,10 +201,7 @@ export class OCRProcessor {
     if (result.phone) { score += 0.2; fields++; }
     if (result.website) { score += 0.1; fields++; }
 
-    // 클릭 가능한 영역이 있으면 추가 점수
-    if (result.clickable_zones && result.clickable_zones.length > 0) {
-      score += 0.1;
-    }
+
 
     return fields > 0 ? Math.min(score, 1.0) : 0;
   }

@@ -63,6 +63,11 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
               alt={card.title}
               fill
               className="object-cover rounded-lg shadow-sm"
+              onError={(e) => {
+                console.error('Image load error:', card.front_image_url);
+                // 에러 시 기본 이미지로 대체하거나 숨김 처리
+                e.currentTarget.style.display = 'none';
+              }}
               sizes="(max-width: 768px) 160px, 200px"
             />
           </div>

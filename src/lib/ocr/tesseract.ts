@@ -21,12 +21,13 @@ export class TesseractOCR {
         },
         langPath: 'https://tessdata.projectnaptha.com/4.0.0',
         corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@v5.0.0',
+        workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@v5.0.0/dist/worker.min.js',
       });
 
       // OCR 정확도 향상을 위한 파라미터 설정
       await this.worker.setParameters({
         tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@.-+()[]{}|\\/:;,!?\'\"#$%&*<>=~`^_',
-        tessedit_pageseg_mode: '6', // Uniform block of text
+        tessedit_pageseg_mode: 6, // Uniform block of text
       });
 
       this.isInitialized = true;

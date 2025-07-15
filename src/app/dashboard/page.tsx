@@ -26,15 +26,10 @@ export default function DashboardPage() {
     try {
       setIsLoading(true)
       const response = await fetch('/api/business-cards', {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: user.email,
-          name: user.name || '',
-          image: user.image || ''
-        })
+        }
       })
 
       if (!response.ok) {
@@ -43,7 +38,8 @@ export default function DashboardPage() {
 
       const data = await response.json()
       setCards(data || [])
-    } catch {
+    } catch (error) {
+      console.error('Error fetching business cards:', error)
       setError('Failed to load business cards')
     } finally {
       setIsLoading(false)

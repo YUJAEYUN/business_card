@@ -1,7 +1,7 @@
 // OpenAI Vision API 연동
 
 import OpenAI from 'openai';
-import { BusinessCardData, InteractiveZone } from './types';
+import { BusinessCardData } from './types';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -23,7 +23,7 @@ export async function analyzeBusinessCardWithOpenAI(
           content: [
             {
               type: "text",
-              text: `Analyze this business card image and extract structured information. 
+              text: `Analyze this business card image and extract structured information.
               Return a JSON object with the following structure:
               {
                 "name": "person's name",
@@ -33,21 +33,11 @@ export async function analyzeBusinessCardWithOpenAI(
                 "email": "email address",
                 "website": "website URL",
                 "address": "physical address",
-                "social": [{"platform": "platform name", "handle": "username"}],
-                "clickable_zones": [
-                  {
-                    "type": "phone|email|website|address|social",
-                    "coordinates": {"x": 0, "y": 0, "width": 100, "height": 20, "side": "front"},
-                    "data": {"value": "extracted value", "label": "display label", "action": "tel:|mailto:|https://"},
-                    "confidence": 0.95
-                  }
-                ]
+                "social": [{"platform": "platform name", "handle": "username"}]
               }
-              
-              For clickable_zones, identify rectangular areas where users might want to click.
-              Coordinates should be relative to the image dimensions.
-              Only include zones with high confidence (>0.8).
-              Make sure all extracted data is accurate and properly formatted.`
+
+              Make sure all extracted data is accurate and properly formatted.
+              Return only valid contact information that you can clearly see in the image.`
             },
             {
               type: "image_url",
@@ -127,34 +117,6 @@ function validateAndCleanBusinessCardData(data: BusinessCardData): BusinessCardD
       }));
   }
 
-  // 클릭 가능한 영역 정제
-  if (data.clickable_zones && Array.isArray(data.clickable_zones)) {
-    cleaned.clickable_zones = data.clickable_zones
-      .filter(zone => 
-        zone.type && 
-        zone.coordinates && 
-        zone.data && 
-        zone.confidence && 
-        zone.confidence > 0.8
-      )
-      .map(zone => ({
-        type: zone.type,
-        coordinates: {
-          x: Math.max(0, zone.coordinates.x),
-          y: Math.max(0, zone.coordinates.y),
-          width: Math.max(1, zone.coordinates.width),
-          height: Math.max(1, zone.coordinates.height),
-          side: zone.coordinates.side || 'front'
-        },
-        data: {
-          value: zone.data.value.trim(),
-          label: zone.data.label?.trim(),
-          action: generateAction(zone.type, zone.data.value)
-        },
-        confidence: zone.confidence
-      }));
-  }
-
   return cleaned;
 }
 
@@ -177,21 +139,6 @@ function cleanWebsiteUrl(url: string): string {
   }
   
   return cleaned;
-}
-
-function generateAction(type: string, value: string): string {
-  switch (type) {
-    case 'phone':
-      return `tel:${value.replace(/[^\d\+]/g, '')}`;
-    case 'email':
-      return `mailto:${value}`;
-    case 'website':
-      return value.startsWith('http') ? value : `https://${value}`;
-    case 'address':
-      return `https://maps.google.com/?q=${encodeURIComponent(value)}`;
-    default:
-      return value;
-  }
 }
 
 // 이미지를 Base64로 변환하는 유틸리티 함수
