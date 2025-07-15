@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async () => {
     try {
       await signIn('google', {
-        callbackUrl: '/dashboard',
+        callbackUrl: '/',
         redirect: true
       })
     } catch (error) {

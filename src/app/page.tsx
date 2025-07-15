@@ -23,14 +23,12 @@ export default function Home() {
         await video.play()
         console.log('✅ Video started playing successfully')
 
-        // Hide fallback if video plays
         const fallback = document.querySelector('.video-fallback') as HTMLElement
         if (fallback) {
           fallback.style.display = 'none'
         }
       } catch (error) {
         console.error('❌ Video autoplay failed:', error)
-        // Force show fallback background
         const fallback = document.querySelector('.video-fallback') as HTMLElement
         if (fallback) {
           fallback.style.display = 'block'
@@ -56,13 +54,11 @@ export default function Home() {
     video.addEventListener('canplay', handleCanPlay)
     video.addEventListener('error', handleError)
     video.addEventListener('loadeddata', playVideo)
-
-    // Try to play immediately if video is already loaded
+    
     if (video.readyState >= 3) {
       playVideo()
     }
 
-    // Cleanup
     return () => {
       video.removeEventListener('canplay', handleCanPlay)
       video.removeEventListener('error', handleError)
@@ -70,7 +66,6 @@ export default function Home() {
     }
   }, [])
 
-  // Simple effect to restart video when coming back to page
   useEffect(() => {
     const video = videoRef.current
     if (video && !loading) {
