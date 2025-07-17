@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import FlipCard from '@/components/BusinessCard/FlipCard'
 import ShareButtons from '@/components/Share/ShareButtons'
+import SlugInput from '@/components/SlugInput/SlugInput'
 import { Database } from '@/lib/supabase'
 
 type BusinessCard = Database['public']['Tables']['business_cards']['Row']
@@ -16,7 +17,30 @@ interface CardViewerProps {
 export default function CardViewer({ card }: CardViewerProps) {
   const [showShareOptions, setShowShareOptions] = useState(false)
   const [copySuccess, setCopySuccess] = useState(false)
-  const cardUrl = `${window.location.origin}/card/${card.id}`
+  const [showSlugEdit, setShowSlugEdit] = useState(false)
+  const [currentSlug, setCurrentSlug] = useState('')
+  const [isSlugValid, setIsSlugValid] = useState(true)
+  const [isSavingSlug, setIsSavingSlug] = useState(false)
+  const cardUrl = currentSlug ? `${window.location.origin}/${currentSlug}` : `${window.location.origin}/card/${card.id}`
+
+  // Load current slug on component mount
+  useEffect(() => {
+    const loadCurrentSlug = async () => {
+      try {
+        const response = await fetch(`/api/slugs/current/${card.id}`)
+        if (response.ok) {
+          const data = await response.json()
+          if (data.slug) {
+            setCurrentSlug(data.slug)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load current slug:', error)
+      }
+    }
+
+    loadCurrentSlug()
+  }, [card.id])
 
   const handleCopyUrl = async () => {
     try {
@@ -25,6 +49,53 @@ export default function CardViewer({ card }: CardViewerProps) {
       setTimeout(() => setCopySuccess(false), 2000)
     } catch (error) {
       console.error('Failed to copy URL:', error)
+    }
+  }
+
+  const handleSaveSlug = async () => {
+    if (!isSlugValid || isSavingSlug) return
+
+    setIsSavingSlug(true)
+    try {
+      const response = await fetch(`/api/slugs/update/${card.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ slug: currentSlug }),
+      })
+
+      if (response.ok) {
+        setShowSlugEdit(false)
+      } else {
+        console.error('Failed to save slug')
+      }
+    } catch (error) {
+      console.error('Error saving slug:', error)
+    } finally {
+      setIsSavingSlug(false)
+    }
+  }
+
+  const handleDeleteSlug = async () => {
+    if (isSavingSlug) return
+
+    setIsSavingSlug(true)
+    try {
+      const response = await fetch(`/api/slugs/update/${card.id}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        setCurrentSlug('')
+        setShowSlugEdit(false)
+      } else {
+        console.error('Failed to delete slug')
+      }
+    } catch (error) {
+      console.error('Error deleting slug:', error)
+    } finally {
+      setIsSavingSlug(false)
     }
   }
 
@@ -89,6 +160,16 @@ export default function CardViewer({ card }: CardViewerProps) {
           </button>
 
           <button
+            onClick={() => setShowSlugEdit(!showSlugEdit)}
+            className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Custom URL
+          </button>
+
+          <button
             onClick={() => setShowShareOptions(!showShareOptions)}
             className="flex items-center gap-2 bg-gray-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors"
           >
@@ -108,6 +189,73 @@ export default function CardViewer({ card }: CardViewerProps) {
             Create Your Own
           </Link>
         </motion.div>
+
+        {/* Slug Edit Section */}
+        {showSlugEdit && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-6 flex justify-center"
+          >
+            <div className="bg-white rounded-lg shadow-md p-6 max-w-md w-full">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Custom URL Settings
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Current URL
+                  </label>
+                  <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                    {cardUrl}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Custom URL
+                  </label>
+                  <SlugInput
+                    value={currentSlug}
+                    onChange={setCurrentSlug}
+                    onValidationChange={setIsSlugValid}
+                    placeholder="your-custom-url"
+                    autoGenerate={false}
+                    cardTitle={card.title}
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleSaveSlug}
+                    disabled={!isSlugValid || isSavingSlug}
+                    className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {isSavingSlug ? 'Saving...' : 'Save'}
+                  </button>
+                  
+                  {currentSlug && (
+                    <button
+                      onClick={handleDeleteSlug}
+                      disabled={isSavingSlug}
+                      className="px-4 py-2 border border-red-300 text-red-600 rounded-lg font-medium hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Remove
+                    </button>
+                  )}
+                  
+                  <button
+                    onClick={() => setShowSlugEdit(false)}
+                    className="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Share Options */}
         {showShareOptions && (

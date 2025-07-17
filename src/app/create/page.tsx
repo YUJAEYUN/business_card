@@ -12,6 +12,7 @@ import LanguageSwitcher from '@/components/LanguageSwitcher'
 import Link from 'next/link'
 import DualOCRProcessor from '@/components/OCR/DualOCRProcessor'
 import { BusinessCardData } from '@/lib/ocr/types'
+import SlugInput from '@/components/SlugInput/SlugInput'
 
 interface CardData {
   title: string
@@ -26,6 +27,7 @@ interface CardData {
   }
   ocrData?: BusinessCardData
   showOCR?: boolean
+  customSlug?: string
 }
 
 export default function CreatePage() {
@@ -40,6 +42,7 @@ export default function CreatePage() {
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [tempCardId, setTempCardId] = useState<string | null>(null)
+  const [isSlugValid, setIsSlugValid] = useState(true)
 
   const { t } = useTranslation()
 
@@ -117,6 +120,11 @@ export default function CreatePage() {
       return
     }
 
+    if (!isSlugValid) {
+      setError('Please fix the custom URL before creating the card')
+      return
+    }
+
     setIsCreating(true)
     setError(null)
 
@@ -152,7 +160,8 @@ export default function CreatePage() {
         frontImageUrl: frontImageResult.url,
         backImageUrl: backImageUrl,
         cardType: cardData.cardType,
-        ocrData: cardData.ocrData
+        ocrData: cardData.ocrData,
+        customSlug: cardData.customSlug
       };
       console.log('Creating business card with data:', requestData);
 
@@ -273,6 +282,21 @@ export default function CreatePage() {
                     {t('vertical')}
                   </label>
                 </div>
+              </div>
+
+              {/* Custom Slug Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Custom URL (Optional)
+                </label>
+                <SlugInput
+                  value={cardData.customSlug || ''}
+                  onChange={(slug) => setCardData(prev => ({ ...prev, customSlug: slug }))}
+                  onValidationChange={setIsSlugValid}
+                  placeholder="your-custom-url"
+                  autoGenerate={true}
+                  cardTitle={cardData.title}
+                />
               </div>
 
               {/* Front Image Upload */}

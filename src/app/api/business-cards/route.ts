@@ -78,10 +78,11 @@ export async function POST(request: NextRequest) {
       frontImageUrl,
       backImageUrl,
       cardType,
-      ocrData
+      ocrData,
+      customSlug
     } = body;
 
-    console.log('Extracted fields:', { title, frontImageUrl, backImageUrl, cardType, ocrData });
+    console.log('Extracted fields:', { title, frontImageUrl, backImageUrl, cardType, ocrData, customSlug });
 
     if (!title || !frontImageUrl) {
       console.log('Validation failed - missing required fields:', { title: !!title, frontImageUrl: !!frontImageUrl });
@@ -146,6 +147,23 @@ export async function POST(request: NextRequest) {
         { error: 'Failed to create business card' },
         { status: 500 }
       );
+    }
+
+    // Save custom slug if provided
+    if (customSlug && customSlug.trim()) {
+      const { error: slugError } = await supabaseAdmin
+        .from('custom_slugs')
+        .insert({
+          business_card_id: cardId,
+          slug: customSlug.trim().toLowerCase(),
+          is_active: true
+        });
+
+      if (slugError) {
+        console.error('Slug creation error:', slugError);
+        // Don't fail the card creation if slug fails, just warn
+        console.warn('Failed to save custom slug, but card was created successfully');
+      }
     }
 
     if (ocrData) {

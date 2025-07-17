@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import FlipCard from '@/components/BusinessCard/FlipCard'
 import { Database } from '@/lib/supabase'
 import { BusinessCardData } from '@/lib/ocr/types'
+import { useAuth } from '@/contexts/AuthContext'
 
 type BusinessCard = Database['public']['Tables']['business_cards']['Row']
 
@@ -14,9 +15,78 @@ interface SharedCardViewerProps {
 }
 
 export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProps) {
-  const [showHelp, setShowHelp] = useState(false);
+  const [showHelp, setShowHelp] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error' | 'already_saved'>('idle')
+  const [saveMessage, setSaveMessage] = useState('')
+  const { user } = useAuth()
 
+  // 자동 저장 기능
   useEffect(() => {
+    const autoSaveToWallet = async () => {
+      // 사용자가 로그인되어 있지 않으면 자동 저장 안함
+      if (!user) {
+        return
+      }
+
+      setSaveStatus('saving')
+
+      try {
+        // 지갑에 자동 저장
+        const response = await fetch('/api/wallet', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            business_card_id: card.id,
+            nickname: card.title,
+            source: 'auto_save' // 자동 저장임을 표시
+          }),
+        })
+
+        const result = await response.json()
+
+        if (response.ok) {
+          setSaveStatus('success')
+          setSaveMessage('명함이 자동으로 지갑에 저장되었습니다!')
+          
+          // 3초 후 메시지 자동 숨김
+          setTimeout(() => {
+            setSaveStatus('idle')
+          }, 3000)
+        } else if (response.status === 400 && result.error === 'Cannot save your own business card to wallet') {
+          // 자신의 명함인 경우 - 조용히 처리
+          setSaveStatus('idle')
+        } else if (response.status === 409 && result.error === 'Business card already saved in wallet') {
+          // 이미 저장된 명함인 경우
+          setSaveStatus('already_saved')
+          setSaveMessage('이미 지갑에 저장된 명함입니다.')
+          
+          // 3초 후 메시지 자동 숨김
+          setTimeout(() => {
+            setSaveStatus('idle')
+          }, 3000)
+        } else {
+          setSaveStatus('error')
+          setSaveMessage('명함 저장 중 오류가 발생했습니다.')
+          
+          // 5초 후 메시지 자동 숨김
+          setTimeout(() => {
+            setSaveStatus('idle')
+          }, 5000)
+        }
+      } catch (error) {
+        console.warn('Failed to auto-save to wallet:', error)
+        setSaveStatus('error')
+        setSaveMessage('명함 저장 중 오류가 발생했습니다.')
+        
+        // 5초 후 메시지 자동 숨김
+        setTimeout(() => {
+          setSaveStatus('idle')
+        }, 5000)
+      }
+    }
+
     const trackView = async () => {
       try {
         await fetch('/api/analytics/track', {
@@ -39,7 +109,8 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
     }
 
     trackView()
-  }, [card.id, ocrData])
+    autoSaveToWallet()
+  }, [card.id, ocrData, user])
 
   const handleContactClick = async (type: string, value: string) => {
     try {
@@ -83,6 +154,40 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
         >
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{card.title}</h1>
           <p className="text-gray-600">Digital Business Card</p>
+
+          {/* Auto Save Status */}
+          {user && saveStatus !== 'idle' && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="mt-4"
+            >
+              {saveStatus === 'saving' && (
+                <div className="inline-flex items-center px-4 py-2 bg-yellow-100 border border-yellow-300 rounded-lg text-yellow-800 text-sm">
+                  <div className="animate-spin mr-2 h-4 w-4 border-2 border-yellow-600 border-t-transparent rounded-full"></div>
+                  명함을 지갑에 저장 중...
+                </div>
+              )}
+              {saveStatus === 'success' && (
+                <div className="inline-flex items-center px-4 py-2 bg-green-100 border border-green-300 rounded-lg text-green-800 text-sm">
+                  <span className="mr-2">✅</span>
+                  {saveMessage}
+                </div>
+              )}
+              {saveStatus === 'already_saved' && (
+                <div className="inline-flex items-center px-4 py-2 bg-blue-100 border border-blue-300 rounded-lg text-blue-800 text-sm">
+                  <span className="mr-2">💼</span>
+                  {saveMessage}
+                </div>
+              )}
+              {saveStatus === 'error' && (
+                <div className="inline-flex items-center px-4 py-2 bg-red-100 border border-red-300 rounded-lg text-red-800 text-sm">
+                  <span className="mr-2">❌</span>
+                  {saveMessage}
+                </div>
+              )}
+            </motion.div>
+          )}
 
           {/* Help Button */}
           {ocrData && (ocrData.phone || ocrData.email || ocrData.website) && (

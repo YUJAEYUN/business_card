@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase-server';
+import { createClient } from '@supabase/supabase-js';
 import slugify from 'slugify';
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 const RESERVED_SLUGS = [
   'admin', 'api', 'www', 'mail', 'ftp', 'localhost',
@@ -24,7 +29,8 @@ export async function GET(
   { params }: SlugCheckParams
 ) {
   try {
-    const slug = params.slug.toLowerCase().trim();
+    const resolvedParams = await params;
+    const slug = resolvedParams.slug.toLowerCase().trim();
     
     // 기본 검증
     const validation = validateSlug(slug);
@@ -37,8 +43,7 @@ export async function GET(
     }
 
     // 데이터베이스 중복 검증
-    const supabase = createClient();
-    const { data: existingSlug } = await supabase
+    const { data: existingSlug } = await supabaseAdmin
       .from('custom_slugs')
       .select('id, business_card_id')
       .eq('slug', slug)
@@ -166,11 +171,10 @@ export async function POST(request: NextRequest) {
     const suggestions = generateSlugSuggestions(normalizedSlug);
 
     // 각 제안의 가용성 확인
-    const supabase = createClient();
     const availableSuggestions = [];
 
     for (const suggestion of suggestions) {
-      const { data } = await supabase
+      const { data } = await supabaseAdmin
         .from('custom_slugs')
         .select('id')
         .eq('slug', suggestion)

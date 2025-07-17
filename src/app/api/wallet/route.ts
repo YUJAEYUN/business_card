@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase-server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/auth';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 // 명함 지갑 목록 조회
 export async function GET(request: NextRequest) {
@@ -13,10 +20,9 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sortBy') || 'saved_at';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
@@ -24,10 +30,10 @@ export async function GET(request: NextRequest) {
     }
 
     // 사용자 프로필 조회
-    const { data: profile } = await supabase
+    const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('id')
-      .eq('id', user.id)
+      .eq('email', session.user.email)
       .single();
 
     if (!profile) {
@@ -38,7 +44,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 쿼리 빌더 시작
-    let query = supabase
+    let query = supabaseAdmin
       .from('business_card_wallet')
       .select(`
         *,
@@ -101,7 +107,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 전체 개수 조회 (페이지네이션용)
-    const { count: totalCount } = await supabase
+    const { count: totalCount } = await supabaseAdmin
       .from('business_card_wallet')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', profile.id);
@@ -145,10 +151,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
@@ -156,10 +161,10 @@ export async function POST(request: NextRequest) {
     }
 
     // 사용자 프로필 조회
-    const { data: profile } = await supabase
+    const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('id')
-      .eq('id', user.id)
+      .eq('email', session.user.email)
       .single();
 
     if (!profile) {
@@ -170,7 +175,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 명함 존재 확인
-    const { data: card, error: cardError } = await supabase
+    const { data: card, error: cardError } = await supabaseAdmin
       .from('business_cards')
       .select('id, user_id, title')
       .eq('id', business_card_id)
@@ -192,7 +197,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 이미 저장되어 있는지 확인
-    const { data: existing } = await supabase
+    const { data: existing } = await supabaseAdmin
       .from('business_card_wallet')
       .select('id')
       .eq('user_id', profile.id)
@@ -207,7 +212,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 지갑에 저장
-    const { data: walletItem, error: saveError } = await supabase
+    const { data: walletItem, error: saveError } = await supabaseAdmin
       .from('business_card_wallet')
       .insert({
         user_id: profile.id,
@@ -243,7 +248,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 분석 데이터 기록
-    await supabase
+    await supabaseAdmin
       .from('business_card_analytics')
       .insert({
         business_card_id,
@@ -284,10 +289,9 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
@@ -295,10 +299,10 @@ export async function PUT(request: NextRequest) {
     }
 
     // 사용자 프로필 조회
-    const { data: profile } = await supabase
+    const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('id')
-      .eq('id', user.id)
+      .eq('email', session.user.email)
       .single();
 
     if (!profile) {
@@ -316,7 +320,7 @@ export async function PUT(request: NextRequest) {
     if (notes !== undefined) updateData.notes = notes;
 
     // 지갑 아이템 업데이트
-    const { data: updatedItem, error } = await supabase
+    const { data: updatedItem, error } = await supabaseAdmin
       .from('business_card_wallet')
       .update(updateData)
       .eq('id', wallet_item_id)
@@ -380,10 +384,9 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
@@ -391,10 +394,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     // 사용자 프로필 조회
-    const { data: profile } = await supabase
+    const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('id')
-      .eq('id', user.id)
+      .eq('email', session.user.email)
       .single();
 
     if (!profile) {
@@ -405,7 +408,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // 지갑 아이템 삭제
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('business_card_wallet')
       .delete()
       .eq('id', walletItemId)
