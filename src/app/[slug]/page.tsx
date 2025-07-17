@@ -1,11 +1,54 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import SharedCardViewer from '@/components/CardViewer/SharedCardViewer'
+import { BusinessCardData } from '@/lib/ocr/types'
 
 interface CustomSlugPageProps {
   params: {
     slug: string
   }
+}
+
+async function getOCRData(cardId: string): Promise<BusinessCardData | null> {
+  const supabase = await createClient()
+
+  const { data: zones, error } = await supabase
+    .from('interactive_zones')
+    .select('*')
+    .eq('business_card_id', cardId)
+    .eq('is_active', true)
+
+  if (error) {
+    console.error('Failed to fetch OCR data:', error)
+    return null
+  }
+
+  if (!zones || zones.length === 0) {
+    return null
+  }
+
+  const ocrData: BusinessCardData = {
+    name: '',
+    title: '',
+    company: '',
+    phone: '',
+    email: '',
+    website: '',
+    address: ''
+  }
+
+  zones.forEach(zone => {
+    const zoneData = zone.zone_data as any
+    if (zone.zone_type === 'phone' && zoneData.value) {
+      ocrData.phone = zoneData.value
+    } else if (zone.zone_type === 'email' && zoneData.value) {
+      ocrData.email = zoneData.value
+    } else if (zone.zone_type === 'website' && zoneData.value) {
+      ocrData.website = zoneData.value
+    }
+  })
+
+  return ocrData
 }
 
 export default async function CustomSlugPage({ params }: CustomSlugPageProps) {
@@ -33,7 +76,10 @@ export default async function CustomSlugPage({ params }: CustomSlugPageProps) {
     notFound()
   }
 
-  return <SharedCardViewer card={cardData} />
+  // OCR 데이터 로드
+  const ocrData = await getOCRData(slugData.business_card_id)
+
+  return <SharedCardViewer card={cardData} ocrData={ocrData || undefined} />
 }
 
 export async function generateMetadata({ params }: CustomSlugPageProps) {

@@ -60,6 +60,13 @@ export async function GET(request: NextRequest) {
           profiles (
             full_name,
             email
+          ),
+          business_card_ocr_data (
+            id,
+            extracted_text,
+            confidence_score,
+            language_detected,
+            raw_data
           )
         )
       `)
@@ -135,13 +142,14 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
-      business_card_id, 
-      nickname, 
-      tags = [], 
-      is_favorite = false, 
+    const {
+      business_card_id,
+      nickname,
+      tags = [],
+      is_favorite = false,
       notes = '',
-      source = 'manual'
+      source = 'manual',
+      share_url = ''
     } = body;
 
     if (!business_card_id) {
@@ -161,7 +169,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 사용자 프로필 조회
-    const { data: profile } = await supabaseAdmin
+    let { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('id')
       .eq('email', session.user.email)
@@ -230,6 +238,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // notes에 share_url 정보 포함
+    const finalNotes = share_url ?
+      (notes ? `${notes}\n\nShare URL: ${share_url}` : `Share URL: ${share_url}`) :
+      notes
+
     // 지갑에 저장
     const { data: walletItem, error: saveError } = await supabaseAdmin
       .from('business_card_wallet')
@@ -239,7 +252,7 @@ export async function POST(request: NextRequest) {
         nickname: nickname || card.title,
         tags: Array.isArray(tags) ? tags : [],
         is_favorite,
-        notes
+        notes: finalNotes
       })
       .select(`
         *,
@@ -393,10 +406,10 @@ export async function PUT(request: NextRequest) {
 // 지갑에서 명함 제거
 export async function DELETE(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const walletItemId = searchParams.get('id');
+    const body = await request.json();
+    const { wallet_item_id } = body;
 
-    if (!walletItemId) {
+    if (!wallet_item_id) {
       return NextResponse.json(
         { error: 'Wallet item ID is required' },
         { status: 400 }
@@ -430,7 +443,7 @@ export async function DELETE(request: NextRequest) {
     const { error } = await supabaseAdmin
       .from('business_card_wallet')
       .delete()
-      .eq('id', walletItemId)
+      .eq('id', wallet_item_id)
       .eq('user_id', profile.id);
 
     if (error) {

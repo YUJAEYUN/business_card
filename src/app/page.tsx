@@ -95,7 +95,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-16 md:pb-0">
       <Header />
 
       {/* Hero Section with Video Background */}

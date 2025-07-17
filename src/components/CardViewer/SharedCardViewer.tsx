@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 import FlipCard from '@/components/BusinessCard/FlipCard'
 import Header from '@/components/layout/Header'
 import { Database } from '@/lib/supabase'
@@ -20,6 +21,7 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error' | 'already_saved'>('idle')
   const [saveMessage, setSaveMessage] = useState('')
   const { user } = useAuth()
+  const pathname = usePathname()
 
   // 자동 저장 기능
   useEffect(() => {
@@ -32,6 +34,14 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
       setSaveStatus('saving')
 
       try {
+        // 현재 URL이 슬러그 URL인지 확인
+        const isSlugUrl = !pathname.startsWith('/card/')
+        const shareUrl = isSlugUrl ?
+          `${window.location.origin}${pathname}` :
+          card.custom_slug ?
+            `${window.location.origin}/${card.custom_slug}` :
+            `${window.location.origin}/card/${card.id}`
+
         // 지갑에 자동 저장
         const response = await fetch('/api/wallet', {
           method: 'POST',
@@ -41,7 +51,8 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
           body: JSON.stringify({
             business_card_id: card.id,
             nickname: card.title,
-            source: 'auto_save' // 자동 저장임을 표시
+            source: 'auto_save', // 자동 저장임을 표시
+            share_url: shareUrl // 슬러그 URL 또는 적절한 공유 URL 저장
           }),
         })
 
@@ -145,17 +156,18 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pb-16 md:pb-0">
       <Header />
-      <div className="container mx-auto px-4 py-8 pt-24 flex items-center justify-center min-h-screen">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{card.title}</h1>
-          <p className="text-gray-600">Digital Business Card</p>
+      <div className="container mx-auto px-4 py-8 pt-24">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-8"
+          >
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{card.title}</h1>
+            <p className="text-gray-600">Digital Business Card</p>
 
           {/* Auto Save Status */}
           {user && saveStatus !== 'idle' && (
@@ -384,6 +396,7 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
             Powered by Digital Business Cards
           </p>
         </motion.div>
+        </div>
       </div>
     </div>
   )

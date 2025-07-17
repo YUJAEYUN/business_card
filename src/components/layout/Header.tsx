@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useAuth } from '@/contexts/AuthContext'
@@ -11,6 +11,7 @@ export default function Header() {
   const { t, locale, changeLocale } = useTranslation()
   const { user, signOut } = useAuth()
   const router = useRouter()
+  const pathname = usePathname()
   const [showLanguageSheet, setShowLanguageSheet] = useState(false)
   const [showAccountMenu, setShowAccountMenu] = useState(false)
   const accountMenuRef = useRef<HTMLDivElement>(null)
@@ -68,40 +69,52 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* 로고 */}
             <button
               onClick={handleLogoClick}
-              className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+              className="flex items-center space-x-3 hover:opacity-80 transition-all duration-200 active:scale-95"
             >
               <Image
                 src="/logo.png"
                 alt="Logo"
-                width={40}
-                height={40}
-                className="w-10 h-10"
+                width={32}
+                height={32}
+                className="w-8 h-8"
               />
-              <span className="text-xl font-bold text-gray-900 hidden sm:block">
+              <span className="text-lg font-semibold text-gray-900 hidden sm:block">
                 Business Card
               </span>
             </button>
+
+            {/* 페이지 제목 (로그인된 사용자에게만 표시) */}
+            {user && (
+              <div className="hidden md:block">
+                <h1 className="text-lg font-semibold text-gray-900">
+                  {pathname === '/dashboard' && t('dashboard')}
+                  {pathname === '/wallet' && t('wallet')}
+                  {pathname === '/create' && t('createCard')}
+                  {pathname === '/' && 'Business Card'}
+                </h1>
+              </div>
+            )}
 
             {/* 우측 메뉴 */}
             <div className="flex items-center space-x-3">
               {/* 번역 버튼 */}
               <button
                 onClick={() => setShowLanguageSheet(true)}
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                className="flex items-center space-x-2 px-3 py-2 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all duration-200 active:scale-95 border border-gray-200"
               >
-                <span className="text-lg">
+                <span className="text-base">
                   {languages.find(lang => lang.code === locale)?.flag}
                 </span>
                 <span className="text-sm font-medium text-gray-700 hidden sm:block">
                   {languages.find(lang => lang.code === locale)?.name}
                 </span>
-                <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
@@ -111,15 +124,15 @@ export default function Header() {
                 <div ref={accountMenuRef} className="relative">
                   <button
                     onClick={() => setShowAccountMenu(!showAccountMenu)}
-                    className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                    className="flex items-center space-x-2 px-3 py-2 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all duration-200 active:scale-95 border border-gray-200"
                   >
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                     <span className="text-sm font-medium text-gray-700 hidden sm:block">
                       {t('accountManagement')}
                     </span>
-                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
@@ -128,21 +141,22 @@ export default function Header() {
                   <AnimatePresence>
                     {showAccountMenu && (
                       <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        className="absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden"
                       >
-                        <div className="py-2">
+                        <div className="py-1">
                           <button
                             onClick={handleSignOut}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                            className="w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200 active:bg-gray-100"
                           >
                             {t('signOut')}
                           </button>
+                          <div className="border-t border-gray-100"></div>
                           <button
                             onClick={handleDeleteAccount}
-                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                            className="w-full text-left px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-all duration-200 active:bg-red-100"
                           >
                             {t('deleteAccount')}
                           </button>
@@ -155,6 +169,8 @@ export default function Header() {
             </div>
           </div>
         </div>
+
+
       </header>
 
       {/* 언어 선택 바텀 시트 */}
