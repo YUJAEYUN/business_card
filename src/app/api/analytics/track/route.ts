@@ -27,7 +27,6 @@ export async function POST(request: NextRequest) {
     const userAgent = request.headers.get('user-agent') || 'unknown';
     const referrer = request.headers.get('referer') || null;
 
-    // 국가/도시 정보는 나중에 geoip-lite 등으로 추가 가능
     let country = null;
     let city = null;
 
@@ -44,7 +43,6 @@ export async function POST(request: NextRequest) {
       // 지역 감지 실패는 무시
     }
 
-    // 분석 데이터 저장
     const { error: analyticsError } = await supabaseAdmin
       .from('business_card_analytics')
       .insert({
@@ -66,9 +64,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 특정 이벤트에 대한 추가 처리
     if (eventType === 'view') {
-      // 조회수 증가 - 현재 값을 가져와서 +1
       const { data: currentCard } = await supabaseAdmin
         .from('business_cards')
         .select('view_count')
@@ -82,9 +78,7 @@ export async function POST(request: NextRequest) {
         .update({ view_count: newViewCount })
         .eq('id', businessCardId);
     } else if (eventType === 'zone_click') {
-      // 클릭된 존의 클릭 수 증가
       if (eventData?.zoneId) {
-        // 클릭 수 증가 - 현재 값을 가져와서 +1
         const { data: currentZone } = await supabaseAdmin
           .from('interactive_zones')
           .select('click_count')
@@ -131,7 +125,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 기본 쿼리 구성
     let query = supabaseAdmin
       .from('business_card_analytics')
       .select('*')
@@ -139,12 +132,10 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false })
       .limit(limit);
 
-    // 이벤트 타입 필터
     if (eventType) {
       query = query.eq('event_type', eventType);
     }
 
-    // 날짜 범위 필터
     if (startDate) {
       query = query.gte('created_at', startDate);
     }

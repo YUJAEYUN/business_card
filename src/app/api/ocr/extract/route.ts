@@ -12,7 +12,6 @@ const supabaseAdmin = createClient(
 
 export async function POST(request: NextRequest) {
   try {
-    // OCR 기능이 활성화되어 있는지 확인
     if (!isOCREnabled()) {
       return NextResponse.json(
         { error: 'OCR feature is not enabled' },
@@ -32,7 +31,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // NextAuth 세션 확인
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
@@ -42,7 +40,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 사용자 프로필 조회
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
       .select('id')
@@ -56,9 +53,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // OCR 처리는 데이터베이스에 임시 레코드를 생성하지 않고 순수하게 이미지 처리만 수행
-
-    // QR 코드 감지 시도
     let qrCodeUrl = null;
     try {
       if (imageFile) {
@@ -74,7 +68,6 @@ export async function POST(request: NextRequest) {
       console.warn('QR code detection failed:', qrError);
     }
 
-    // OCR 처리 실행
     const ocrResult = await processBusinessCardOCR(
       imageFile,
       imageUrl,
@@ -86,14 +79,9 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    // QR 코드 URL을 OCR 결과에 추가
     if (qrCodeUrl) {
       ocrResult.finalResult.qr_code_url = qrCodeUrl;
     }
-
-    // OCR 처리 결과를 바로 반환 (데이터베이스에 저장하지 않음)
-
-
 
     return NextResponse.json({
       success: true,

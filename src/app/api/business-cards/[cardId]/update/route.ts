@@ -20,8 +20,6 @@ export async function PUT(
 ) {
   try {
     const resolvedParams = await params;
-    
-    // Check authentication
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -30,7 +28,6 @@ export async function PUT(
       );
     }
 
-    // Get user profile
     const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('id')
@@ -44,7 +41,6 @@ export async function PUT(
       );
     }
 
-    // Verify card ownership
     const { data: card } = await supabaseAdmin
       .from('business_cards')
       .select('*')
@@ -69,7 +65,6 @@ export async function PUT(
       extractedData
     } = body;
 
-    // Validate required fields
     if (!frontImageUrl) {
       return NextResponse.json(
         { error: 'Front image URL is required' },
@@ -77,7 +72,6 @@ export async function PUT(
       );
     }
 
-    // Create new version using the database function
     const { data: versionResult, error: versionError } = await supabaseAdmin
       .rpc('create_business_card_version', {
         card_id: resolvedParams.cardId,
@@ -95,7 +89,6 @@ export async function PUT(
       );
     }
 
-    // Update title if provided
     if (title && title !== card.title) {
       const { error: titleError } = await supabaseAdmin
         .from('business_cards')
@@ -107,7 +100,6 @@ export async function PUT(
       }
     }
 
-    // Update extracted data if provided
     if (extractedData) {
       const { error: extractedDataError } = await supabaseAdmin
         .from('business_card_ocr_data')
@@ -127,7 +119,6 @@ export async function PUT(
       }
     }
 
-    // Get updated card data
     const { data: updatedCard } = await supabaseAdmin
       .from('business_cards')
       .select('*')
@@ -158,7 +149,6 @@ export async function GET(
   try {
     const resolvedParams = await params;
     
-    // Check authentication
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -166,8 +156,6 @@ export async function GET(
         { status: 401 }
       );
     }
-
-    // Get user profile
     const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('id')
@@ -181,7 +169,6 @@ export async function GET(
       );
     }
 
-    // Verify card ownership
     const { data: card } = await supabaseAdmin
       .from('business_cards')
       .select('id, user_id')
@@ -196,7 +183,6 @@ export async function GET(
       );
     }
 
-    // Get all versions
     const { data: versions, error } = await supabaseAdmin
       .from('business_card_versions')
       .select('*')

@@ -11,7 +11,6 @@ const supabaseAdmin = createClient(
 // 명함 목록 조회
 export async function GET(request: NextRequest) {
   try {
-    // NextAuth 세션 확인
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
@@ -21,7 +20,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 사용자 프로필 조회
     const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('id')
@@ -29,7 +27,6 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (!profile) {
-      // 프로필이 없으면 자동 생성
       const userId = crypto.randomUUID();
 
       const { error: createError } = await supabaseAdmin
@@ -50,12 +47,9 @@ export async function GET(request: NextRequest) {
           { status: 500 }
         );
       }
-
-      // 새로 생성된 프로필로 빈 명함 목록 반환
       return NextResponse.json([], { status: 200 });
     }
 
-    // 명함 목록 조회
     const { data: cards, error } = await supabaseAdmin
       .from('business_cards')
       .select('*')
@@ -83,7 +77,6 @@ export async function GET(request: NextRequest) {
 // 명함 생성
 export async function POST(request: NextRequest) {
   try {
-    // NextAuth 세션 확인
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
@@ -115,7 +108,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 사용자 프로필 조회 또는 생성
     let { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('id')
@@ -123,7 +115,6 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (!profile) {
-      // 프로필이 없으면 생성
       const userId = crypto.randomUUID();
 
       const { data: newProfile, error: createError } = await supabaseAdmin
@@ -148,7 +139,6 @@ export async function POST(request: NextRequest) {
       profile = newProfile;
     }
 
-    // 명함 생성
     const cardId = crypto.randomUUID();
 
     const { data: card, error: cardError } = await supabaseAdmin
@@ -172,7 +162,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Save custom slug if provided
     if (customSlug && customSlug.trim()) {
       const { error: slugError } = await supabaseAdmin
         .from('custom_slugs')

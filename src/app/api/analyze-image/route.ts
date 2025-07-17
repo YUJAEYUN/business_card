@@ -5,7 +5,6 @@ import { analyzeBusinessCardWithOpenAI } from '@/lib/ocr/openai-vision';
 
 export async function POST(request: NextRequest) {
   try {
-    // 인증 확인
     const session = await getServerSession(authOptions);
     
     if (!session?.user?.email) {
@@ -25,7 +24,7 @@ export async function POST(request: NextRequest) {
       );
     }
     const analysisResult = await analyzeBusinessCardWithOpenAI(imageUrl);
-    
+
     return NextResponse.json(analysisResult);
 
   } catch (error) {

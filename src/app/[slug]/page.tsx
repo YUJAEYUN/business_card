@@ -12,7 +12,6 @@ export default async function CustomSlugPage({ params }: CustomSlugPageProps) {
   const resolvedParams = await params;
   const supabase = await createClient()
 
-  // 슬러그로 명함 ID 찾기
   const { data: slugData, error: slugError } = await supabase
     .from('custom_slugs')
     .select('business_card_id')
@@ -24,7 +23,6 @@ export default async function CustomSlugPage({ params }: CustomSlugPageProps) {
     notFound()
   }
 
-  // 명함 데이터 가져오기
   const { data: cardData, error: cardError } = await supabase
     .from('business_cards')
     .select('*')

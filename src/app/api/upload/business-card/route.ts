@@ -10,7 +10,6 @@ const supabaseAdmin = createClient(
 
 export async function POST(request: NextRequest) {
   try {
-    // NextAuth 세션 확인
     const session = await getServerSession(authOptions);
     
     if (!session?.user?.email) {
@@ -33,7 +32,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 파일 검증
     if (!file.type.startsWith('image/')) {
       return NextResponse.json(
         { error: 'Only image files are allowed' },
@@ -49,21 +47,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 파일 경로 생성
     const fileExtension = file.name.split('.').pop() || 'jpg';
     const fileName = `${cardId}/${side}.${fileExtension}`;
     const filePath = `${session.user.email}/${fileName}`;
 
-    // 파일을 ArrayBuffer로 변환
     const arrayBuffer = await file.arrayBuffer();
     const fileBuffer = new Uint8Array(arrayBuffer);
-
-    // Supabase Storage에 업로드 (Service Role 사용)
     const { data, error } = await supabaseAdmin.storage
       .from('business-cards')
       .upload(filePath, fileBuffer, {
         contentType: file.type,
-        upsert: true // 기존 파일이 있으면 덮어쓰기
+        upsert: true
       });
 
     if (error) {

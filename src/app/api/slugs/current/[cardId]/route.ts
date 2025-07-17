@@ -21,7 +21,6 @@ export async function GET(
   try {
     const resolvedParams = await params;
 
-    // Check authentication
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -30,7 +29,6 @@ export async function GET(
       )
     }
 
-    // Get user profile
     const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('id')
@@ -44,7 +42,6 @@ export async function GET(
       )
     }
 
-    // Verify card ownership
     const { data: card } = await supabaseAdmin
       .from('business_cards')
       .select('id')
@@ -59,7 +56,6 @@ export async function GET(
       )
     }
 
-    // Get current slug
     const { data: slugData } = await supabaseAdmin
       .from('custom_slugs')
       .select('slug')

@@ -10,7 +10,6 @@ const supabaseAdmin = createClient(
 
 export async function GET(request: NextRequest) {
   try {
-    // NextAuth 세션 확인
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
@@ -20,14 +19,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 사용자 프로필 조회
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
       .select('*')
       .eq('email', session.user.email)
       .single();
 
-    // 모든 프로필 조회 (디버깅용)
     const { data: allProfiles, error: allProfilesError } = await supabaseAdmin
       .from('profiles')
       .select('*')
