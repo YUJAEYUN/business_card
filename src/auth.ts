@@ -1,5 +1,11 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -20,6 +26,44 @@ export const authOptions: NextAuthOptions = {
     error: '/auth/error',
   },
   callbacks: {
+    async signIn({ user, account, profile }) {
+      // Google OAuth 로그인 시 Supabase에 사용자 프로필 생성
+      if (account?.provider === 'google' && user.email) {
+        try {
+          // 기존 프로필 확인
+          const { data: existingProfile } = await supabaseAdmin
+            .from('profiles')
+            .select('id')
+            .eq('email', user.email)
+            .single()
+
+          // 프로필이 없으면 생성
+          if (!existingProfile) {
+            const userId = crypto.randomUUID()
+
+            const { error: createError } = await supabaseAdmin
+              .from('profiles')
+              .insert({
+                id: userId,
+                email: user.email,
+                full_name: user.name || null,
+                avatar_url: user.image || null
+              })
+
+            if (createError) {
+              console.error('Failed to create user profile:', createError)
+              // 프로필 생성 실패해도 로그인은 허용
+            } else {
+              console.log('User profile created successfully:', user.email)
+            }
+          }
+        } catch (error) {
+          console.error('Error during sign in callback:', error)
+          // 에러가 발생해도 로그인은 허용
+        }
+      }
+      return true
+    },
     async session({ session, token }) {
       // 세션에 사용자 정보 추가
       if (token?.sub) {

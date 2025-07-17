@@ -29,6 +29,29 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (!profile) {
+      // 프로필이 없으면 자동 생성
+      const userId = crypto.randomUUID();
+
+      const { error: createError } = await supabaseAdmin
+        .from('profiles')
+        .insert({
+          id: userId,
+          email: session.user.email,
+          full_name: session.user.name || null,
+          avatar_url: session.user.image || null
+        })
+        .select('id')
+        .single();
+
+      if (createError) {
+        console.error('Profile creation error:', createError);
+        return NextResponse.json(
+          { error: 'Failed to create user profile' },
+          { status: 500 }
+        );
+      }
+
+      // 새로 생성된 프로필로 빈 명함 목록 반환
       return NextResponse.json([], { status: 200 });
     }
 

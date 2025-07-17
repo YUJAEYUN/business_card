@@ -168,10 +168,29 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (!profile) {
-      return NextResponse.json(
-        { error: 'User profile not found' },
-        { status: 404 }
-      );
+      // 프로필이 없으면 자동 생성
+      const userId = crypto.randomUUID();
+
+      const { data: newProfile, error: createError } = await supabaseAdmin
+        .from('profiles')
+        .insert({
+          id: userId,
+          email: session.user.email,
+          full_name: session.user.name || null,
+          avatar_url: session.user.image || null
+        })
+        .select('id')
+        .single();
+
+      if (createError) {
+        console.error('Profile creation error:', createError);
+        return NextResponse.json(
+          { error: 'Failed to create user profile' },
+          { status: 500 }
+        );
+      }
+
+      profile = newProfile;
     }
 
     // 명함 존재 확인
