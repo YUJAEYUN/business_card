@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import LoginButton from '@/components/auth/LoginButton'
 import { useTranslation } from '@/hooks/useTranslation'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
+import Header from '@/components/layout/Header'
 import { useEffect, useRef } from 'react'
 export default function Home() {
   const { user, loading } = useAuth()
@@ -96,22 +96,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm relative z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4 md:py-6">
-            <div className="flex items-center flex-1">
-              <h1 className="text-base sm:text-lg md:text-2xl font-bold text-gray-900 truncate">{t('title')}</h1>
-            </div>
-            <div className="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
-              <LanguageSwitcher />
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       {/* Hero Section with Video Background */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
         {/* Background Video */}
         <div className="absolute inset-0 w-full h-full">
           <video

@@ -8,12 +8,12 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Database } from '@/lib/supabase'
 import BusinessCardItem from '@/components/Dashboard/BusinessCardItem'
 import { useTranslation } from '@/hooks/useTranslation'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
+import Header from '@/components/layout/Header'
 
 type BusinessCard = Database['public']['Tables']['business_cards']['Row']
 
 export default function DashboardPage() {
-  const { user, loading, signOut } = useAuth()
+  const { user, loading } = useAuth()
   const router = useRouter()
   const [cards, setCards] = useState<BusinessCard[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -76,14 +76,7 @@ export default function DashboardPage() {
     }
   }
 
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-      router.push('/')
-    } catch (error) {
-      console.error('Error signing out:', error)
-    }
-  }
+
 
   // Redirect if not authenticated
   if (!loading && !user) {
@@ -105,103 +98,34 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* 모바일 상단 바 */}
-          <div className="flex items-center justify-between py-3 md:hidden">
-            <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-bold text-gray-900 truncate">{t('title')}</h1>
-              <p className="text-xs text-gray-600 truncate">{t('subtitle')}</p>
-            </div>
-            <div className="flex items-center space-x-1 ml-2">
-              <div className="flex-shrink-0">
-                <LanguageSwitcher />
-              </div>
-              <button
-                onClick={() => window.location.href = '/'}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-lg transition-colors flex-shrink-0"
-                aria-label="홈으로"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-              </button>
-              <button
-                onClick={handleSignOut}
-                className="bg-red-100 hover:bg-red-200 text-red-700 p-2 rounded-lg transition-colors flex-shrink-0"
-                aria-label="로그아웃"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              </button>
-            </div>
-          </div>
+      <Header />
 
-          {/* 모바일 환영 메시지 */}
-          <div className="pb-4 md:hidden">
-            {user && (
-              <p className="text-sm font-medium text-blue-600">
-                {t('welcome')} {user.name || user.email?.split('@')[0] || 'User'}!
-              </p>
-            )}
-          </div>
-
-          {/* 모바일 액션 버튼 */}
-          <div className="pb-4 md:hidden">
-            <Link
-              href="/create"
-              className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors text-center flex items-center justify-center space-x-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              <span>{t('createNewCard')}</span>
-            </Link>
-          </div>
-
-          {/* 데스크톱 레이아웃 */}
-          <div className="hidden md:flex md:justify-between md:items-center py-6">
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+        {/* 페이지 헤더 */}
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
-              <p className="text-base text-gray-600">{t('subtitle')}</p>
+              <p className="text-gray-600 mt-1">{t('subtitle')}</p>
               {user && (
-                <p className="text-lg font-medium text-blue-600 mt-2">
+                <p className="text-blue-600 font-medium mt-2">
                   {t('welcome')} {user.name || user.email?.split('@')[0] || 'User'}!
                 </p>
               )}
             </div>
-            <div className="flex items-center space-x-3">
-              <LanguageSwitcher />
-              <button
-                onClick={() => window.location.href = '/'}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg transition-colors flex items-center space-x-2 font-medium"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                <span>홈</span>
-              </button>
+            <div className="mt-4 md:mt-0">
               <Link
                 href="/create"
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors text-center flex items-center justify-center space-x-2"
               >
-                {t('createNewCard')}
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                <span>{t('createNewCard')}</span>
               </Link>
-              <button
-                onClick={handleSignOut}
-                className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-2 rounded-lg transition-colors font-medium"
-              >
-                {t('signOut')}
-              </button>
             </div>
           </div>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}

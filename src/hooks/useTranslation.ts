@@ -20,6 +20,19 @@ const translations = {
     close: '닫기',
     confirm: '확인',
     optional: '선택사항',
+    preview: '미리보기',
+    copied: '복사됨!',
+    copyLink: '링크 복사',
+    share: '공유',
+    customUrl: '사용자 정의 URL',
+    updateCard: '카드 업데이트',
+    versionHistory: '버전 기록',
+    update: '업데이트',
+    updating: '업데이트 중...',
+    current: '현재',
+    version: '버전',
+    versions: '버전들',
+    changes: '변경사항',
 
     // Auth
     signIn: '로그인',
@@ -57,6 +70,7 @@ const translations = {
     korean: '한국어',
     japanese: '日본語',
     english: 'English',
+    selectLanguage: '언어 선택',
 
     // Dashboard
     subtitle: '디지털 명함 관리',
@@ -84,13 +98,63 @@ const translations = {
     backImage: '뒷면 이미지',
     uploadFrontImage: '앞면 이미지 업로드',
     uploadBackImage: '뒷면 이미지 업로드',
-    preview: '미리보기',
     creating: '생성 중...',
     createSuccess: '명함이 성공적으로 생성되었습니다!',
     failedToCreateCard: '명함 생성에 실패했습니다',
     fillRequiredFields: '필수 항목을 모두 입력해주세요',
     uploadingImages: '이미지 업로드 중...',
-    savingCard: '명함 저장 중...'
+    savingCard: '명함 저장 중...',
+
+    // Update Card
+    updateBusinessCard: '명함 업데이트',
+    changeDescription: '변경 설명',
+    describeChanges: '변경 사항을 설명해주세요',
+    enterCardTitle: '명함 제목을 입력하세요',
+    processOCR: 'OCR 처리',
+    hideOCR: 'OCR 숨기기',
+    versionNumber: '버전 번호',
+    selectVersionToView: '보려는 버전을 선택하세요',
+
+    // Custom URL
+    customUrlSettings: '커스텀 URL 설정',
+    currentUrl: '현재 URL',
+    slugAlreadyTaken: '이 슬러그는 이미 사용 중입니다',
+    suggestions: '제안',
+    showMoreSuggestions: '더 많은 제안 보기',
+    hideSuggestions: '제안 숨기기',
+    saving: '저장 중...',
+    remove: '제거',
+    customUrlOptional: '커스텀 URL (선택사항)',
+    enterCustomUrl: '커스텀 URL을 입력하세요',
+    autoGenerateFromTitle: '제목에서 자동 생성',
+    customUrlHelp: '커스텀 URL은 3-100자 길이여야 하며 문자, 숫자, 점, 하이픈, 밑줄만 포함할 수 있습니다.',
+    available: '사용 가능',
+    yourCardWillBeAccessible: '카드는 다음 주소에서 접근할 수 있습니다',
+    extractedInformation: '추출된 정보',
+    directLink: '직접 링크',
+
+    // How to Use
+    howToUse: '사용 방법',
+    clickOrTap: '클릭 또는 탭',
+    tapCardToFlip: '카드를 탭하여 앞뒤로 뒤집기',
+    shareCard: '공유',
+    copyLinkOrShare: '링크를 복사하거나 소셜 미디어에서 공유',
+    createAction: '생성',
+    updateAction: '업데이트',
+    updateYourCard: '명함을 업데이트하고 관리하기',
+    copy: '복사',
+
+    // Dashboard Card Actions
+    manage: '관리',
+    copyCardLink: '링크 복사',
+    qrCode: 'QR 코드',
+    deleteBusinessCard: '명함 삭제',
+    deleteConfirmMessage: '정말로 삭제하시겠습니까?',
+    deleteConfirmDescription: '이 작업은 되돌릴 수 없습니다.',
+
+    // Account Management
+    accountManagement: '계정 관리',
+    deleteAccount: '회원 탈퇴'
   },
   ja: {
     // Common
@@ -107,6 +171,19 @@ const translations = {
     close: '閉じる',
     confirm: '確認',
     optional: '任意',
+    preview: 'プレビュー',
+    copied: 'コピーしました！',
+    copyLink: 'リンクをコピー',
+    share: '共有',
+    customUrl: 'カスタムURL',
+    updateCard: 'カードを更新',
+    versionHistory: 'バージョン履歴',
+    update: '更新',
+    updating: '更新中...',
+    current: '現在',
+    version: 'バージョン',
+    versions: 'バージョン',
+    changes: '変更',
 
     // Auth
     signIn: 'ログイン',
@@ -144,6 +221,7 @@ const translations = {
     korean: '한국어',
     japanese: '日本語',
     english: 'English',
+    selectLanguage: '言語を選択',
 
     // Dashboard
     subtitle: 'デジタル名刺を管理',
@@ -171,13 +249,63 @@ const translations = {
     backImage: '裏面画像',
     uploadFrontImage: '表面画像をアップロード',
     uploadBackImage: '裏面画像をアップロード',
-    preview: 'プレビュー',
     creating: '作成中...',
     createSuccess: '名刺が正常に作成されました！',
     failedToCreateCard: '名刺の作成に失敗しました',
     fillRequiredFields: '必須項目をすべて入力してください',
     uploadingImages: '画像アップロード中...',
-    savingCard: '名刺保存中...'
+    savingCard: '名刺保存中...',
+
+    // Update Card
+    updateBusinessCard: '名刺を更新',
+    changeDescription: '変更説明',
+    describeChanges: '変更内容を説明してください',
+    enterCardTitle: '名刺タイトルを入力してください',
+    processOCR: 'OCR処理',
+    hideOCR: 'OCRを隠す',
+    versionNumber: 'バージョン番号',
+    selectVersionToView: '表示するバージョンを選択してください',
+
+    // Custom URL
+    customUrlSettings: 'カスタムURL設定',
+    currentUrl: '現在のURL',
+    slugAlreadyTaken: 'このスラッグは既に使用されています',
+    suggestions: '提案',
+    showMoreSuggestions: 'さらに提案を表示',
+    hideSuggestions: '提案を隠す',
+    saving: '保存中...',
+    remove: '削除',
+    customUrlOptional: 'カスタムURL（オプション）',
+    enterCustomUrl: 'カスタムURLを入力してください',
+    autoGenerateFromTitle: 'タイトルから自動生成',
+    customUrlHelp: 'カスタムURLは3-100文字の長さで、文字、数字、ドット、ハイフン、アンダースコアのみを含む必要があります。',
+    available: '利用可能',
+    yourCardWillBeAccessible: 'カードは次のアドレスでアクセス可能になります',
+    extractedInformation: '抽出された情報',
+    directLink: '直接リンク',
+
+    // How to Use
+    howToUse: '使用方法',
+    clickOrTap: 'クリックまたはタップ',
+    tapCardToFlip: 'カードをタップして表裏を切り替え',
+    shareCard: '共有',
+    copyLinkOrShare: 'リンクをコピーまたはソーシャルメディアで共有',
+    createAction: '作成',
+    updateAction: '更新',
+    updateYourCard: '名刺を更新・管理する',
+    copy: 'コピー',
+
+    // Dashboard Card Actions
+    manage: '管理',
+    copyCardLink: 'リンクをコピー',
+    qrCode: 'QRコード',
+    deleteBusinessCard: '名刺を削除',
+    deleteConfirmMessage: '本当に削除しますか？',
+    deleteConfirmDescription: 'この操作は元に戻せません。',
+
+    // Account Management
+    accountManagement: 'アカウント管理',
+    deleteAccount: 'アカウント削除'
   },
   en: {
     // Common
@@ -194,6 +322,19 @@ const translations = {
     close: 'Close',
     confirm: 'Confirm',
     optional: 'Optional',
+    preview: 'Preview',
+    copied: 'Copied!',
+    copyLink: 'Copy Link',
+    share: 'Share',
+    customUrl: 'Custom URL',
+    updateCard: 'Update Card',
+    versionHistory: 'Version History',
+    update: 'Update',
+    updating: 'Updating...',
+    current: 'Current',
+    version: 'Version',
+    versions: 'Versions',
+    changes: 'Changes',
 
     // Auth
     signIn: 'Sign In',
@@ -231,6 +372,7 @@ const translations = {
     korean: '한국어',
     japanese: '日本語',
     english: 'English',
+    selectLanguage: 'Select Language',
 
     // Dashboard
     subtitle: 'Manage your digital business cards',
@@ -258,13 +400,63 @@ const translations = {
     backImage: 'Back Image',
     uploadFrontImage: 'Upload Front Image',
     uploadBackImage: 'Upload Back Image',
-    preview: 'Preview',
     creating: 'Creating...',
     createSuccess: 'Business card created successfully!',
     failedToCreateCard: 'Failed to create business card',
     fillRequiredFields: 'Please fill in all required fields',
     uploadingImages: 'Uploading images...',
-    savingCard: 'Saving card...'
+    savingCard: 'Saving card...',
+
+    // Update Card
+    updateBusinessCard: 'Update Business Card',
+    changeDescription: 'Change Description',
+    describeChanges: 'Please describe the changes',
+    enterCardTitle: 'Please enter card title',
+    processOCR: 'Process OCR',
+    hideOCR: 'Hide OCR',
+    versionNumber: 'Version Number',
+    selectVersionToView: 'Select version to view',
+
+    // Custom URL
+    customUrlSettings: 'Custom URL Settings',
+    currentUrl: 'Current URL',
+    slugAlreadyTaken: 'This slug is already taken',
+    suggestions: 'Suggestions',
+    showMoreSuggestions: 'Show more suggestions',
+    hideSuggestions: 'Hide suggestions',
+    saving: 'Saving...',
+    remove: 'Remove',
+    customUrlOptional: 'Custom URL (Optional)',
+    enterCustomUrl: 'Enter your custom URL',
+    autoGenerateFromTitle: 'Auto-generate from title',
+    customUrlHelp: 'Custom URL must be 3-100 characters long and contain only letters, numbers, dots, hyphens, and underscores.',
+    available: 'Available',
+    yourCardWillBeAccessible: 'Your card will be accessible at',
+    extractedInformation: 'Extracted Information',
+    directLink: 'Direct Link',
+
+    // How to Use
+    howToUse: 'How to Use',
+    clickOrTap: 'Click or Tap',
+    tapCardToFlip: 'Tap the card to flip between front and back',
+    shareCard: 'Share',
+    copyLinkOrShare: 'Copy the link or share on social media',
+    createAction: 'Create',
+    updateAction: 'Update',
+    updateYourCard: 'Update and manage your business card',
+    copy: 'Copy',
+
+    // Dashboard Card Actions
+    manage: 'Manage',
+    copyCardLink: 'Copy Link',
+    qrCode: 'QR Code',
+    deleteBusinessCard: 'Delete Business Card',
+    deleteConfirmMessage: 'Are you sure you want to delete this?',
+    deleteConfirmDescription: 'This action cannot be undone.',
+
+    // Account Management
+    accountManagement: 'Account Management',
+    deleteAccount: 'Delete Account'
   }
 }
 

@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import QRCodeGenerator from '@/components/QRCode/QRCodeGenerator'
 import { Database } from '@/lib/supabase'
+import { useTranslation } from '@/hooks/useTranslation'
 
 type BusinessCard = Database['public']['Tables']['business_cards']['Row']
 
@@ -15,10 +16,35 @@ interface BusinessCardItemProps {
 }
 
 export default function BusinessCardItem({ card, onDelete }: BusinessCardItemProps) {
+  const { t } = useTranslation()
   const [showQRCode, setShowQRCode] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [copySuccess, setCopySuccess] = useState(false)
-  const cardUrl = `${window.location.origin}/card/${card.id}`
+  const [currentSlug, setCurrentSlug] = useState<string | null>(null)
+
+  // 슬러그가 있으면 슬러그 URL, 없으면 기본 URL 사용
+  const cardUrl = currentSlug
+    ? `${window.location.origin}/${currentSlug}`
+    : `${window.location.origin}/card/${card.id}`
+
+  // 컴포넌트 마운트 시 슬러그 로드
+  useEffect(() => {
+    const loadCurrentSlug = async () => {
+      try {
+        const response = await fetch(`/api/slugs/current/${card.id}`)
+        if (response.ok) {
+          const data = await response.json()
+          if (data.slug) {
+            setCurrentSlug(data.slug)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load current slug:', error)
+      }
+    }
+
+    loadCurrentSlug()
+  }, [card.id])
 
   const handleCopyUrl = async () => {
     try {
@@ -111,7 +137,7 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
                 href={`/my-card/${card.id}`}
                 className="flex-1 bg-blue-600 text-white text-center py-2 px-2 md:px-3 rounded-md text-xs md:text-sm font-medium hover:bg-blue-700 transition-colors"
               >
-                Manage
+                {t('manage')}
               </Link>
               <button
                 onClick={handleCopyUrl}
@@ -126,10 +152,10 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    Copied!
+                    {t('copied')}
                   </span>
                 ) : (
-                  'Copy Link'
+                  t('copyCardLink')
                 )}
               </button>
             </div>
@@ -139,13 +165,13 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
                 onClick={() => setShowQRCode(true)}
                 className="flex-1 bg-green-600 text-white py-2 px-3 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
               >
-                QR Code
+                {t('qrCode')}
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(true)}
                 className="flex-1 bg-red-600 text-white py-2 px-3 rounded-md text-sm font-medium hover:bg-red-700 transition-colors"
               >
-                Delete
+                {t('delete')}
               </button>
             </div>
           </div>
@@ -161,7 +187,7 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
             className="bg-white rounded-lg p-6 max-w-sm w-full"
           >
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">QR Code</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('qrCode')}</h3>
               <button
                 onClick={() => setShowQRCode(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -187,22 +213,22 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-lg p-6 max-w-sm w-full"
           >
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Delete Business Card</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('deleteBusinessCard')}</h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete &quot;{card.title}&quot;? This action cannot be undone.
+              {t('deleteConfirmMessage')} &quot;{card.title}&quot;? {t('deleteConfirmDescription')}
             </p>
             <div className="flex space-x-3">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
                 className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md font-medium hover:bg-gray-400 transition-colors"
               >
-                Cancel
+                {t('cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 className="flex-1 bg-red-600 text-white py-2 px-4 rounded-md font-medium hover:bg-red-700 transition-colors"
               >
-                Delete
+                {t('delete')}
               </button>
             </div>
           </motion.div>

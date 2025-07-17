@@ -122,7 +122,7 @@ export default function ShareButtons({ url, title, description }: ShareButtonsPr
       {/* Copy URL Section */}
       <div className="mt-4 pt-4 border-t border-gray-200">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Direct Link
+          {t('directLink')}
         </label>
         <div className="flex">
           <input
@@ -135,7 +135,7 @@ export default function ShareButtons({ url, title, description }: ShareButtonsPr
             onClick={() => navigator.clipboard.writeText(url)}
             className="bg-gray-600 text-white px-4 py-2 rounded-r-md hover:bg-gray-700 transition-colors"
           >
-            Copy
+            {t('copy')}
           </button>
         </div>
       </div>

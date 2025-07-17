@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import Link from 'next/link'
 import FlipCard from '@/components/BusinessCard/FlipCard'
 import ShareButtons from '@/components/Share/ShareButtons'
 import SlugInput from '@/components/SlugInput/SlugInput'
+import UpdateCardModal from '@/components/BusinessCard/UpdateCardModal'
+import VersionHistory from '@/components/BusinessCard/VersionHistory'
+import Header from '@/components/layout/Header'
+import { useTranslation } from '@/hooks/useTranslation'
 import { Database } from '@/lib/supabase'
 
 type BusinessCard = Database['public']['Tables']['business_cards']['Row']
@@ -14,13 +17,17 @@ interface CardViewerProps {
   card: BusinessCard
 }
 
-export default function CardViewer({ card }: CardViewerProps) {
+export default function CardViewer({ card: initialCard }: CardViewerProps) {
+  const { t } = useTranslation()
+  const [card, setCard] = useState(initialCard)
   const [showShareOptions, setShowShareOptions] = useState(false)
   const [copySuccess, setCopySuccess] = useState(false)
   const [showSlugEdit, setShowSlugEdit] = useState(false)
   const [currentSlug, setCurrentSlug] = useState('')
   const [isSlugValid, setIsSlugValid] = useState(true)
   const [isSavingSlug, setIsSavingSlug] = useState(false)
+  const [showUpdateModal, setShowUpdateModal] = useState(false)
+  const [showVersionHistory, setShowVersionHistory] = useState(false)
   const cardUrl = currentSlug ? `${window.location.origin}/${currentSlug}` : `${window.location.origin}/card/${card.id}`
 
   // Load current slug on component mount
@@ -99,9 +106,14 @@ export default function CardViewer({ card }: CardViewerProps) {
     }
   }
 
+  const handleCardUpdate = (updatedCard: BusinessCard) => {
+    setCard(updatedCard)
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8">
+      <Header />
+      <div className="container mx-auto px-4 py-8 pt-24">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -147,16 +159,36 @@ export default function CardViewer({ card }: CardViewerProps) {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Copied!
+                {t('copied')}
               </>
             ) : (
               <>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
-                Copy Link
+                {t('copyLink')}
               </>
             )}
+          </button>
+
+          <button
+            onClick={() => setShowUpdateModal(true)}
+            className="flex items-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {t('updateCard')}
+          </button>
+
+          <button
+            onClick={() => setShowVersionHistory(true)}
+            className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {t('versionHistory')}
           </button>
 
           <button
@@ -166,7 +198,7 @@ export default function CardViewer({ card }: CardViewerProps) {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
-            Custom URL
+            {t('customUrl')}
           </button>
 
           <button
@@ -176,18 +208,10 @@ export default function CardViewer({ card }: CardViewerProps) {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
             </svg>
-            Share
+            {t('share')}
           </button>
 
-          <Link
-            href="/"
-            className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Create Your Own
-          </Link>
+
         </motion.div>
 
         {/* Slug Edit Section */}
@@ -199,13 +223,13 @@ export default function CardViewer({ card }: CardViewerProps) {
           >
             <div className="bg-white rounded-lg shadow-md p-6 max-w-md w-full">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Custom URL Settings
+                {t('customUrlSettings')}
               </h3>
               
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Current URL
+                    {t('currentUrl')}
                   </label>
                   <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
                     {cardUrl}
@@ -214,7 +238,7 @@ export default function CardViewer({ card }: CardViewerProps) {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Custom URL
+                    {t('customUrl')}
                   </label>
                   <SlugInput
                     value={currentSlug}
@@ -232,7 +256,7 @@ export default function CardViewer({ card }: CardViewerProps) {
                     disabled={!isSlugValid || isSavingSlug}
                     className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    {isSavingSlug ? 'Saving...' : 'Save'}
+                    {isSavingSlug ? t('saving') : t('save')}
                   </button>
                   
                   {currentSlug && (
@@ -241,7 +265,7 @@ export default function CardViewer({ card }: CardViewerProps) {
                       disabled={isSavingSlug}
                       className="px-4 py-2 border border-red-300 text-red-600 rounded-lg font-medium hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                      Remove
+                      {t('remove')}
                     </button>
                   )}
                   
@@ -249,7 +273,7 @@ export default function CardViewer({ card }: CardViewerProps) {
                     onClick={() => setShowSlugEdit(false)}
                     className="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                   >
-                    Cancel
+                    {t('cancel')}
                   </button>
                 </div>
               </div>
@@ -280,7 +304,7 @@ export default function CardViewer({ card }: CardViewerProps) {
           className="mt-12 text-center"
         >
           <div className="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">How to Use</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('howToUse')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2">
@@ -288,8 +312,8 @@ export default function CardViewer({ card }: CardViewerProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
                   </svg>
                 </div>
-                <p className="font-medium">Click or Tap</p>
-                <p>Tap the card to flip between front and back</p>
+                <p className="font-medium">{t('clickOrTap')}</p>
+                <p>{t('tapCardToFlip')}</p>
               </div>
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-2">
@@ -297,8 +321,8 @@ export default function CardViewer({ card }: CardViewerProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                   </svg>
                 </div>
-                <p className="font-medium">Share</p>
-                <p>Copy the link or share on social media</p>
+                <p className="font-medium">{t('shareCard')}</p>
+                <p>{t('copyLinkOrShare')}</p>
               </div>
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-2">
@@ -306,13 +330,28 @@ export default function CardViewer({ card }: CardViewerProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                 </div>
-                <p className="font-medium">Create</p>
-                <p>Make your own digital business card</p>
+                <p className="font-medium">{t('updateAction')}</p>
+                <p>{t('updateYourCard')}</p>
               </div>
             </div>
           </div>
         </motion.div>
       </div>
+
+      {/* Update Modal */}
+      <UpdateCardModal
+        isOpen={showUpdateModal}
+        onClose={() => setShowUpdateModal(false)}
+        card={card}
+        onUpdate={handleCardUpdate}
+      />
+
+      {/* Version History Modal */}
+      <VersionHistory
+        cardId={card.id}
+        isOpen={showVersionHistory}
+        onClose={() => setShowVersionHistory(false)}
+      />
     </div>
   )
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import FlipCard from '@/components/BusinessCard/FlipCard'
+import Header from '@/components/layout/Header'
 import { Database } from '@/lib/supabase'
 import { BusinessCardData } from '@/lib/ocr/types'
 import { useAuth } from '@/contexts/AuthContext'
@@ -144,8 +145,9 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <Header />
+      <div className="container mx-auto px-4 py-8 pt-24 flex items-center justify-center min-h-screen">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

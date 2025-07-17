@@ -26,6 +26,7 @@ export async function analyzeBusinessCardWithOpenAI(
               text: `Analyze this business card image and extract structured information.
               Return a JSON object with the following structure:
               {
+                "extracted_text": "all visible text from the business card",
                 "name": "person's name",
                 "title": "job title",
                 "company": "company name",
@@ -33,7 +34,9 @@ export async function analyzeBusinessCardWithOpenAI(
                 "email": "email address",
                 "website": "website URL",
                 "address": "physical address",
-                "social": [{"platform": "platform name", "handle": "username"}]
+                "social": [{"platform": "platform name", "handle": "username"}],
+                "language_detected": "detected language (eng/kor/jpn)",
+                "confidence_score": 0.9
               }
 
               Make sure all extracted data is accurate and properly formatted.

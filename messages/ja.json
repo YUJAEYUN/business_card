@@ -94,5 +94,22 @@
     "cardPreview": "名刺プレビュー",
     "uploadToSee": "名刺をアップロードして魔法を体験してください！",
     "footerText": "より良いネットワーキングのために❤️で作られました。"
-  }
+  },
+  "customUrlSettings": "カスタムURL設定",
+  "currentUrl": "現在のURL",
+  "customUrl": "カスタムURL",
+  "slugAlreadyTaken": "このスラッグは既に使用されています",
+  "suggestions": "提案",
+  "showMoreSuggestions": "さらに提案を表示",
+  "hideSuggestions": "提案を隠す",
+  "saving": "保存中...",
+  "remove": "削除",
+  "customUrlOptional": "カスタムURL（オプション）",
+  "enterCustomUrl": "カスタムURLを入力してください",
+  "autoGenerateFromTitle": "タイトルから自動生成",
+  "customUrlHelp": "カスタムURLは3-100文字の長さで、文字、数字、ドット、ハイフン、アンダースコアのみを含む必要があります。",
+  "available": "利用可能",
+  "yourCardWillBeAccessible": "カードは次のアドレスでアクセス可能になります",
+  "extractedInformation": "抽出された情報",
+  "directLink": "直接リンク"
 }

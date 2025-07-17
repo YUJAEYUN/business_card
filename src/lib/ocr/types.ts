@@ -19,6 +19,7 @@ export interface OCRResult {
 }
 
 export interface BusinessCardData {
+  // 개별 필드들 (UI 표시용)
   name?: string;
   title?: string;
   company?: string;
@@ -31,6 +32,11 @@ export interface BusinessCardData {
     platform: string;
     handle: string;
   }[];
+
+  // 데이터베이스 스키마와 일치하는 필드들
+  extracted_text?: string;
+  confidence_score?: number;
+  language_detected?: string;
 }
 
 export interface OCRProcessingOptions {

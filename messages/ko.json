@@ -94,5 +94,22 @@
     "cardPreview": "명함 미리보기",
     "uploadToSee": "명함을 업로드하여 마법을 경험해보세요!",
     "footerText": "더 나은 네트워킹을 위해 ❤️로 만들었습니다."
-  }
+  },
+  "customUrlSettings": "커스텀 URL 설정",
+  "currentUrl": "현재 URL",
+  "customUrl": "커스텀 URL",
+  "slugAlreadyTaken": "이 슬러그는 이미 사용 중입니다",
+  "suggestions": "제안",
+  "showMoreSuggestions": "더 많은 제안 보기",
+  "hideSuggestions": "제안 숨기기",
+  "saving": "저장 중...",
+  "remove": "제거",
+  "customUrlOptional": "커스텀 URL (선택사항)",
+  "enterCustomUrl": "커스텀 URL을 입력하세요",
+  "autoGenerateFromTitle": "제목에서 자동 생성",
+  "customUrlHelp": "커스텀 URL은 3-100자 길이여야 하며 문자, 숫자, 점, 하이픈, 밑줄만 포함할 수 있습니다.",
+  "available": "사용 가능",
+  "yourCardWillBeAccessible": "카드는 다음 주소에서 접근할 수 있습니다",
+  "extractedInformation": "추출된 정보",
+  "directLink": "직접 링크"
 }

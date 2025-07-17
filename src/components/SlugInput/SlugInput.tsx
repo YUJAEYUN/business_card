@@ -25,12 +25,13 @@ export default function SlugInput({
   value, 
   onChange, 
   onValidationChange,
-  placeholder = "Enter your custom URL",
+  placeholder,
   className = "",
   disabled = false,
   autoGenerate = false,
   cardTitle = ""
 }: SlugInputProps) {
+  const { t } = useTranslation()
   const [validation, setValidation] = useState<SlugValidationResult | null>(null)
   const [isChecking, setIsChecking] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
@@ -152,7 +153,7 @@ export default function SlugInput({
     if (validation?.available) {
       return (
         <p className="text-sm text-green-600 mt-1">
-          ✓ Available! Your card will be accessible at: {typeof window !== 'undefined' ? window.location.origin : 'https://yoursite.com'}/{value}
+          ✓ {t('available')}! {t('yourCardWillBeAccessible')}: {typeof window !== 'undefined' ? window.location.origin : 'https://yoursite.com'}/{value}
         </p>
       )
     }
@@ -160,7 +161,7 @@ export default function SlugInput({
     if (validation?.reason) {
       return (
         <p className="text-sm text-red-600 mt-1">
-          {validation.reason}
+          {validation.reason === 'This slug is already taken' ? t('slugAlreadyTaken') : validation.reason}
         </p>
       )
     }
@@ -178,7 +179,7 @@ export default function SlugInput({
               type="text"
               value={value}
               onChange={handleInputChange}
-              placeholder={placeholder}
+              placeholder={placeholder || t('enterCustomUrl')}
               disabled={disabled}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 ${
                 validation?.available === false 
@@ -202,7 +203,7 @@ export default function SlugInput({
             disabled={disabled}
             className="text-xs text-blue-600 hover:text-blue-800 mt-1 disabled:text-gray-400"
           >
-            Auto-generate from title
+            {t('autoGenerateFromTitle')}
           </button>
         )}
       </div>
@@ -223,7 +224,7 @@ export default function SlugInput({
       {/* Suggestions */}
       {!validation?.available && suggestions.length > 0 && (
         <div className="mt-2">
-          <p className="text-sm text-gray-600 mb-2">Suggestions:</p>
+          <p className="text-sm text-gray-600 mb-2">{t('suggestions')}:</p>
           <div className="flex flex-wrap gap-2">
             {suggestions.map((suggestion, index) => (
               <button
@@ -242,14 +243,14 @@ export default function SlugInput({
             onClick={() => setShowSuggestions(!showSuggestions)}
             className="text-xs text-blue-600 hover:text-blue-800 mt-1"
           >
-            {showSuggestions ? 'Hide' : 'Show more'} suggestions
+            {showSuggestions ? t('hideSuggestions') : t('showMoreSuggestions')}
           </button>
         </div>
       )}
 
       {/* Help text */}
       <p className="text-xs text-gray-500">
-        Custom URL must be 3-100 characters long and contain only letters, numbers, dots, hyphens, and underscores.
+        {t('customUrlHelp')}
       </p>
     </div>
   )

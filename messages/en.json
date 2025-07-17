@@ -94,5 +94,22 @@
     "cardPreview": "Your Card Preview",
     "uploadToSee": "Upload your business card to see the magic happen!",
     "footerText": "Made with ❤️ for better networking."
-  }
+  },
+  "customUrlSettings": "Custom URL Settings",
+  "currentUrl": "Current URL",
+  "customUrl": "Custom URL",
+  "slugAlreadyTaken": "This slug is already taken",
+  "suggestions": "Suggestions",
+  "showMoreSuggestions": "Show more suggestions",
+  "hideSuggestions": "Hide suggestions",
+  "saving": "Saving...",
+  "remove": "Remove",
+  "customUrlOptional": "Custom URL (Optional)",
+  "enterCustomUrl": "Enter your custom URL",
+  "autoGenerateFromTitle": "Auto-generate from title",
+  "customUrlHelp": "Custom URL must be 3-100 characters long and contain only letters, numbers, dots, hyphens, and underscores.",
+  "available": "Available",
+  "yourCardWillBeAccessible": "Your card will be accessible at",
+  "extractedInformation": "Extracted Information",
+  "directLink": "Direct Link"
 }
