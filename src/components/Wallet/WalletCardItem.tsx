@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -49,6 +49,35 @@ export default function WalletCardItem({ card, onDelete, onUpdate }: WalletCardI
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [isEditingNickname, setIsEditingNickname] = useState(false)
   const [editNickname, setEditNickname] = useState(card.nickname || card.business_cards.title)
+  const [categories, setCategories] = useState<any[]>([]);
+  const [assignedCategories, setAssignedCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch('/api/card-categories')
+      .then(res => res.json())
+      .then(data => setCategories(data.categories || []));
+    fetch(`/api/card-categories/map?wallet_item_id=${card.id}`)
+      .then(res => res.json())
+      .then(data => setAssignedCategories(data.categoryIds || []));
+  }, [card.id]);
+
+  const handleCategoryToggle = async (categoryId: string, checked: boolean) => {
+    if (checked) {
+      await fetch('/api/card-categories/map', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet_item_id: card.id, category_id: categoryId })
+      });
+      setAssignedCategories(prev => [...prev, categoryId]);
+    } else {
+      await fetch('/api/card-categories/map', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet_item_id: card.id, category_id: categoryId })
+      });
+      setAssignedCategories(prev => prev.filter(id => id !== categoryId));
+    }
+  };
 
   // 카드 URL 생성 (슬러그가 있으면 슬러그 URL, 없으면 기본 URL)
   const cardUrl = card.business_cards.custom_slug
@@ -64,15 +93,6 @@ export default function WalletCardItem({ card, onDelete, onUpdate }: WalletCardI
       onUpdate({ nickname: editNickname.trim() })
     }
     setIsEditingNickname(false)
-  }
-
-  const handleCopyUrl = async () => {
-    try {
-      await navigator.clipboard.writeText(cardUrl)
-      // TODO: 토스트 메시지 표시
-    } catch (error) {
-      console.error('Failed to copy URL:', error)
-    }
   }
 
   const handleDownloadVCard = () => {
@@ -141,19 +161,6 @@ export default function WalletCardItem({ card, onDelete, onUpdate }: WalletCardI
               />
             </div>
             
-            {/* Card Type Badge */}
-            <div className="absolute top-2 left-2">
-              <span className={`
-                inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-                ${card.business_cards.card_type === 'horizontal' 
-                  ? 'bg-blue-100 text-blue-800' 
-                  : 'bg-green-100 text-green-800'
-                }
-              `}>
-                {card.business_cards.card_type}
-              </span>
-            </div>
-
             {/* Double-sided indicator */}
             {card.business_cards.back_image_url && (
               <div className="absolute bottom-2 left-2">
@@ -230,6 +237,23 @@ export default function WalletCardItem({ card, onDelete, onUpdate }: WalletCardI
             </div>
           )}
 
+          {/* 카테고리 할당 UI 추가 */}
+          <div className="mb-3">
+            <div className="text-xs text-gray-500 mb-1">카테고리 할당</div>
+            <div className="flex flex-wrap gap-2">
+              {categories.map(cat => (
+                <label key={cat.id} className="flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={assignedCategories.includes(cat.id)}
+                    onChange={e => handleCategoryToggle(cat.id, e.target.checked)}
+                  />
+                  {cat.name}
+                </label>
+              ))}
+            </div>
+          </div>
+
           {/* 액션 버튼들 */}
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -239,12 +263,6 @@ export default function WalletCardItem({ card, onDelete, onUpdate }: WalletCardI
             }}
             className="flex flex-col sm:flex-row gap-2 overflow-hidden"
           >
-            <button
-              onClick={handleCopyUrl}
-              className="flex-1 bg-blue-600 text-white px-3 py-2 rounded text-xs font-medium hover:bg-blue-700 transition-colors"
-            >
-              {t('copyLink')}
-            </button>
             {hasContactInfo() && (
               <button
                 onClick={handleDownloadVCard}

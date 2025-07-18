@@ -20,12 +20,8 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
   const [showQRCode, setShowQRCode] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [copySuccess, setCopySuccess] = useState(false)
-  const [currentSlug, setCurrentSlug] = useState<string | null>(null)
-
-  // 슬러그가 있으면 슬러그 URL, 없으면 기본 URL 사용
-  const cardUrl = currentSlug
-    ? `${window.location.origin}/${currentSlug}`
-    : `${window.location.origin}/card/${card.id}`
+  // [슬러그 관련 상태, useEffect, currentSlug 등 완전 삭제]
+  const cardUrl = `${window.location.origin}/card/${card.id}`;
 
   // 컴포넌트 마운트 시 슬러그 로드
   useEffect(() => {
@@ -35,7 +31,7 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
         if (response.ok) {
           const data = await response.json()
           if (data.slug) {
-            setCurrentSlug(data.slug)
+            // setCurrentSlug(data.slug) // 슬러그 관련 상태 삭제
           }
         }
       } catch (error) {

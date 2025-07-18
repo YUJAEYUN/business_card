@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import FlipCard from '@/components/BusinessCard/FlipCard'
 import ShareButtons from '@/components/Share/ShareButtons'
-import SlugInput from '@/components/SlugInput/SlugInput'
 import UpdateCardModal from '@/components/BusinessCard/UpdateCardModal'
 import VersionHistory from '@/components/BusinessCard/VersionHistory'
 import Header from '@/components/layout/Header'
@@ -22,13 +21,9 @@ export default function CardViewer({ card: initialCard }: CardViewerProps) {
   const [card, setCard] = useState(initialCard)
   const [showShareOptions, setShowShareOptions] = useState(false)
   const [copySuccess, setCopySuccess] = useState(false)
-  const [showSlugEdit, setShowSlugEdit] = useState(false)
-  const [currentSlug, setCurrentSlug] = useState('')
-  const [isSlugValid, setIsSlugValid] = useState(true)
-  const [isSavingSlug, setIsSavingSlug] = useState(false)
   const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [showVersionHistory, setShowVersionHistory] = useState(false)
-  const cardUrl = currentSlug ? `${window.location.origin}/${currentSlug}` : `${window.location.origin}/card/${card.id}`
+  const cardUrl = `${window.location.origin}/card/${card.id}`
 
   // Load current slug on component mount
   useEffect(() => {
@@ -38,7 +33,7 @@ export default function CardViewer({ card: initialCard }: CardViewerProps) {
         if (response.ok) {
           const data = await response.json()
           if (data.slug) {
-            setCurrentSlug(data.slug)
+            // setCurrentSlug(data.slug) // This line was removed as per the edit hint
           }
         }
       } catch (error) {
@@ -56,53 +51,6 @@ export default function CardViewer({ card: initialCard }: CardViewerProps) {
       setTimeout(() => setCopySuccess(false), 2000)
     } catch (error) {
       console.error('Failed to copy URL:', error)
-    }
-  }
-
-  const handleSaveSlug = async () => {
-    if (!isSlugValid || isSavingSlug) return
-
-    setIsSavingSlug(true)
-    try {
-      const response = await fetch(`/api/slugs/update/${card.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ slug: currentSlug }),
-      })
-
-      if (response.ok) {
-        setShowSlugEdit(false)
-      } else {
-        console.error('Failed to save slug')
-      }
-    } catch (error) {
-      console.error('Error saving slug:', error)
-    } finally {
-      setIsSavingSlug(false)
-    }
-  }
-
-  const handleDeleteSlug = async () => {
-    if (isSavingSlug) return
-
-    setIsSavingSlug(true)
-    try {
-      const response = await fetch(`/api/slugs/update/${card.id}`, {
-        method: 'DELETE',
-      })
-
-      if (response.ok) {
-        setCurrentSlug('')
-        setShowSlugEdit(false)
-      } else {
-        console.error('Failed to delete slug')
-      }
-    } catch (error) {
-      console.error('Error deleting slug:', error)
-    } finally {
-      setIsSavingSlug(false)
     }
   }
 
@@ -191,7 +139,7 @@ export default function CardViewer({ card: initialCard }: CardViewerProps) {
             {t('versionHistory')}
           </button>
 
-          <button
+          {/* <button
             onClick={() => setShowSlugEdit(!showSlugEdit)}
             className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors"
           >
@@ -199,7 +147,7 @@ export default function CardViewer({ card: initialCard }: CardViewerProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
             {t('customUrl')}
-          </button>
+          </button> */}
 
           <button
             onClick={() => setShowShareOptions(!showShareOptions)}
@@ -215,7 +163,7 @@ export default function CardViewer({ card: initialCard }: CardViewerProps) {
         </motion.div>
 
         {/* Slug Edit Section */}
-        {showSlugEdit && (
+        {/* {showSlugEdit && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -279,7 +227,7 @@ export default function CardViewer({ card: initialCard }: CardViewerProps) {
               </div>
             </div>
           </motion.div>
-        )}
+        )} */}
 
         {/* Share Options */}
         {showShareOptions && (

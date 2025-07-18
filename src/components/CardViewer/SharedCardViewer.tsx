@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import FlipCard from '@/components/BusinessCard/FlipCard'
 import Header from '@/components/layout/Header'
@@ -17,7 +17,6 @@ interface SharedCardViewerProps {
 }
 
 export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProps) {
-  const [showHelp, setShowHelp] = useState(false)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error' | 'already_saved'>('idle')
   const [saveMessage, setSaveMessage] = useState('')
   const { user } = useAuth()
@@ -202,26 +201,6 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
               )}
             </motion.div>
           )}
-
-          {/* Help Button */}
-          {ocrData && (ocrData.phone || ocrData.email || ocrData.website) && (
-            <div className="flex items-center justify-center mt-4">
-              <button
-                onClick={() => setShowHelp(!showHelp)}
-                className="flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-800 transition-colors"
-              >
-                <span>❓</span>
-                <span>How to use</span>
-              </button>
-            </div>
-          )}
-
-          {/* Status Message */}
-          {ocrData && (ocrData.phone || ocrData.email || ocrData.website) && (
-            <p className="text-sm text-blue-600 mt-2">
-              📞 Click contact info below to connect!
-            </p>
-          )}
         </motion.div>
 
         {/* Card Display */}
@@ -314,76 +293,6 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
             </div>
           </motion.div>
         )}
-
-        {/* Help Modal */}
-        <AnimatePresence>
-          {showHelp && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-              onClick={() => setShowHelp(false)}
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-white rounded-lg p-6 max-w-md w-full"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    📱 How to Use This Card
-                  </h3>
-                  <button
-                    onClick={() => setShowHelp(false)}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                <div className="space-y-4 text-sm text-gray-700">
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <h4 className="font-medium text-blue-900 mb-2">📞 Contact Information</h4>
-                    <ul className="space-y-1">
-                      <li>• Click phone numbers to call directly</li>
-                      <li>• Click email addresses to send emails</li>
-                      <li>• Click websites to open in new tab</li>
-                      <li>• All contact info is extracted automatically</li>
-                    </ul>
-                  </div>
-
-                  <div className="p-3 bg-green-50 rounded-lg">
-                    <h4 className="font-medium text-green-900 mb-2">🔄 Card Flip</h4>
-                    <ul className="space-y-1">
-                      <li>• Click the card to see front and back</li>
-                      <li>• Enjoy the smooth flip animation</li>
-                      <li>• Perfect for viewing the full card design</li>
-                    </ul>
-                  </div>
-
-                  <div className="p-3 bg-yellow-50 rounded-lg">
-                    <h4 className="font-medium text-yellow-900 mb-2">💡 Tips</h4>
-                    <ul className="space-y-1">
-                      <li>• Works great on mobile devices</li>
-                      <li>• Save this page to your bookmarks</li>
-                      <li>• Share this link with others</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setShowHelp(false)}
-                  className="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Got it!
-                </button>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Footer */}
         <motion.div

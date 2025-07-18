@@ -68,6 +68,9 @@ export async function GET(request: NextRequest) {
             language_detected,
             raw_data
           )
+        ),
+        business_card_category_map (
+          category_id
         )
       `)
       .eq('user_id', profile.id);
@@ -119,8 +122,14 @@ export async function GET(request: NextRequest) {
       .select('*', { count: 'exact', head: true })
       .eq('user_id', profile.id);
 
+    // walletItems 응답 후처리: 각 명함에 categoryIds 배열 추가
+    const processedWalletItems = (walletItems || []).map(item => ({
+      ...item,
+      categoryIds: (item.business_card_category_map || []).map((m: any) => m.category_id)
+    }));
+
     return NextResponse.json({
-      items: walletItems || [],
+      items: processedWalletItems,
       pagination: {
         page,
         limit,

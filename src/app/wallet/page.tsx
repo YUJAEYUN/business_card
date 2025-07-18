@@ -62,6 +62,21 @@ export default function WalletPage() {
     sortOrder: 'desc'
   })
   const { t } = useTranslation()
+  const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  // [useState, allTags, selectedGroup, filteredCards 관련 코드를 컴포넌트 최상단(early return문 위)로 이동]
+  const allTags = Array.from(new Set(cards.flatMap(card => card.tags))).filter(Boolean);
+  const [selectedGroup, setSelectedGroup] = useState<string>('all');
+  const filteredCards = selectedGroup === 'all'
+    ? cards
+    : cards.filter(card => card.tags.includes(selectedGroup));
+
+  useEffect(() => {
+    fetch('/api/card-categories')
+      .then(res => res.json())
+      .then(data => setCategories(data.categories || []));
+  }, []);
 
   const fetchWalletCards = useCallback(async () => {
     if (!user?.email) return
@@ -132,7 +147,7 @@ export default function WalletPage() {
 
     try {
       const response = await fetch('/api/wallet', {
-        method: 'PATCH',
+        method: 'PUT', // PATCH → PUT
         headers: {
           'Content-Type': 'application/json'
         },
@@ -201,6 +216,46 @@ export default function WalletPage() {
           onFiltersChange={setFilters}
         />
 
+        {/* WalletFilters 위에 카테고리 탭/버튼 UI 추가 */}
+        <div className="mb-4 flex gap-2">
+          <button
+            className={`px-3 py-1 rounded ${selectedCategory === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedCategory('all')}
+          >
+            전체
+          </button>
+          {categories.map(cat => (
+            <button
+              key={cat.id}
+              className={`px-3 py-1 rounded ${selectedCategory === cat.id ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+              onClick={() => setSelectedCategory(cat.id)}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+
+        {/* [WalletFilters 위에 카테고리 관리 UI(카테고리 목록, 추가/수정/삭제 버튼 및 모달) 자동 추가] */}
+        {allTags.length > 0 && (
+          <div className="mb-4 flex gap-2">
+            <button
+              className={`px-3 py-1 rounded ${selectedGroup === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+              onClick={() => setSelectedGroup('all')}
+            >
+              전체
+            </button>
+            {allTags.map(tag => (
+              <button
+                key={tag}
+                className={`px-3 py-1 rounded ${selectedGroup === tag ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                onClick={() => setSelectedGroup(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        )}
+
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -211,7 +266,7 @@ export default function WalletPage() {
           </motion.div>
         )}
 
-        {cards.length === 0 ? (
+        {filteredCards.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -234,7 +289,7 @@ export default function WalletPage() {
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-            {cards.map((card, index) => (
+            {filteredCards.map((card, index) => (
               <motion.div
                 key={card.id}
                 initial={{ opacity: 0, y: 20 }}

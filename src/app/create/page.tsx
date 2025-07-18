@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/contexts/AuthContext'
@@ -9,10 +9,8 @@ import FlipCard from '@/components/BusinessCard/FlipCard'
 import { uploadBusinessCardImage, compressImage } from '@/lib/storage'
 import { useTranslation } from '@/hooks/useTranslation'
 import Header from '@/components/layout/Header'
-import Link from 'next/link'
 import DualOCRProcessor from '@/components/OCR/DualOCRProcessor'
 import { BusinessCardData } from '@/lib/ocr/types'
-import SlugInput from '@/components/SlugInput/SlugInput'
 
 interface CardData {
   title: string
@@ -42,7 +40,6 @@ export default function CreatePage() {
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [tempCardId, setTempCardId] = useState<string | null>(null)
-  const [isSlugValid, setIsSlugValid] = useState(true)
 
   const { t } = useTranslation()
 
@@ -94,17 +91,17 @@ export default function CreatePage() {
     setCardData(prev => ({ ...prev, showOCR: true }));
   }
 
-  const handleOCRComplete = useCallback((result: BusinessCardData) => {
+  const handleOCRComplete = (result: BusinessCardData) => {
     setCardData(prev => ({
       ...prev,
       ocrData: result,
       title: result.name || prev.title || 'Business Card'
     }));
-  }, []);
+  }
 
-  const handleOCRError = useCallback((error: string) => {
+  const handleOCRError = (error: string) => {
     setError(`OCR processing failed: ${error}`);
-  }, []);
+  }
 
 
 
@@ -117,11 +114,6 @@ export default function CreatePage() {
     
     if (!user || !cardData.frontImage.file || !cardData.title.trim()) {
       setError(t('fillRequiredFields'))
-      return
-    }
-
-    if (!isSlugValid) {
-      setError('Please fix the custom URL before creating the card')
       return
     }
 
@@ -256,21 +248,6 @@ export default function CreatePage() {
                     {t('vertical')}
                   </label>
                 </div>
-              </div>
-
-              {/* Custom Slug Input */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('customUrlOptional')}
-                </label>
-                <SlugInput
-                  value={cardData.customSlug || ''}
-                  onChange={(slug) => setCardData(prev => ({ ...prev, customSlug: slug }))}
-                  onValidationChange={setIsSlugValid}
-                  placeholder="your-custom-url"
-                  autoGenerate={true}
-                  cardTitle={cardData.title}
-                />
               </div>
 
               {/* Front Image Upload */}
