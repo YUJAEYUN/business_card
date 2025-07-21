@@ -35,16 +35,6 @@ export default function BottomNavigation() {
       )
     },
     {
-      href: '/wallet',
-      label: t('wallet'),
-      icon: (active: boolean) => (
-        <svg className={`w-5 h-5 ${active ? 'text-blue-600' : 'text-gray-500'}`} fill={active ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={active ? 0 : 2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          {active && <path fill="currentColor" d="M5 9a2 2 0 00-2 2v6a2 2 0 002 2h14a2 2 0 002-2v-6a2 2 0 00-2-2H5zM7 5a2 2 0 012-2h6a2 2 0 012 2v2H7V5z"/>}
-        </svg>
-      )
-    },
-    {
       href: '/create',
       label: t('createCard'),
       icon: (active: boolean) => (
