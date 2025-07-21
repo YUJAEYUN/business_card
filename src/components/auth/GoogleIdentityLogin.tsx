@@ -1,154 +1,50 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useAuth } from '@/contexts/AuthContext'
 import { detectBrowser } from '@/lib/browser-detection'
-
-declare global {
-  interface Window {
-    google?: {
-      accounts: {
-        oauth2: {
-          initTokenClient: (config: {
-            client_id: string
-            scope: string
-            callback: (response: { access_token: string }) => void
-            error_callback?: (error: any) => void
-          }) => {
-            requestAccessToken: () => void
-          }
-        }
-      }
-    }
-  }
-}
 
 interface GoogleIdentityLoginProps {
   onSuccess?: () => void
   onError?: (error: string) => void
 }
 
-export default function GoogleIdentityLogin({ 
-  onSuccess, 
-  onError 
+export default function GoogleIdentityLogin({
+  onSuccess,
+  onError
 }: GoogleIdentityLoginProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const tokenClientRef = useRef<any>(null)
   const { user } = useAuth()
 
-  // Google Identity Services 스크립트 로드
-  useEffect(() => {
-    if (typeof window === 'undefined' || user) return
-
-    const script = document.createElement('script')
-    script.src = 'https://accounts.google.com/gsi/client'
-    script.async = true
-    script.defer = true
-    
-    script.onload = () => {
-      setIsScriptLoaded(true)
-      initializeGoogleAuth()
-    }
-    
-    script.onerror = () => {
-      setError('Google 인증 서비스를 로드할 수 없습니다.')
-      onError?.('Google 인증 서비스를 로드할 수 없습니다.')
-    }
-
-    document.head.appendChild(script)
-
-    return () => {
-      if (document.head.contains(script)) {
-        document.head.removeChild(script)
-      }
-    }
-  }, [user])
-
-  const initializeGoogleAuth = () => {
-    if (!window.google?.accounts?.oauth2) {
-      setTimeout(initializeGoogleAuth, 100)
-      return
-    }
-
-    try {
-      tokenClientRef.current = window.google.accounts.oauth2.initTokenClient({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-        scope: 'openid email profile',
-        callback: handleAuthSuccess,
-        error_callback: handleAuthError
-      })
-    } catch (err) {
-      console.error('Google Auth 초기화 실패:', err)
-      setError('Google 인증 초기화에 실패했습니다.')
-      onError?.('Google 인증 초기화에 실패했습니다.')
-    }
-  }
-
-  const handleAuthSuccess = async (response: { access_token: string }) => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      // Google API를 사용해 사용자 정보 가져오기
-      const userInfoResponse = await fetch(
-        `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${response.access_token}`
-      )
-      
-      if (!userInfoResponse.ok) {
-        throw new Error('사용자 정보를 가져올 수 없습니다.')
-      }
-
-      const userInfo = await userInfoResponse.json()
-      
-      // NextAuth를 통해 로그인 처리
-      const result = await signIn('google', {
-        redirect: false,
-        email: userInfo.email,
-        name: userInfo.name,
-        image: userInfo.picture
-      })
-
-      if (result?.error) {
-        throw new Error(result.error)
-      }
-
-      onSuccess?.()
-    } catch (err) {
-      console.error('Google 로그인 처리 실패:', err)
-      const errorMessage = err instanceof Error ? err.message : '로그인 처리 중 오류가 발생했습니다.'
-      setError(errorMessage)
-      onError?.(errorMessage)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleAuthError = (error: any) => {
-    console.error('Google Auth 오류:', error)
-    const errorMessage = 'Google 인증 중 오류가 발생했습니다.'
-    setError(errorMessage)
-    onError?.(errorMessage)
-    setIsLoading(false)
-  }
-
-  const handleLogin = () => {
-    if (!tokenClientRef.current) {
-      setError('Google 인증이 준비되지 않았습니다.')
-      return
-    }
-
+  /**
+   * 리다이렉트 방식 Google OAuth
+   * 인앱 브라우저에서 가장 안정적인 방법
+   */
+  const handleLogin = async () => {
     if (isLoading) return
 
     try {
       setIsLoading(true)
       setError(null)
-      tokenClientRef.current.requestAccessToken()
+
+      // NextAuth의 signIn을 사용하여 리다이렉트 방식으로 로그인
+      // 이 방식은 인앱 브라우저에서도 안정적으로 작동
+      const result = await signIn('google', {
+        redirect: true, // 리다이렉트 방식 사용
+        callbackUrl: window.location.href // 현재 페이지로 돌아오기
+      })
+
+      // 성공 시 onSuccess 콜백 호출 (리다이렉트되므로 실제로는 실행되지 않음)
+      if (result && !result.error) {
+        onSuccess?.()
+      }
     } catch (err) {
-      console.error('로그인 요청 실패:', err)
-      setError('로그인 요청에 실패했습니다.')
+      console.error('Google 로그인 실패:', err)
+      const errorMessage = err instanceof Error ? err.message : '로그인 중 오류가 발생했습니다.'
+      setError(errorMessage)
+      onError?.(errorMessage)
       setIsLoading(false)
     }
   }
@@ -164,7 +60,7 @@ export default function GoogleIdentityLogin({
     <div className="w-full">
       <button
         onClick={handleLogin}
-        disabled={isLoading || !isScriptLoaded || !tokenClientRef.current}
+        disabled={isLoading}
         className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-white border-2 border-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl font-semibold text-gray-700 hover:scale-105 transform"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">
