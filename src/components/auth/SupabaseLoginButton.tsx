@@ -1,32 +1,33 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
-import { detectBrowser, getInAppBrowserMessage } from '@/lib/browser-detection'
-import { useTranslation } from '@/hooks/useTranslation'
+import { supabase } from '@/lib/supabase'
 
-export default function LoginButton() {
+export default function SupabaseLoginButton() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const { signInWithGoogle, isInAppBrowser } = useAuth()
-  const { locale } = useTranslation()
 
   const handleGoogleSignIn = async () => {
-    const browserInfo = detectBrowser()
-
-    // 인앱 브라우저에서 로그인 시도 시 경고 표시
-    if (browserInfo.isInApp) {
-      const message = getInAppBrowserMessage(browserInfo.platform, locale as 'ko' | 'en' | 'ja')
-      alert(message)
-      return
-    }
-
     try {
       setIsLoading(true)
       setError(null)
-      await signInWithGoogle()
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'select_account',
+          },
+        },
+      })
+
+      if (error) {
+        throw error
+      }
     } catch (err: unknown) {
-      console.error('Google Auth Error:', err)
+      console.error('Supabase Google Auth Error:', err)
       setError(err instanceof Error ? err.message : '로그인 중 오류가 발생했습니다.')
     } finally {
       setIsLoading(false)
@@ -58,21 +59,20 @@ export default function LoginButton() {
             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
           />
         </svg>
-        {isLoading ? '로그인 중...' : 'Google로 로그인'}
+        {isLoading ? '로그인 중...' : 'Google로 로그인 (Supabase)'}
       </button>
-
-      {/* 개발 환경 정보 */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mt-2 p-2 bg-gray-100 rounded text-xs text-gray-600">
-          {isInAppBrowser ? '🔍 인앱 브라우저 감지됨' : '🌐 일반 브라우저'}
-        </div>
-      )}
 
       {error && (
         <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
           <p className="text-sm text-red-700">{error}</p>
         </div>
       )}
+
+      <div className="mt-2 text-center">
+        <p className="text-xs text-gray-500">
+          🔧 인앱 브라우저 호환 버전
+        </p>
+      </div>
     </div>
   )
 }

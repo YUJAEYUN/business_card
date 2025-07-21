@@ -14,7 +14,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
       authorization: {
         params: {
-          prompt: "consent",
+          prompt: "select_account", // consent 대신 select_account 사용
           access_type: "offline",
           response_type: "code"
         }

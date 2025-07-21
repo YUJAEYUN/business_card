@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
-import LoginButton from '@/components/auth/LoginButton'
+import GoogleIdentityLogin from '@/components/auth/GoogleIdentityLogin'
 import { useTranslation } from '@/hooks/useTranslation'
 import Header from '@/components/layout/Header'
 import { useEffect, useRef } from 'react'
@@ -182,7 +182,7 @@ export default function Home() {
               </>
             ) : (
               <div className="w-full max-w-md">
-                <LoginButton />
+                <GoogleIdentityLogin />
                 <p className="text-sm text-white mt-3 text-center font-medium"
                    style={{
                      textShadow: '2px 2px 4px rgba(0,0,0,0.8)'

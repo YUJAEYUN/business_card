@@ -68,127 +68,115 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
   return (
     <>
       <motion.div
-        className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-        whileHover={{ y: -2 }}
+        className="bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 relative group border border-gray-100"
+        whileHover={{ y: -6, scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
       >
-        {/* Card Preview */}
+        {/* Card Preview - 토스식 깔끔한 레이아웃 */}
         <div className="relative">
-          <div className={`
-            relative mx-auto mt-3 md:mt-4
-            ${card.card_type === 'horizontal'
-              ? 'w-32 h-20 md:w-40 md:h-24'
-              : 'w-20 h-32 md:w-24 md:h-40'
-            }
-          `}>
-            <Image
-              src={card.front_image_url}
-              alt={card.title}
-              fill
-              className="object-cover rounded-lg shadow-sm"
-              onError={(e) => {
-                console.error('Image load error:', card.front_image_url);
-                // 에러 시 기본 이미지로 대체하거나 숨김 처리
-                e.currentTarget.style.display = 'none';
-              }}
-              sizes="(max-width: 768px) 160px, 200px"
-            />
-          </div>
-          
-          {/* Card Type Badge */}
-          <div className="absolute top-2 right-2">
-            <span className={`
-              inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-              ${card.card_type === 'horizontal' 
-                ? 'bg-blue-100 text-blue-800' 
-                : 'bg-green-100 text-green-800'
+          <div className="p-4">
+            <div className={`
+              relative mx-auto
+              ${card.card_type === 'horizontal'
+                ? 'w-full aspect-[1.6/1]'
+                : 'w-full aspect-[1/1.6]'
               }
             `}>
-              {card.card_type}
-            </span>
+              <Image
+                src={card.front_image_url}
+                alt={card.title}
+                fill
+                className="object-cover rounded-xl"
+                onError={(e) => {
+                  console.error('Image load error:', card.front_image_url);
+                  e.currentTarget.style.display = 'none';
+                }}
+                sizes="(max-width: 640px) 280px, (max-width: 768px) 320px, (max-width: 1024px) 360px, 400px"
+              />
+            </div>
           </div>
 
-          {/* Double-sided indicator */}
+          {/* Double-sided indicator - 토스식 배지 */}
           {card.back_image_url && (
-            <div className="absolute top-2 left-2">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                2-sided
+            <div className="absolute top-6 right-6">
+              <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-sm">
+                양면
               </span>
             </div>
           )}
         </div>
 
-        {/* Card Info */}
-        <div className="p-3 md:p-4">
-          <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-1 truncate">
+        {/* Card Info - 토스식 깔끔한 정보 표시 */}
+        <div className="p-4">
+          <h3 className="text-lg font-bold text-gray-900 mb-2 truncate">
             {card.title}
           </h3>
-          <p className="text-xs md:text-sm text-gray-600 mb-3 md:mb-4">
-            Created {formatDate(card.created_at)}
+          <p className="text-sm text-gray-500 mb-4">
+            {formatDate(card.created_at)} 생성
           </p>
 
-          {/* Action Buttons */}
-          <div className="space-y-2">
+          {/* Action Buttons - 토스식 버튼 디자인 */}
+          <div className="space-y-3">
+            <Link
+              href={`/my-card/${card.id}`}
+              className="block w-full bg-blue-600 text-white text-center py-3 px-4 rounded-xl text-sm font-semibold hover:bg-blue-700 transition-all duration-200"
+            >
+              {t('manage')}
+            </Link>
+
             <div className="flex space-x-2">
-              <Link
-                href={`/my-card/${card.id}`}
-                className="flex-1 bg-blue-600 text-white text-center py-2 px-2 md:px-3 rounded-md text-xs md:text-sm font-medium hover:bg-blue-700 transition-colors"
-              >
-                {t('manage')}
-              </Link>
               <button
                 onClick={handleCopyUrl}
-                className={`flex-1 py-2 px-2 md:px-3 rounded-md text-xs md:text-sm font-medium transition-colors ${
+                className={`flex-1 py-3 px-4 rounded-xl text-sm font-semibold transition-all duration-200 ${
                   copySuccess
                     ? 'bg-green-600 text-white hover:bg-green-700'
-                    : 'bg-gray-600 text-white hover:bg-gray-700'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 {copySuccess ? (
-                  <span className="flex items-center justify-center gap-1">
+                  <span className="flex items-center justify-center gap-2">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    {t('copied')}
+                    복사됨
                   </span>
                 ) : (
-                  t('copyCardLink')
+                  '링크 복사'
                 )}
               </button>
-            </div>
-            
-            <div className="flex space-x-2">
               <button
                 onClick={() => setShowQRCode(true)}
-                className="flex-1 bg-green-600 text-white py-2 px-3 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+                className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl text-sm font-semibold hover:bg-gray-200 transition-all duration-200"
               >
-                {t('qrCode')}
-              </button>
-              <button
-                onClick={() => setShowDeleteConfirm(true)}
-                className="flex-1 bg-red-600 text-white py-2 px-3 rounded-md text-sm font-medium hover:bg-red-700 transition-colors"
-              >
-                {t('delete')}
+                QR 코드
               </button>
             </div>
+
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="w-full bg-red-50 text-red-600 py-3 px-4 rounded-xl text-sm font-semibold hover:bg-red-100 transition-all duration-200"
+            >
+              삭제
+            </button>
           </div>
         </div>
       </motion.div>
 
-      {/* QR Code Modal */}
+      {/* QR Code Modal - 토스식 디자인 */}
       {showQRCode && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg p-6 max-w-sm w-full"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
           >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">{t('qrCode')}</h3>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-gray-900">QR 코드</h3>
               <button
                 onClick={() => setShowQRCode(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -201,30 +189,40 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Confirmation Modal - 토스식 디자인 */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg p-6 max-w-sm w-full"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
           >
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('deleteBusinessCard')}</h3>
-            <p className="text-gray-600 mb-6">
-              {t('deleteConfirmMessage')} &quot;{card.title}&quot;? {t('deleteConfirmDescription')}
-            </p>
-            <div className="flex space-x-3">
+            <div className="text-center">
+              <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                명함을 삭제하시겠어요?
+              </h3>
+              <p className="text-sm text-gray-500 mb-6">
+                &quot;{card.title}&quot; 명함이 영구적으로 삭제되며<br />
+                복구할 수 없어요.
+              </p>
+            </div>
+            <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md font-medium hover:bg-gray-400 transition-colors"
+                className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200"
               >
-                {t('cancel')}
+                취소
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 bg-red-600 text-white py-2 px-4 rounded-md font-medium hover:bg-red-700 transition-colors"
+                className="flex-1 bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 transition-all duration-200"
               >
-                {t('delete')}
+                삭제
               </button>
             </div>
           </motion.div>

@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext'
 export default function MobileGoogleAuth() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const { signInWithGoogle } = useAuth()
+  const { signInWithGoogle, isInAppBrowser } = useAuth()
 
   const handleGoogleSignIn = async () => {
     try {
@@ -60,10 +60,15 @@ export default function MobileGoogleAuth() {
         </div>
       )}
 
-      <div className="text-center">
+      <div className="text-center space-y-2">
         <p className="text-xs text-gray-500">
           📱 모바일 최적화된 Google 로그인
         </p>
+        {process.env.NODE_ENV === 'development' && (
+          <p className="text-xs text-gray-400">
+            {isInAppBrowser ? '🔍 인앱 브라우저 감지됨 (서버 리다이렉션 사용)' : '🌐 일반 브라우저 (NextAuth 사용)'}
+          </p>
+        )}
       </div>
     </div>
   )

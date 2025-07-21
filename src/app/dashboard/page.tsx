@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
@@ -11,8 +11,7 @@ import WalletCardItem from '@/components/Wallet/WalletCardItem'
 import WalletFilters from '@/components/Wallet/WalletFilters'
 import { useTranslation } from '@/hooks/useTranslation'
 import Header from '@/components/layout/Header'
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+
 
 type BusinessCard = Database['public']['Tables']['business_cards']['Row']
 
@@ -24,6 +23,9 @@ interface WalletCard {
   is_favorite: boolean
   notes: string | null
   saved_at: string
+  business_card_category_map?: {
+    category_id: string
+  }[]
   business_cards: {
     id: string
     title: string
@@ -58,7 +60,13 @@ interface WalletFiltersState {
 export default function DashboardPage() {
   const { user, loading } = useAuth()
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState<'myCards' | 'wallet'>('myCards')
+  const [activeTab, setActiveTab] = useState<'myCards' | 'wallet'>(() => {
+    // localStorage에서 마지막 활성 탭 상태 복원
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('dashboardActiveTab') as 'myCards' | 'wallet') || 'myCards'
+    }
+    return 'myCards'
+  })
   const [cards, setCards] = useState<BusinessCard[]>([])
   const [walletCards, setWalletCards] = useState<WalletCard[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -72,16 +80,73 @@ export default function DashboardPage() {
     sortOrder: 'desc'
   })
   const { t } = useTranslation()
-  const [categories, setCategories] = useState<any[]>([]);
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<any | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [categories, setCategories] = useState<any[]>([])
+  const [showCategoryModal, setShowCategoryModal] = useState(false)
+  const [editingCategory, setEditingCategory] = useState<any | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
-  const filteredWalletCards = useMemo(() => {
-    return selectedCategory
-      ? walletCards.filter(card => card.categoryIds && card.categoryIds.includes(selectedCategory))
-      : walletCards.filter(card => !card.categoryIds || card.categoryIds.length === 0);
-  }, [walletCards, selectedCategory]);
+  // 탭 변경 함수 (localStorage에 저장)
+  const handleTabChange = (tab: 'myCards' | 'wallet') => {
+    setActiveTab(tab)
+    localStorage.setItem('dashboardActiveTab', tab)
+  }
+
+  // 카테고리별 필터링된 명함 목록
+  const [filteredWalletCards, setFilteredWalletCards] = useState<WalletCard[]>([])
+
+  // 카테고리 및 검색 필터링된 명함 가져오기
+  useEffect(() => {
+    const fetchFilteredCards = async () => {
+      let filtered = walletCards
+
+      // 1. 카테고리 필터링
+      if (selectedCategory !== 'all') {
+        try {
+          const categoryFiltered = []
+          for (const card of walletCards) {
+            try {
+              const response = await fetch(`/api/card-categories/map?wallet_item_id=${card.id}`)
+              const data = await response.json()
+              if (data.categoryIds?.includes(selectedCategory)) {
+                categoryFiltered.push(card)
+              }
+            } catch (error) {
+              console.error(`Error checking categories for card ${card.id}:`, error)
+            }
+          }
+          filtered = categoryFiltered
+        } catch (error) {
+          console.error('Error fetching filtered cards:', error)
+          filtered = []
+        }
+      }
+
+      // 2. 검색 필터링 (닉네임 또는 원본 제목으로 검색)
+      if (walletFilters.search.trim()) {
+        const searchTerm = walletFilters.search.toLowerCase()
+        filtered = filtered.filter(card => {
+          const nickname = (card.nickname || '').toLowerCase()
+          const title = card.business_cards.title.toLowerCase()
+          const ownerName = (card.business_cards.profiles.full_name || '').toLowerCase()
+
+          return nickname.includes(searchTerm) ||
+                 title.includes(searchTerm) ||
+                 ownerName.includes(searchTerm)
+        })
+      }
+
+      // 3. 즐겨찾기 필터링
+      if (walletFilters.favorite) {
+        filtered = filtered.filter(card => card.is_favorite)
+      }
+
+      setFilteredWalletCards(filtered)
+    }
+
+    fetchFilteredCards()
+  }, [selectedCategory, walletCards, walletFilters.search, walletFilters.favorite])
+
+
 
   const fetchBusinessCards = useCallback(async () => {
     if (!user?.email) return
@@ -114,14 +179,9 @@ export default function DashboardPage() {
 
     try {
       setIsWalletLoading(true)
-      const params = new URLSearchParams()
-      if (walletFilters.search) params.append('search', walletFilters.search)
-      if (walletFilters.tag) params.append('tag', walletFilters.tag)
-      if (walletFilters.favorite) params.append('favorite', 'true')
-      params.append('sortBy', walletFilters.sortBy)
-      params.append('sortOrder', walletFilters.sortOrder)
 
-      const response = await fetch(`/api/wallet?${params.toString()}`, {
+      // 필터 없이 모든 명함 가져오기
+      const response = await fetch('/api/wallet', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -140,7 +200,7 @@ export default function DashboardPage() {
     } finally {
       setIsWalletLoading(false)
     }
-  }, [user, walletFilters, t])
+  }, [user, t])
   useEffect(() => {
     if (user) {
       fetchBusinessCards()
@@ -154,15 +214,21 @@ export default function DashboardPage() {
     }
   }, [user, activeTab, fetchWalletCards])
 
-  // useEffect에서 항상 카테고리 목록을 fetch
+  // 카테고리 목록 가져오기
   useEffect(() => {
-    const fetchCategories = () => {
-      fetch('/api/card-categories')
-        .then(res => res.json())
-        .then(data => setCategories(data.categories || []));
-    };
-    fetchCategories();
-  }, []);
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/card-categories')
+        const data = await response.json()
+        setCategories(data.categories || [])
+      } catch (error) {
+        console.error('Error fetching categories:', error)
+      }
+    }
+    fetchCategories()
+  }, [])
+
+
 
   const handleDeleteCard = async (cardId: string) => {
     if (!user?.email) return
@@ -275,7 +341,7 @@ export default function DashboardPage() {
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto" aria-label="Tabs">
               <button
-                onClick={() => setActiveTab('myCards')}
+                onClick={() => handleTabChange('myCards')}
                 className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors flex-shrink-0 ${activeTab === 'myCards' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
               >
                 <div className="flex items-center space-x-1 sm:space-x-2">
@@ -287,7 +353,7 @@ export default function DashboardPage() {
                 </div>
               </button>
               <button
-                onClick={() => setActiveTab('wallet')}
+                onClick={() => handleTabChange('wallet')}
                 className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors flex-shrink-0 ${activeTab === 'wallet' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
               >
                 <div className="flex items-center space-x-1 sm:space-x-2">
@@ -302,44 +368,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* 카테고리 관리 UI는 기존 탭 네비게이션 아래에만 표시, 단 activeTab === 'wallet'일 때만 렌더링 */}
-        {activeTab === 'wallet' && (
-          <>
-            <div className="mb-6 flex items-center gap-2">
-              <h2 className="text-lg font-semibold text-gray-800">카테고리</h2>
-              <button
-                className="ml-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-                onClick={() => { setEditingCategory(null); setShowCategoryModal(true); }}
-              >
-                + 추가
-              </button>
-              <div className="flex gap-2 flex-wrap">
-                {categories.map(cat => (
-                  <div key={cat.id} className="flex items-center bg-gray-100 px-2 py-1 rounded">
-                    <span>{cat.name}</span>
-                    <button className="ml-1 text-xs text-blue-600" onClick={() => { setEditingCategory(cat); setShowCategoryModal(true); }}>수정</button>
-                    <button className="ml-1 text-xs text-red-500" onClick={async () => {
-                      await fetch(`/api/card-categories/${cat.id}`, { method: 'DELETE' });
-                      // fetchCategories() 호출 필요
-                    }}>삭제</button>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* 카테고리(폴더) 리스트에서 '전체' 버튼과 카테고리별 수정/삭제 버튼 제거 */}
-            <div className="mb-4 flex gap-2">
-              {categories.map(cat => (
-                <button
-                  key={cat.id}
-                  className={`px-3 py-1 rounded ${selectedCategory === cat.id ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-                  onClick={() => setSelectedCategory(cat.id)}
-                >
-                  {cat.name}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
+
 
         {error && (
           <motion.div
@@ -359,40 +388,40 @@ export default function DashboardPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-center py-12"
+                className="text-center py-16"
               >
-                <div className="mx-auto w-24 h-24 text-gray-400 mb-4">
+                <div className="mx-auto w-16 h-16 text-gray-300 mb-6">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={1}
+                      strokeWidth={1.5}
                       d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">{t('noCards')}</h3>
-                <p className="text-gray-600 mb-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{t('noCards')}</h3>
+                <p className="text-gray-500 mb-8 max-w-sm mx-auto leading-relaxed">
                   {t('noCardsDescription')}
                 </p>
                 <Link
                   href="/create"
-                  className="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                   {t('createFirstCard')}
                 </Link>
               </motion.div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {cards.map((card, index) => (
                   <motion.div
                     key={card.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                    transition={{ delay: index * 0.05 }}
                   >
                     <BusinessCardItem
                       card={card}
@@ -406,6 +435,83 @@ export default function DashboardPage() {
         ) : (
           // 명함지갑 탭
           <>
+            {/* 카테고리 관리 UI */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">카테고리</h3>
+                <button
+                  onClick={() => {
+                    setEditingCategory(null)
+                    setShowCategoryModal(true)
+                  }}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all duration-200"
+                >
+                  + 추가
+                </button>
+              </div>
+
+              {/* 카테고리 필터 버튼들 */}
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSelectedCategory('all')}
+                  className={`px-4 py-2 rounded-xl font-semibold transition-all duration-200 ${
+                    selectedCategory === 'all'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  전체
+                </button>
+                {categories.map((cat) => (
+                  <div key={cat.id} className="flex items-center gap-1">
+                    <button
+                      onClick={() => setSelectedCategory(cat.id)}
+                      className={`px-4 py-2 rounded-xl font-semibold transition-all duration-200 ${
+                        selectedCategory === cat.id
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {cat.name}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEditingCategory(cat)
+                        setShowCategoryModal(true)
+                      }}
+                      className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (confirm('이 카테고리를 삭제하시겠습니까?')) {
+                          try {
+                            await fetch(`/api/card-categories/${cat.id}`, { method: 'DELETE' })
+                            const response = await fetch('/api/card-categories')
+                            const data = await response.json()
+                            setCategories(data.categories || [])
+                            if (selectedCategory === cat.id) {
+                              setSelectedCategory('all')
+                            }
+                          } catch (error) {
+                            console.error('Error deleting category:', error)
+                          }
+                        }
+                      }}
+                      className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* 명함지갑 필터 */}
             <WalletFilters
               filters={walletFilters}
@@ -413,107 +519,114 @@ export default function DashboardPage() {
             />
 
             {(isWalletLoading || isLoading) ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div className="flex items-center justify-center py-16">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
               </div>
-            ) : walletCards.length === 0 ? (
+            ) : filteredWalletCards.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-center py-12"
+                className="text-center py-16"
               >
-                <div className="mx-auto w-24 h-24 text-gray-400 mb-4">
+                <div className="mx-auto w-16 h-16 text-gray-300 mb-6">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={1}
+                      strokeWidth={1.5}
                       d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">{t('noWalletCards')}</h3>
-                <p className="text-gray-600 mb-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{t('noWalletCards')}</h3>
+                <p className="text-gray-500 max-w-sm mx-auto leading-relaxed">
                   {t('noWalletCardsDescription')}
                 </p>
               </motion.div>
             ) : (
-              <DndProvider backend={HTML5Backend}>
-                {/* 카테고리 박스 클릭 시 해당 카테고리에 할당된 명함만 리스트로 표시 */}
-                <div className="flex gap-6">
-                  {/* 카테고리(폴더) 리스트 - 드롭 타겟 */}
-                  <div className="w-48">
-                    <h3 className="font-bold mb-2">카테고리</h3>
-                    {categories.map(cat => (
-                      <CategoryDropTarget
-                        key={cat.id}
-                        category={cat}
-                        onDropCard={async (walletItemId) => {
-                          await fetch('/api/card-categories/map', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ wallet_item_id: walletItemId, category_id: cat.id })
-                          });
-                          // 카테고리별 명함 리스트 갱신 필요
-                        }}
-                      />
-                    ))}
-                  </div>
-                  {/* 명함 카드 리스트 - 드래그 소스 */}
-                  <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                    {filteredWalletCards.map(card => (
-                      <DraggableWalletCardItem key={card.id} card={card} onDelete={() => handleDeleteWalletCard(card.id)} onUpdate={(updates) => handleUpdateWalletCard(card.id, updates)} />
-                    ))}
-                  </div>
-                </div>
-              </DndProvider>
+              // 토스식 깔끔한 그리드 레이아웃 - 명함 크기에 맞게 조정
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                {filteredWalletCards.map((card, index) => (
+                  <motion.div
+                    key={card.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.02 }}
+                  >
+                    <WalletCardItem
+                      card={card}
+                      onDelete={() => handleDeleteWalletCard(card.id)}
+                      onUpdate={(updates) => handleUpdateWalletCard(card.id, updates)}
+                    />
+                  </motion.div>
+                ))}
+              </div>
             )}
           </>
         )}
 
-        {/* 카테고리 추가/수정 모달 UI */}
+        {/* 카테고리 추가/수정 모달 */}
         {showCategoryModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-xs">
-              <h3 className="text-lg font-bold mb-4">{editingCategory ? '카테고리 수정' : '카테고리 추가'}</h3>
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
+            >
+              <h3 className="text-xl font-bold text-gray-900 mb-6">
+                {editingCategory ? '카테고리 수정' : '카테고리 추가'}
+              </h3>
               <input
-                className="w-full border px-2 py-1 rounded mb-4"
+                type="text"
                 defaultValue={editingCategory?.name || ''}
-                placeholder="카테고리 이름"
+                placeholder="카테고리 이름을 입력하세요"
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-6"
                 id="categoryNameInput"
+                autoFocus
               />
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 <button
-                  className="flex-1 bg-blue-600 text-white py-2 rounded"
-                  onClick={async () => {
-                    const name = (document.getElementById('categoryNameInput') as HTMLInputElement).value;
-                    if (editingCategory) {
-                      await fetch(`/api/card-categories/${editingCategory.id}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name })
-                      });
-                    } else {
-                      await fetch('/api/card-categories', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name })
-                      });
-                    }
-                    setShowCategoryModal(false);
-                    // 카테고리 목록 갱신
-                    fetch('/api/card-categories')
-                      .then(res => res.json())
-                      .then(data => setCategories(data.categories || []));
-                  }}
+                  onClick={() => setShowCategoryModal(false)}
+                  className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200"
                 >
-                  저장
-                </button>
-                <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded" onClick={() => setShowCategoryModal(false)}>
                   취소
                 </button>
+                <button
+                  onClick={async () => {
+                    const input = document.getElementById('categoryNameInput') as HTMLInputElement
+                    const name = input.value.trim()
+                    if (!name) return
+
+                    try {
+                      if (editingCategory) {
+                        await fetch(`/api/card-categories/${editingCategory.id}`, {
+                          method: 'PUT',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ name })
+                        })
+                      } else {
+                        await fetch('/api/card-categories', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ name })
+                        })
+                      }
+
+                      // 카테고리 목록 새로고침
+                      const response = await fetch('/api/card-categories')
+                      const data = await response.json()
+                      setCategories(data.categories || [])
+                      setShowCategoryModal(false)
+                    } catch (error) {
+                      console.error('Error saving category:', error)
+                    }
+                  }}
+                  className="flex-1 bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all duration-200"
+                >
+                  {editingCategory ? '수정' : '추가'}
+                </button>
               </div>
-            </div>
+            </motion.div>
           </div>
         )}
 
@@ -522,31 +635,4 @@ export default function DashboardPage() {
   )
 }
 
-// CategoryDropTarget: 카테고리 드롭 타겟
-function CategoryDropTarget({ category, onDropCard }: { category: any, onDropCard: (walletItemId: string) => void }) {
-  const [{ isOver }, drop] = useDrop({
-    accept: 'WALLET_CARD',
-    drop: (item: { id: string }) => onDropCard(item.id),
-    collect: monitor => ({ isOver: monitor.isOver() })
-  });
-  return (
-    <div ref={drop} className={`p-3 mb-2 rounded border ${isOver ? 'bg-blue-100 border-blue-400' : 'bg-white border-gray-200'}`}
-      style={{ minHeight: 48, cursor: 'pointer' }}>
-      <span className="font-medium">{category.name}</span>
-    </div>
-  );
-}
 
-// DraggableWalletCardItem: 명함 카드 드래그 소스
-function DraggableWalletCardItem(props: any) {
-  const [{ isDragging }, drag] = useDrag({
-    type: 'WALLET_CARD',
-    item: { id: props.card.id },
-    collect: monitor => ({ isDragging: monitor.isDragging() })
-  });
-  return (
-    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
-      <WalletCardItem {...props} />
-    </div>
-  );
-}
