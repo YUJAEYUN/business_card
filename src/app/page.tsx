@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import GoogleIdentityLogin from '@/components/auth/GoogleIdentityLogin'
 import { useTranslation } from '@/hooks/useTranslation'
 import Header from '@/components/layout/Header'
+import InAppBrowserWarning from '@/components/auth/InAppBrowserWarning'
 import { useEffect, useRef } from 'react'
 export default function Home() {
   const { user, loading } = useAuth()
@@ -259,6 +260,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* 인앱 브라우저 경고 모달 */}
+      <InAppBrowserWarning />
     </div>
   )
 }

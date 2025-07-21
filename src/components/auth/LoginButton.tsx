@@ -2,22 +2,20 @@
 
 import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { detectBrowser, getInAppBrowserMessage } from '@/lib/browser-detection'
-import { useTranslation } from '@/hooks/useTranslation'
+import { detectBrowser } from '@/lib/browser-detection'
 
 export default function LoginButton() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { signInWithGoogle, isInAppBrowser } = useAuth()
-  const { locale } = useTranslation()
 
   const handleGoogleSignIn = async () => {
     const browserInfo = detectBrowser()
 
-    // 인앱 브라우저에서 로그인 시도 시 경고 표시
+    // 인앱 브라우저에서 로그인 시도 시 InAppBrowserWarning 컴포넌트가 자동으로 표시됨
+    // 여기서는 별도 처리 없이 바로 로그인 시도
     if (browserInfo.isInApp) {
-      const message = getInAppBrowserMessage(browserInfo.platform, locale as 'ko' | 'en' | 'ja')
-      alert(message)
+      // 인앱 브라우저에서는 로그인을 시도하지 않음
       return
     }
 

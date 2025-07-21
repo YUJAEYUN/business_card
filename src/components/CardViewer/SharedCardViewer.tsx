@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import FlipCard from '@/components/BusinessCard/FlipCard'
 import Header from '@/components/layout/Header'
 import GoogleIdentityLogin from '@/components/auth/GoogleIdentityLogin'
+import InAppBrowserWarning from '@/components/auth/InAppBrowserWarning'
 import { Database } from '@/lib/supabase'
 import { BusinessCardData } from '@/lib/ocr/types'
 import { useAuth } from '@/contexts/AuthContext'
@@ -322,6 +323,9 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
         </motion.div>
         </div>
       </div>
+
+      {/* 인앱 브라우저 경고 모달 */}
+      <InAppBrowserWarning />
     </div>
   )
 }

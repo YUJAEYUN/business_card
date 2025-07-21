@@ -67,25 +67,51 @@ export function detectBrowser(): BrowserInfo {
     }
   }
 
-  // 기타 인앱 브라우저 패턴
-  const inAppPatterns = [
-    'wv', // WebView
-    'inapp',
-    'app',
-    'mobile'
-  ]
-
-  const isInApp = inAppPatterns.some(pattern => userAgent.includes(pattern))
-
+  // 일반 브라우저 (Chrome, Safari, Firefox 등)는 인앱브라우저가 아님
   return {
-    isInApp,
-    platform: isInApp ? 'other' : 'normal',
+    isInApp: false,
+    platform: 'normal',
     userAgent
   }
 }
 
 /**
- * 외부 브라우저로 열기 URL 생성
+ * 크롬 브라우저로 직접 열기
+ */
+export function openInChrome(url: string = window.location.href): void {
+  const userAgent = navigator.userAgent.toLowerCase()
+
+  // iOS 기기인지 확인
+  const isIOS = /iphone|ipad|ipod/.test(userAgent)
+  // Android 기기인지 확인
+  const isAndroid = /android/.test(userAgent)
+
+  if (isIOS) {
+    // iOS에서 Chrome으로 열기
+    const chromeUrl = url.replace(/^https?:\/\//, 'googlechrome://')
+    window.location.href = chromeUrl
+
+    // Chrome이 설치되지 않은 경우를 대비해 Safari로 폴백
+    setTimeout(() => {
+      window.location.href = url
+    }, 1000)
+  } else if (isAndroid) {
+    // Android에서 Chrome으로 열기
+    const intent = `intent://${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`
+    window.location.href = intent
+
+    // Chrome이 설치되지 않은 경우를 대비해 기본 브라우저로 폴백
+    setTimeout(() => {
+      window.location.href = url
+    }, 1000)
+  } else {
+    // 데스크톱이나 기타 플랫폼에서는 그냥 현재 URL로 이동
+    window.location.href = url
+  }
+}
+
+/**
+ * 외부 브라우저로 열기 URL 생성 (레거시)
  */
 export function getExternalBrowserUrl(currentUrl: string, platform: BrowserInfo['platform']): string {
   const encodedUrl = encodeURIComponent(currentUrl)
@@ -94,11 +120,11 @@ export function getExternalBrowserUrl(currentUrl: string, platform: BrowserInfo[
     case 'kakao':
       // 카카오톡에서 외부 브라우저로 열기
       return `kakaotalk://web/openExternal?url=${encodedUrl}`
-    
+
     case 'naver':
       // 네이버에서 외부 브라우저로 열기
       return `intent://${currentUrl.replace(/^https?:\/\//, '')}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.android.chrome;end`
-    
+
     default:
       // 기본적으로 현재 URL 반환
       return currentUrl
