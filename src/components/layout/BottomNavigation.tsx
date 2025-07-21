@@ -48,7 +48,7 @@ export default function BottomNavigation() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 md:hidden z-40 safe-area-pb">
-      <div className="grid grid-cols-4 h-16 px-2">
+      <div className="grid grid-cols-3 h-16 px-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href
           return (
