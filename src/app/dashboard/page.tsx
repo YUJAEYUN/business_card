@@ -446,7 +446,7 @@ export default function DashboardPage() {
                   }}
                   className="px-4 py-2 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all duration-200"
                 >
-                  + 추가
+                  {t('addCategory')}
                 </button>
               </div>
 
@@ -460,7 +460,7 @@ export default function DashboardPage() {
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  전체
+                  {t('all')}
                 </button>
                 {categories.map((cat) => (
                   <div key={cat.id} className="flex items-center gap-1">
@@ -574,7 +574,7 @@ export default function DashboardPage() {
               className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
             >
               <h3 className="text-xl font-bold text-gray-900 mb-6">
-                {editingCategory ? '카테고리 수정' : '카테고리 추가'}
+                {editingCategory ? t('editCategoryTitle') : t('addCategoryTitle')}
               </h3>
               <input
                 type="text"
@@ -623,7 +623,7 @@ export default function DashboardPage() {
                   }}
                   className="flex-1 bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all duration-200"
                 >
-                  {editingCategory ? '수정' : '추가'}
+                  {editingCategory ? t('edit') : t('add')}
                 </button>
               </div>
             </motion.div>

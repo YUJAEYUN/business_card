@@ -4,11 +4,11 @@ export default function CustomSlugPage() { notFound(); return null; }
 
 export async function generateMetadata() {
   return {
-    title: 'Business Card Not Found',
-    description: 'Business Card Not Found',
+    title: 'Card Not Found - Swivel',
+    description: 'Card Not Found - Swivel',
     openGraph: {
-      title: 'Business Card Not Found',
-      description: 'Business Card Not Found',
+      title: 'Card Not Found - Swivel',
+      description: 'Card Not Found - Swivel',
       images: [],
     },
   }

@@ -40,6 +40,7 @@ export default function CreatePage() {
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [tempCardId, setTempCardId] = useState<string | null>(null)
+  const [pendingOCRData, setPendingOCRData] = useState<BusinessCardData | null>(null)
 
   const { t } = useTranslation()
 
@@ -91,12 +92,27 @@ export default function CreatePage() {
     setCardData(prev => ({ ...prev, showOCR: true }));
   }
 
-  const handleOCRComplete = (result: BusinessCardData) => {
+  const handleOCRDataReady = (result: BusinessCardData) => {
+    console.log('OCR Data Ready - storing pending data:', result);
+    setPendingOCRData(result);
+    // 제목만 업데이트 (실제 OCR 데이터는 저장하지 않음)
     setCardData(prev => ({
       ...prev,
-      ocrData: result,
       title: result.name || prev.title || 'Business Card'
     }));
+  }
+
+  const handleOCRComplete = (result: BusinessCardData) => {
+    console.log('OCR Complete - received data:', result);
+    setCardData(prev => {
+      const updatedData = {
+        ...prev,
+        ocrData: result,
+        title: result.name || prev.title || 'Business Card'
+      };
+      console.log('Updated cardData with OCR result:', updatedData);
+      return updatedData;
+    });
   }
 
   const handleOCRError = (error: string) => {
@@ -147,15 +163,21 @@ export default function CreatePage() {
       }
 
       // Create business card via API
+      // pendingOCRData가 있으면 사용하고, 없으면 cardData.ocrData 사용
+      const finalOCRData = cardData.ocrData || pendingOCRData;
+
       const requestData = {
         title: cardData.title.trim(),
         frontImageUrl: frontImageResult.url,
         backImageUrl: backImageUrl,
         cardType: cardData.cardType,
-        ocrData: cardData.ocrData,
+        ocrData: finalOCRData,
         customSlug: cardData.customSlug
       };
       console.log('Creating business card with data:', requestData);
+      console.log('Final OCR Data being sent:', finalOCRData);
+      console.log('cardData.ocrData:', cardData.ocrData);
+      console.log('pendingOCRData:', pendingOCRData);
 
       const response = await fetch('/api/business-cards', {
         method: 'POST',
@@ -191,7 +213,7 @@ export default function CreatePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-16 md:pb-0">
+    <div className="min-h-screen bg-gray-50 pb-16 md:pb-0 text-gray-900 force-light-theme">
       <Header />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8 pt-24">
@@ -203,7 +225,7 @@ export default function CreatePage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Form Section */}
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-white rounded-lg shadow-md p-6 text-gray-900">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Title Input */}
               <div>
@@ -216,7 +238,7 @@ export default function CreatePage() {
                   value={cardData.title}
                   onChange={(e) => setCardData(prev => ({ ...prev, title: e.target.value }))}
                   placeholder={t('cardTitlePlaceholder')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                   required
                 />
               </div>
@@ -227,7 +249,7 @@ export default function CreatePage() {
                   {t('cardType')}
                 </label>
                 <div className="flex space-x-4">
-                  <label className="flex items-center">
+                  <label className="flex items-center text-gray-700">
                     <input
                       type="radio"
                       value="horizontal"
@@ -235,9 +257,9 @@ export default function CreatePage() {
                       onChange={(e) => setCardData(prev => ({ ...prev, cardType: e.target.value as 'horizontal' | 'vertical' }))}
                       className="mr-2"
                     />
-                    {t('horizontal')}
+                    <span className="text-gray-700">{t('horizontal')}</span>
                   </label>
-                  <label className="flex items-center">
+                  <label className="flex items-center text-gray-700">
                     <input
                       type="radio"
                       value="vertical"
@@ -245,7 +267,7 @@ export default function CreatePage() {
                       onChange={(e) => setCardData(prev => ({ ...prev, cardType: e.target.value as 'horizontal' | 'vertical' }))}
                       className="mr-2"
                     />
-                    {t('vertical')}
+                    <span className="text-gray-700">{t('vertical')}</span>
                   </label>
                 </div>
               </div>
@@ -301,6 +323,7 @@ export default function CreatePage() {
                         file: cardData.backImage.file,
                         url: cardData.backImage.preview || undefined
                       } : undefined}
+                      onDataReady={handleOCRDataReady}
                       onComplete={handleOCRComplete}
                       onError={handleOCRError}
                     />
@@ -451,7 +474,7 @@ export default function CreatePage() {
           </div>
 
           {/* Preview Section */}
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-white rounded-lg shadow-md p-6 text-gray-900">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('preview')}</h2>
             <div className="flex justify-center">
               {cardData.frontImage.preview ? (
@@ -463,9 +486,9 @@ export default function CreatePage() {
               ) : (
                 <div className={`
                   ${cardData.cardType === 'horizontal' ? 'w-80 h-48' : 'w-48 h-80'}
-                  border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center
+                  border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-white
                 `}>
-                  <p className="text-gray-500 text-center">
+                  <p className="text-gray-500 text-center font-medium">
                     {t('uploadFrontImage')}<br />{t('preview').toLowerCase()}
                   </p>
                 </div>

@@ -1,13 +1,16 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useAuth } from '@/contexts/AuthContext'
+import { useTranslation } from '@/hooks/useTranslation'
 import { detectBrowser } from '@/lib/browser-detection'
 
 export default function LoginButton() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { signInWithGoogle, isInAppBrowser } = useAuth()
+  const { t } = useTranslation()
 
   const handleGoogleSignIn = async () => {
     const browserInfo = detectBrowser()
@@ -33,12 +36,22 @@ export default function LoginButton() {
 
   return (
     <div className="w-full">
-      <button
+      <motion.button
         onClick={handleGoogleSignIn}
         disabled={isLoading}
-        className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-white border-2 border-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl font-semibold text-gray-700 hover:scale-105 transform"
+        className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-white/95 backdrop-blur-sm border-2 border-white/50 rounded-2xl hover:bg-gray-50/95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl font-bold text-gray-700 toss-button group"
+        whileHover={{ scale: 1.02, y: -2 }}
+        whileTap={{ scale: 0.98 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
       >
-        <svg className="w-5 h-5" viewBox="0 0 24 24">
+        <motion.svg
+          className="w-5 h-5"
+          viewBox="0 0 24 24"
+          whileHover={{ rotate: 5 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+        >
           <path
             fill="#4285F4"
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -55,9 +68,27 @@ export default function LoginButton() {
             fill="#EA4335"
             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
           />
-        </svg>
-        {isLoading ? '로그인 중...' : 'Google로 로그인'}
-      </button>
+        </motion.svg>
+        <motion.span
+          className="group-hover:text-gray-900 transition-colors"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
+          {isLoading ? (
+            <span className="flex items-center gap-2">
+              <motion.div
+                className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              />
+              {t('signingIn')}
+            </span>
+          ) : (
+            t('signInWithGoogle')
+          )}
+        </motion.span>
+      </motion.button>
 
       {/* 개발 환경 정보 */}
       {process.env.NODE_ENV === 'development' && (

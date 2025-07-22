@@ -10,6 +10,7 @@ import InAppBrowserWarning from '@/components/auth/InAppBrowserWarning'
 import { Database } from '@/lib/supabase'
 import { BusinessCardData } from '@/lib/ocr/types'
 import { useAuth } from '@/contexts/AuthContext'
+import { useTranslation } from '@/hooks/useTranslation'
 
 type BusinessCard = Database['public']['Tables']['business_cards']['Row']
 
@@ -23,6 +24,7 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
   const [saveMessage, setSaveMessage] = useState('')
   const [hasTriedAutoSave, setHasTriedAutoSave] = useState(false)
   const { user } = useAuth()
+  const { t } = useTranslation()
   const pathname = usePathname()
 
   // 자동 저장 함수
@@ -161,54 +163,57 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pb-16 md:pb-0">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 pb-16 md:pb-0">
       <Header />
       <div className="container mx-auto px-4 py-8 pt-24">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
+        <div className="max-w-2xl mx-auto">
+          {/* Header - 토스 스타일 */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-8"
+            className="text-center mb-12"
           >
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{card.title}</h1>
-            <p className="text-gray-600">Digital Business Card</p>
+            <h1 className="text-2xl md:text-3xl font-black text-gray-900 mb-2">{card.title}</h1>
+            <p className="text-gray-500 font-medium">Swivel</p>
 
-          {/* Auto Save Status - 성공했을 때만 표시 */}
+          {/* Auto Save Status - 성공했을 때만 표시 - 토스 스타일 */}
           {user && saveStatus === 'success' && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="mt-4"
+              className="mt-6"
             >
-              <div className="inline-flex items-center px-4 py-2 bg-green-100 border border-green-300 rounded-lg text-green-800 text-sm">
-                <span className="mr-2">✅</span>
+              <div className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-green-50 to-green-100 border border-green-200/50 rounded-2xl text-green-800 text-sm font-semibold shadow-lg">
+                <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
                 {saveMessage}
               </div>
             </motion.div>
           )}
 
-          {/* 비로그인 사용자 로그인 유도 */}
+          {/* 비로그인 사용자 로그인 유도 - 토스 스타일 */}
           {!user && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="mt-8 bg-white rounded-2xl border border-gray-200 p-6 shadow-lg"
+              className="mt-8 bg-white/95 backdrop-blur-sm rounded-3xl border border-gray-200/50 p-6 shadow-xl"
             >
               <div className="text-center">
-                <div className="mb-4">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mb-3">
-                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                <div className="mb-6">
+                  <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl mb-4 shadow-lg">
+                    <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    명함을 지갑에 저장하세요
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">
+                    {t('saveToWallet')}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-6">
-                    로그인하면 이 명함을 자동으로 지갑에 저장하고<br />
-                    언제든지 다시 볼 수 있습니다
+                  <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+                    {t('saveToWalletDesc')}
                   </p>
                 </div>
                 <div className="max-w-sm mx-auto">
@@ -219,50 +224,56 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
           )}
         </motion.div>
 
-        {/* Card Display */}
+        {/* Card Display - 토스 스타일 */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2 }}
-          className="flex justify-center mb-8"
+          transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+          className="flex justify-center mb-12"
         >
-          <FlipCard
-            frontImageUrl={card.front_image_url}
-            backImageUrl={card.back_image_url || undefined}
-            cardType={card.card_type}
-            className="shadow-2xl"
-            hideIndicator={false}
-          />
+          <div className="relative">
+            <FlipCard
+              frontImageUrl={card.front_image_url}
+              backImageUrl={card.back_image_url || undefined}
+              cardType={card.card_type}
+              className=""
+              hideIndicator={false}
+            />
+            {/* 배경 글로우 효과 */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-2xl blur-xl -z-10 scale-110"></div>
+          </div>
         </motion.div>
 
-        {/* Contact Information */}
+        {/* Contact Information - 토스 스타일 */}
         {ocrData && (ocrData.phone || ocrData.email || ocrData.website) && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="max-w-md mx-auto"
+            className="max-w-sm mx-auto"
           >
-            <div className="bg-white rounded-lg shadow-lg p-6 border">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
-                📞 Contact Information
+            <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg p-5 border border-gray-200/50">
+              <h3 className="text-base font-bold text-gray-900 mb-4 text-center">
+                {t('contactInfo')}
               </h3>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {/* Phone */}
                 {ocrData.phone && (
                   <button
                     onClick={() => handleContactClick('phone', ocrData.phone!)}
-                    className="w-full flex items-center space-x-3 p-3 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors group"
+                    className="w-full flex items-center space-x-3 p-3 bg-gradient-to-r from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 rounded-xl border border-green-200/50 transition-all duration-200 group"
                   >
-                    <div className="flex-shrink-0 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-lg">📞</span>
+                    <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-sm">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
                     </div>
                     <div className="flex-1 text-left">
-                      <p className="text-sm font-medium text-green-900">Phone</p>
-                      <p className="text-green-700">{ocrData.phone}</p>
+                      <p className="text-xs font-semibold text-green-800">{t('phone')}</p>
+                      <p className="text-sm text-green-700 font-medium">{ocrData.phone}</p>
                     </div>
-                    <div className="text-green-600 group-hover:text-green-800">
+                    <div className="text-green-600 group-hover:text-green-700 text-sm">
                       →
                     </div>
                   </button>
@@ -272,16 +283,18 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
                 {ocrData.email && (
                   <button
                     onClick={() => handleContactClick('email', ocrData.email!)}
-                    className="w-full flex items-center space-x-3 p-3 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors group"
+                    className="w-full flex items-center space-x-3 p-3 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl border border-blue-200/50 transition-all duration-200 group"
                   >
-                    <div className="flex-shrink-0 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-lg">📧</span>
+                    <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
                     </div>
                     <div className="flex-1 text-left">
-                      <p className="text-sm font-medium text-red-900">Email</p>
-                      <p className="text-red-700">{ocrData.email}</p>
+                      <p className="text-xs font-semibold text-blue-800">{t('email')}</p>
+                      <p className="text-sm text-blue-700 font-medium truncate">{ocrData.email}</p>
                     </div>
-                    <div className="text-red-600 group-hover:text-red-800">
+                    <div className="text-blue-600 group-hover:text-blue-700 text-sm">
                       →
                     </div>
                   </button>
@@ -291,16 +304,18 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
                 {ocrData.website && (
                   <button
                     onClick={() => handleContactClick('website', ocrData.website!)}
-                    className="w-full flex items-center space-x-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors group"
+                    className="w-full flex items-center space-x-3 p-3 bg-gradient-to-r from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 rounded-xl border border-purple-200/50 transition-all duration-200 group"
                   >
-                    <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-lg">🌐</span>
+                    <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center shadow-sm">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9-9a9 9 0 00-9 9m0 0a9 9 0 019-9" />
+                      </svg>
                     </div>
                     <div className="flex-1 text-left">
-                      <p className="text-sm font-medium text-blue-900">Website</p>
-                      <p className="text-blue-700">{ocrData.website}</p>
+                      <p className="text-xs font-semibold text-purple-800">{t('website')}</p>
+                      <p className="text-sm text-purple-700 font-medium truncate">{ocrData.website}</p>
                     </div>
-                    <div className="text-blue-600 group-hover:text-blue-800">
+                    <div className="text-purple-600 group-hover:text-purple-700 text-sm">
                       →
                     </div>
                   </button>
@@ -318,7 +333,7 @@ export default function SharedCardViewer({ card, ocrData }: SharedCardViewerProp
           className="text-center mt-8"
         >
           <p className="text-sm text-gray-500">
-            Powered by Digital Business Cards
+            {t('poweredBy')}
           </p>
         </motion.div>
         </div>

@@ -16,6 +16,7 @@ interface DualOCRProcessorProps {
   };
   onComplete?: (result: BusinessCardData) => void;
   onError?: (error: string) => void;
+  onDataReady?: (data: BusinessCardData) => void; // 분석 완료 시 호출되는 콜백
 }
 
 export default function DualOCRProcessor({
@@ -23,7 +24,8 @@ export default function DualOCRProcessor({
   frontImage,
   backImage,
   onComplete,
-  onError
+  onError,
+  onDataReady
 }: DualOCRProcessorProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -196,8 +198,9 @@ export default function DualOCRProcessor({
         setProgress(100);
         setCurrentStep('Complete!');
         setEditableData(mergedData);
-        console.log('OCR processing completed, showing results for user review');
-        // onComplete는 사용자가 Save 버튼을 눌렀을 때만 호출
+        console.log('OCR processing completed, notifying parent component');
+        // 분석 완료 시 부모 컴포넌트에 데이터 전달 (저장은 하지 않음)
+        onDataReady?.(mergedData);
 
       } catch (err) {
         if (!isMounted) return;
@@ -231,6 +234,7 @@ export default function DualOCRProcessor({
 
   const handleSave = () => {
     if (editableData) {
+      console.log('Saving edited OCR data:', editableData);
       onComplete?.(editableData);
       setIsEditing(false);
     }

@@ -77,23 +77,23 @@ export async function generateMetadata({ params }: CardPageProps) {
   
   if (!card) {
     return {
-      title: 'Business Card Not Found',
+      title: 'Card Not Found - Swivel',
     }
   }
 
   return {
-    title: `${card.title} - Digital Business Card`,
-    description: `View ${card.title}'s digital business card`,
+    title: `${card.title} - Swivel`,
+    description: `View ${card.title}'s digital business card on Swivel`,
     openGraph: {
-      title: `${card.title} - Digital Business Card`,
-      description: `View ${card.title}'s digital business card`,
+      title: `${card.title} - Swivel`,
+      description: `View ${card.title}'s digital business card on Swivel`,
       images: [card.front_image_url],
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${card.title} - Digital Business Card`,
-      description: `View ${card.title}'s digital business card`,
+      title: `${card.title} - Swivel`,
+      description: `View ${card.title}'s digital business card on Swivel`,
       images: [card.front_image_url],
     },
   }

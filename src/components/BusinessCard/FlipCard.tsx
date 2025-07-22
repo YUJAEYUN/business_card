@@ -68,7 +68,7 @@ export default function FlipCard({
       >
         {/* Front Side */}
         <motion.div
-          className="absolute inset-0 w-full h-full rounded-lg shadow-lg overflow-hidden"
+          className="absolute inset-0 w-full h-full rounded-lg overflow-hidden"
           style={{
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden'
@@ -87,7 +87,7 @@ export default function FlipCard({
         {/* Back Side */}
         {backImageUrl && (
           <motion.div
-            className="absolute inset-0 w-full h-full rounded-lg shadow-lg overflow-hidden"
+            className="absolute inset-0 w-full h-full rounded-lg overflow-hidden"
             style={{
               backfaceVisibility: 'hidden',
               WebkitBackfaceVisibility: 'hidden',

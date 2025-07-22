@@ -39,11 +39,12 @@ const translations = {
     signOut: '로그아웃',
     signUp: '회원가입',
     signInWithGoogle: 'Google로 로그인',
+    signingIn: '로그인 중...',
     welcomeBack: '다시 오신 것을 환영합니다!',
     signInToAccount: '계정에 로그인하세요',
 
     // Home
-    title: 'Digital Business Card',
+    title: 'Swivel',
     heroTitle: '멋진 디지털 명함을',
     heroSubtitle: '만들어보세요',
     heroDescription: '기존 명함을 아름다운 플립 애니메이션, QR 코드, 간편한 공유 기능이 있는 인터랙티브 디지털 경험으로 변환하세요.',
@@ -58,7 +59,18 @@ const translations = {
     easySharingDesc: 'URL, QR 코드 또는 소셜 미디어를 통해 공유하세요. 네트워킹 이벤트에 완벽합니다.',
     cardPreview: '명함 미리보기',
     uploadToSee: '명함을 업로드하여 마법을 경험해보세요!',
-    footerText: '더 나은 네트워킹을 위해 ❤️로 만들었습니다.',
+    footerText: '잃어버릴 걱정 없는 명함, 쌓여가는 인연. 당신의 네트워킹을 재정의합니다.',
+
+    // Example Card Section
+    clickCardTitle: '명함을 클릭해보세요',
+    clickCardDesc: '실제 명함처럼 앞뒤로 뒤집어지는 애니메이션을 체험해보세요.',
+    clickCardDesc2: 'QR 코드와 연락처 정보가 포함된 디지털 명함을 만들 수 있습니다.',
+    clickCardHint: '💡 명함을 클릭하면 뒤집어집니다',
+    createMyCard: '나만의 명함 만들기',
+
+    // Features Section
+    whyDigitalCard: '왜 디지털 명함인가요?',
+    whyDigitalCardDesc: '종이 명함의 한계를 넘어선 새로운 경험을 제공합니다',
 
     // Navigation
     home: '홈',
@@ -90,6 +102,40 @@ const translations = {
     failedToDeleteCard: '명함 삭제에 실패했습니다',
     myCards: '내 명함',
     cardWallet: '명함지갑',
+
+    // Business Card Actions
+    manage: '관리',
+    copyLink: '링크 복사',
+    copied: '복사됨',
+    qrCode: 'QR 코드',
+    delete: '삭제',
+    deleteCardTitle: '명함을 삭제하시겠어요?',
+    deleteCardMessage: '명함이 영구적으로 삭제되며 복구할 수 없어요.',
+    cancel: '취소',
+
+    // Wallet Filters
+    searchByNickname: '닉네임이나 이름으로 검색...',
+    search: '검색',
+    all: '전체',
+    favorites: '즐겨찾기',
+    favoritesOnly: '즐겨찾기만',
+    reset: '초기화',
+
+    // Category Management
+    addCategory: '+ 추가',
+    add: '추가',
+    edit: '수정',
+    addCategoryTitle: '카테고리 추가',
+    editCategoryTitle: '카테고리 수정',
+
+    // Contact Information
+    contactInfo: '연락처 정보',
+    phone: '전화',
+    email: '이메일',
+    website: '웹사이트',
+    saveToWallet: '명함을 지갑에 저장하세요',
+    saveToWalletDesc: '로그인하면 이 명함을 자동으로 지갑에 저장하고 언제든지 다시 볼 수 있습니다',
+    poweredBy: 'Powered by Digital Business Cards',
 
     // Wallet
     walletTitle: '명함지갑',
@@ -225,11 +271,12 @@ const translations = {
     signOut: 'ログアウト',
     signUp: '新規登録',
     signInWithGoogle: 'Googleでログイン',
+    signingIn: 'ログイン中...',
     welcomeBack: 'おかえりなさい！',
     signInToAccount: 'アカウントにログインしてください',
 
     // Home
-    title: 'Digital Business Card',
+    title: 'Swivel',
     heroTitle: '美しいデジタル名刺を',
     heroSubtitle: '作成しましょう',
     heroDescription: '従来の名刺を美しいフリップアニメーション、QRコード、簡単な共有機能を備えたインタラクティブなデジタル体験に変換します。',
@@ -244,7 +291,18 @@ const translations = {
     easySharingDesc: 'URL、QRコード、またはソーシャルメディアで共有。ネットワーキングイベントに最適です。',
     cardPreview: '名刺プレビュー',
     uploadToSee: '名刺をアップロードして魔法を体験してください！',
-    footerText: 'より良いネットワーキングのために❤️で作られました。',
+    footerText: '紛失の心配がない名刺、積み重なる縁。あなたのネットワーキングを再定義します。',
+
+    // Example Card Section
+    clickCardTitle: '名刺をクリックしてみてください',
+    clickCardDesc: '実際の名刺のように表裏にひっくり返るアニメーションを体験してください。',
+    clickCardDesc2: 'QRコードと連絡先情報が含まれたデジタル名刺を作成できます。',
+    clickCardHint: '💡 名刺をクリックするとひっくり返ります',
+    createMyCard: '私だけの名刺を作成',
+
+    // Features Section
+    whyDigitalCard: 'なぜデジタル名刺なのか？',
+    whyDigitalCardDesc: '紙の名刺の限界を超えた新しい体験を提供します',
 
     // Navigation
     home: 'ホーム',
@@ -276,6 +334,40 @@ const translations = {
     failedToDeleteCard: '名刺の削除に失敗しました',
     myCards: 'マイ名刺',
     cardWallet: '名刺ウォレット',
+
+    // Business Card Actions
+    manage: '管理',
+    copyLink: 'リンクをコピー',
+    copied: 'コピーしました',
+    qrCode: 'QRコード',
+    delete: '削除',
+    deleteCardTitle: '名刺を削除しますか？',
+    deleteCardMessage: '名刺は永久に削除され、復元できません。',
+    cancel: 'キャンセル',
+
+    // Wallet Filters
+    searchByNickname: 'ニックネームや名前で検索...',
+    search: '検索',
+    all: 'すべて',
+    favorites: 'お気に入り',
+    favoritesOnly: 'お気に入りのみ',
+    reset: 'リセット',
+
+    // Category Management
+    addCategory: '+ 追加',
+    add: '追加',
+    edit: '編集',
+    addCategoryTitle: 'カテゴリ追加',
+    editCategoryTitle: 'カテゴリ編集',
+
+    // Contact Information
+    contactInfo: '連絡先情報',
+    phone: '電話',
+    email: 'メール',
+    website: 'ウェブサイト',
+    saveToWallet: '名刺をウォレットに保存',
+    saveToWalletDesc: 'ログインすると、この名刺を自動的にウォレットに保存し、いつでも再度閲覧できます',
+    poweredBy: 'Powered by Digital Business Cards',
 
     // Wallet
     walletTitle: '名刺ウォレット',
@@ -411,11 +503,12 @@ const translations = {
     signOut: 'Sign Out',
     signUp: 'Sign Up',
     signInWithGoogle: 'Sign in with Google',
+    signingIn: 'Signing in...',
     welcomeBack: 'Welcome back!',
     signInToAccount: 'Sign in to your account',
 
     // Home
-    title: 'Digital Business Card',
+    title: 'Swivel',
     heroTitle: 'Create Stunning',
     heroSubtitle: 'Digital Business Cards',
     heroDescription: 'Transform your traditional business cards into interactive digital experiences with beautiful flip animations, QR codes, and easy sharing.',
@@ -430,7 +523,18 @@ const translations = {
     easySharingDesc: 'Share via URL, QR code, or social media. Perfect for networking events.',
     cardPreview: 'Card Preview',
     uploadToSee: 'Upload your card to see the magic!',
-    footerText: 'Made with ❤️ for better networking.',
+    footerText: 'Never lose a business card again. Build lasting connections. Redefine your networking.',
+
+    // Example Card Section
+    clickCardTitle: 'Click the Business Card',
+    clickCardDesc: 'Experience the flip animation just like a real business card.',
+    clickCardDesc2: 'Create digital business cards with QR codes and contact information.',
+    clickCardHint: '💡 Click the card to flip it',
+    createMyCard: 'Create My Card',
+
+    // Features Section
+    whyDigitalCard: 'Why Digital Business Cards?',
+    whyDigitalCardDesc: 'Experience beyond the limitations of paper business cards',
 
     // Navigation
     home: 'Home',
@@ -462,6 +566,40 @@ const translations = {
     failedToDeleteCard: 'Failed to delete business card',
     myCards: 'My Cards',
     cardWallet: 'Card Wallet',
+
+    // Business Card Actions
+    manage: 'Manage',
+    copyLink: 'Copy Link',
+    copied: 'Copied',
+    qrCode: 'QR Code',
+    delete: 'Delete',
+    deleteCardTitle: 'Delete this card?',
+    deleteCardMessage: 'This card will be permanently deleted and cannot be recovered.',
+    cancel: 'Cancel',
+
+    // Wallet Filters
+    searchByNickname: 'Search by nickname or name...',
+    search: 'Search',
+    all: 'All',
+    favorites: 'Favorites',
+    favoritesOnly: 'Favorites Only',
+    reset: 'Reset',
+
+    // Category Management
+    addCategory: '+ Add',
+    add: 'Add',
+    edit: 'Edit',
+    addCategoryTitle: 'Add Category',
+    editCategoryTitle: 'Edit Category',
+
+    // Contact Information
+    contactInfo: 'Contact Information',
+    phone: 'Phone',
+    email: 'Email',
+    website: 'Website',
+    saveToWallet: 'Save card to wallet',
+    saveToWalletDesc: 'Log in to automatically save this card to your wallet and view it anytime',
+    poweredBy: 'Powered by Digital Business Cards',
 
     // Wallet
     walletTitle: 'Card Wallet',

@@ -115,49 +115,89 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
             {formatDate(card.created_at)} 생성
           </p>
 
-          {/* Action Buttons - 토스식 버튼 디자인 */}
+          {/* Action Buttons - 토스 스타일 버튼 디자인 */}
           <div className="space-y-3">
-            <Link
-              href={`/my-card/${card.id}`}
-              className="block w-full bg-blue-600 text-white text-center py-3 px-4 rounded-xl text-sm font-semibold hover:bg-blue-700 transition-all duration-200"
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              {t('manage')}
-            </Link>
+              <Link
+                href={`/my-card/${card.id}`}
+                className="block w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white text-center py-3.5 px-4 rounded-2xl text-sm font-bold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl toss-button"
+              >
+                {t('manage')}
+              </Link>
+            </motion.div>
 
-            <div className="flex space-x-2">
-              <button
+            <div className="flex space-x-3">
+              <motion.button
                 onClick={handleCopyUrl}
-                className={`flex-1 py-3 px-4 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                className={`flex-1 py-3.5 px-4 rounded-2xl text-sm font-bold transition-all duration-300 toss-button ${
                   copySuccess
-                    ? 'bg-green-600 text-white hover:bg-green-700'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg'
+                    : 'bg-gray-50/80 text-gray-700 hover:bg-gray-100/80 border border-gray-200/50'
                 }`}
+                whileHover={{ scale: 1.02, y: -1 }}
+                whileTap={{ scale: 0.98 }}
               >
                 {copySuccess ? (
+                  <motion.span
+                    className="flex items-center justify-center gap-2"
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  >
+                    <motion.svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </motion.svg>
+                    {t('copied')}
+                  </motion.span>
+                ) : (
                   <span className="flex items-center justify-center gap-2">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
-                    복사됨
+                    {t('copyLink')}
                   </span>
-                ) : (
-                  '링크 복사'
                 )}
-              </button>
-              <button
+              </motion.button>
+
+              <motion.button
                 onClick={() => setShowQRCode(true)}
-                className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-xl text-sm font-semibold hover:bg-gray-200 transition-all duration-200"
+                className="flex-1 bg-gray-50/80 text-gray-700 py-3.5 px-4 rounded-2xl text-sm font-bold hover:bg-gray-100/80 transition-all duration-300 border border-gray-200/50 toss-button"
+                whileHover={{ scale: 1.02, y: -1 }}
+                whileTap={{ scale: 0.98 }}
               >
-                QR 코드
-              </button>
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                  </svg>
+                  {t('qrCode')}
+                </span>
+              </motion.button>
             </div>
 
-            <button
+            <motion.button
               onClick={() => setShowDeleteConfirm(true)}
-              className="w-full bg-red-50 text-red-600 py-3 px-4 rounded-xl text-sm font-semibold hover:bg-red-100 transition-all duration-200"
+              className="w-full bg-red-50/80 text-red-600 py-3.5 px-4 rounded-2xl text-sm font-bold hover:bg-red-100/80 transition-all duration-300 border border-red-200/50 toss-button"
+              whileHover={{ scale: 1.02, y: -1 }}
+              whileTap={{ scale: 0.98 }}
             >
-              삭제
-            </button>
+              <span className="flex items-center justify-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                {t('delete')}
+              </span>
+            </motion.button>
           </div>
         </div>
       </motion.div>
@@ -171,7 +211,7 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
             className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
           >
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-gray-900">QR 코드</h3>
+              <h3 className="text-xl font-bold text-gray-900">{t('qrCode')}</h3>
               <button
                 onClick={() => setShowQRCode(false)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -204,11 +244,10 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
                 </svg>
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">
-                명함을 삭제하시겠어요?
+                {t('deleteCardTitle')}
               </h3>
               <p className="text-sm text-gray-500 mb-6">
-                &quot;{card.title}&quot; 명함이 영구적으로 삭제되며<br />
-                복구할 수 없어요.
+                &quot;{card.title}&quot; {t('deleteCardMessage')}
               </p>
             </div>
             <div className="flex gap-3">
@@ -216,13 +255,13 @@ export default function BusinessCardItem({ card, onDelete }: BusinessCardItemPro
                 onClick={() => setShowDeleteConfirm(false)}
                 className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200"
               >
-                취소
+                {t('cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 className="flex-1 bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 transition-all duration-200"
               >
-                삭제
+                {t('delete')}
               </button>
             </div>
           </motion.div>

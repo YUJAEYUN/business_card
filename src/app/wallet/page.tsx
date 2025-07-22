@@ -222,7 +222,7 @@ export default function WalletPage() {
             className={`px-3 py-1 rounded ${selectedCategory === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
             onClick={() => setSelectedCategory('all')}
           >
-            전체
+            {t('all')}
           </button>
           {categories.map(cat => (
             <button
@@ -242,7 +242,7 @@ export default function WalletPage() {
               className={`px-3 py-1 rounded ${selectedGroup === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
               onClick={() => setSelectedGroup('all')}
             >
-              전체
+              {t('all')}
             </button>
             {allTags.map(tag => (
               <button

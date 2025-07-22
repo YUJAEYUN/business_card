@@ -17,12 +17,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Digital Business Card - Create & Share Beautiful Cards",
+  title: "Swivel - Create & Share Beautiful Digital Business Cards",
   description: "Create stunning digital business cards with flip animations. Upload your card images and share them with a unique URL and QR code.",
-  keywords: "digital business card, business card, QR code, card flip animation, professional networking",
-  authors: [{ name: "Digital Business Card" }],
+  keywords: "digital business card, business card, QR code, card flip animation, professional networking, swivel",
+  authors: [{ name: "Swivel" }],
   openGraph: {
-    title: "Digital Business Card - Create & Share Beautiful Cards",
+    title: "Swivel - Create & Share Beautiful Digital Business Cards",
     description: "Create stunning digital business cards with flip animations. Upload your card images and share them with a unique URL and QR code.",
     type: "website",
   },

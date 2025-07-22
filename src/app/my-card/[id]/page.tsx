@@ -36,13 +36,13 @@ export async function generateMetadata({ params }: MyCardPageProps) {
   
   if (!card) {
     return {
-      title: 'Business Card Not Found',
+      title: 'Card Not Found - Swivel',
     }
   }
 
   return {
-    title: `Manage ${card.title} - Digital Business Card`,
-    description: `Manage and share ${card.title}'s digital business card`,
+    title: `Manage ${card.title} - Swivel`,
+    description: `Manage and share ${card.title}'s digital business card on Swivel`,
   }
 }
 

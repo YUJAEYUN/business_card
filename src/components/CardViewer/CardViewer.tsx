@@ -83,7 +83,7 @@ export default function CardViewer({ card: initialCard }: CardViewerProps) {
             frontImageUrl={card.front_image_url}
             backImageUrl={card.back_image_url || undefined}
             cardType={card.card_type}
-            className="shadow-2xl"
+            className=""
           />
         </motion.div>
 

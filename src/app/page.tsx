@@ -7,6 +7,7 @@ import GoogleIdentityLogin from '@/components/auth/GoogleIdentityLogin'
 import { useTranslation } from '@/hooks/useTranslation'
 import Header from '@/components/layout/Header'
 import InAppBrowserWarning from '@/components/auth/InAppBrowserWarning'
+import ExampleBusinessCard from '@/components/ExampleCard/ExampleBusinessCard'
 import { useEffect, useRef } from 'react'
 export default function Home() {
   const { user, loading } = useAuth()
@@ -137,105 +138,247 @@ export default function Home() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
           <div className="text-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-white mb-4 md:mb-6"
-                  style={{
-                    textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'
-                  }}>
+              <motion.h1
+                className="text-3xl md:text-4xl lg:text-6xl font-black text-white mb-4 md:mb-6"
+                style={{
+                  textShadow: '2px 2px 12px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.6)'
+                }}
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
                 {t('heroTitle')}
-                <span className="text-blue-300 block" style={{
-                  textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'
-                }}>{t('heroSubtitle')}</span>
-              </h1>
-              <div className="p-6 mb-6 md:mb-8 max-w-3xl mx-auto">
-                <p className="text-lg md:text-xl text-white font-semibold"
+                <motion.span
+                  className="text-blue-300 block"
+                  style={{
+                    textShadow: '2px 2px 12px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.6)'
+                  }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  {t('heroSubtitle')}
+                </motion.span>
+              </motion.h1>
+
+              <motion.div
+                className="p-6 mb-8 md:mb-12 max-w-3xl mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
+                <p className="text-lg md:text-xl text-gray-100 font-semibold leading-relaxed"
                    style={{
-                     textShadow: '3px 3px 8px rgba(0,0,0,1), 0 0 15px rgba(0,0,0,0.8)'
+                     textShadow: '1px 1px 6px rgba(0,0,0,0.9)'
                    }}>
                   {t('heroDescription')}
                 </p>
-              </div>
+              </motion.div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-6 justify-center items-center"
             >
             {user ? (
               <>
                 <Link
                   href="/create"
-                  className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-blue-700 transition-colors shadow-lg"
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-10 py-4 rounded-2xl font-bold text-lg transition-colors duration-200 shadow-lg"
                 >
                   {t('createYourCard')}
                 </Link>
+
                 <Link
                   href="/dashboard"
-                  className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-50 transition-colors shadow-lg border border-blue-600"
+                  className="bg-white/95 backdrop-blur-sm hover:bg-white text-blue-600 hover:text-blue-700 px-10 py-4 rounded-2xl font-bold text-lg transition-colors duration-200 shadow-lg border border-white/20"
                 >
                   {t('viewDashboard')}
                 </Link>
               </>
             ) : (
-              <div className="w-full max-w-md">
-                <GoogleIdentityLogin />
-                <p className="text-sm text-white mt-3 text-center font-medium"
-                   style={{
-                     textShadow: '2px 2px 4px rgba(0,0,0,0.8)'
-                   }}>
-                  {t('signInToStart')}
-                </p>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+                className="w-full max-w-md"
+              >
+                <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-2xl">
+                  <GoogleIdentityLogin />
+                  <motion.p
+                    className="text-sm text-white mt-4 text-center font-semibold"
+                    style={{
+                      textShadow: '2px 2px 6px rgba(0,0,0,0.9)'
+                    }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.7 }}
+                  >
+                    {t('signInToStart')}
+                  </motion.p>
+                </div>
+              </motion.div>
             )}
           </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="bg-white py-16">
+      {/* 예시 명함 섹션 */}
+      <section className="bg-gradient-to-br from-gray-50 to-blue-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
           >
-            <div className="bg-gray-50 rounded-lg p-6 shadow-md">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 mx-auto">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2 text-center">{t('easyUpload')}</h3>
-              <p className="text-gray-600 text-center">{t('easyUploadDesc')}</p>
-            </div>
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+              {t('clickCardTitle')}
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              {t('clickCardDesc')}
+              <br className="hidden sm:block" />
+              {t('clickCardDesc2')}
+            </p>
+          </motion.div>
 
-            <div className="bg-gray-50 rounded-lg p-6 shadow-md">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4 mx-auto">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2 text-center">{t('flipAnimation')}</h3>
-              <p className="text-gray-600 text-center">{t('flipAnimationDesc')}</p>
-            </div>
-
-            <div className="bg-gray-50 rounded-lg p-6 shadow-md">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 mx-auto">
-                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2 text-center">{t('easySharing')}</h3>
-              <p className="text-gray-600 text-center">{t('easySharingDesc')}</p>
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="flex justify-center relative"
+          >
+            <div className="w-80 h-48 md:w-96 md:h-60 relative">
+              <ExampleBusinessCard className="w-full h-full" />
             </div>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <p className="text-sm text-gray-500 mb-6">
+              {t('clickCardHint')}
+            </p>
+
+            {!user && (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Link
+                  href="#hero"
+                  className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-2xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                  {t('createMyCard')}
+                </Link>
+              </motion.div>
+            )}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Features Section - 토스 스타일 */}
+      <section className="bg-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+              {t('whyDigitalCard')}
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              {t('whyDigitalCardDesc')}
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-blue-200/50"
+            >
+              <motion.div
+                className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </motion.div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">{t('easyUpload')}</h3>
+              <p className="text-gray-600 text-center leading-relaxed">{t('easyUploadDesc')}</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-green-200/50"
+            >
+              <motion.div
+                className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg"
+                whileHover={{ scale: 1.1, rotate: -5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </motion.div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">{t('flipAnimation')}</h3>
+              <p className="text-gray-600 text-center leading-relaxed">{t('flipAnimationDesc')}</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-purple-200/50"
+            >
+              <motion.div
+                className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                </svg>
+              </motion.div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">{t('easySharing')}</h3>
+              <p className="text-gray-600 text-center leading-relaxed">{t('easySharingDesc')}</p>
+            </motion.div>
+          </div>
 
           {/* Demo Card */}
           <motion.div

@@ -179,6 +179,28 @@ export async function POST(request: NextRequest) {
     }
 
     if (ocrData) {
+      console.log('Processing OCR data:', ocrData);
+
+      // OCR 데이터를 business_card_ocr_data 테이블에 저장
+      const { error: ocrError } = await supabaseAdmin
+        .from('business_card_ocr_data')
+        .insert({
+          id: crypto.randomUUID(),
+          business_card_id: cardId,
+          extracted_text: JSON.stringify(ocrData),
+          confidence_score: 0.9, // 기본값
+          language_detected: 'auto',
+          raw_data: ocrData,
+          created_at: new Date().toISOString()
+        });
+
+      if (ocrError) {
+        console.error('OCR data save error:', ocrError);
+        console.warn('Failed to save OCR data, but continuing with card creation');
+      } else {
+        console.log('OCR data saved successfully');
+      }
+
       const zonesToInsert = [];
 
       if (ocrData.phone) {

@@ -80,14 +80,14 @@ export default function WalletFilters({ filters, onFiltersChange }: WalletFilter
                 onChange={(e) => setSearchInput(e.target.value)}
                 onKeyDown={handleSearchKeyDown}
                 className="block w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-200"
-                placeholder="닉네임이나 이름으로 검색..."
+                placeholder={t('searchByNickname')}
               />
             </div>
             <button
               onClick={handleSearchSubmit}
               className="px-6 py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
             >
-              검색
+              {t('search')}
             </button>
           </div>
         </div>
@@ -108,7 +108,7 @@ export default function WalletFilters({ filters, onFiltersChange }: WalletFilter
             <svg className="w-4 h-4 mr-2" fill={filters.favorite ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
             </svg>
-            <span className="hidden sm:inline">{filters.favorite ? '즐겨찾기' : '즐겨찾기만'}</span>
+            <span className="hidden sm:inline">{filters.favorite ? t('favorites') : t('favoritesOnly')}</span>
             <span className="sm:hidden">★</span>
           </button>
 
@@ -121,7 +121,7 @@ export default function WalletFilters({ filters, onFiltersChange }: WalletFilter
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-              <span className="hidden sm:inline">초기화</span>
+              <span className="hidden sm:inline">{t('reset')}</span>
             </button>
           )}
         </div>
