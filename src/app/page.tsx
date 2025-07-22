@@ -97,11 +97,11 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen pb-16 md:pb-0">
+    <div className="w-full overflow-x-hidden">
       <Header />
 
       {/* Hero Section with Video Background */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+      <section className="hero-section relative h-screen w-full flex items-center justify-center overflow-hidden">
         {/* Background Video */}
         <div className="absolute inset-0 w-full h-full">
           <video
@@ -115,8 +115,12 @@ export default function Home() {
             disablePictureInPicture
             className="w-full h-full object-cover z-0"
             style={{
-              minHeight: '100vh',
-              minWidth: '100vw'
+              height: '100vh',
+              width: '100vw',
+              objectFit: 'cover',
+              position: 'absolute',
+              top: 0,
+              left: 0
             }}
             onError={(e) => {
               console.error('Video failed to load:', e)
@@ -135,7 +139,8 @@ export default function Home() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
+        <div className="relative z-10 w-full h-full flex items-center justify-center px-4 py-safe"
+             style={{ minHeight: '100vh' }}>
           <div className="text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -143,7 +148,7 @@ export default function Home() {
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
               <motion.h1
-                className="text-3xl md:text-4xl lg:text-6xl font-black text-white mb-4 md:mb-6"
+                className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black text-white mb-4 md:mb-6 leading-tight"
                 style={{
                   textShadow: '2px 2px 12px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.6)'
                 }}
@@ -231,7 +236,7 @@ export default function Home() {
       </section>
 
       {/* 예시 명함 섹션 */}
-      <section className="bg-gradient-to-br from-gray-50 to-blue-50 py-20">
+      <section className="w-full bg-gradient-to-br from-gray-50 to-blue-50 py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -298,7 +303,7 @@ export default function Home() {
       </section>
 
       {/* Platform Introduction Section */}
-      <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-purple-900 py-12 md:py-20 relative overflow-hidden">
+      <section className="w-full bg-gradient-to-br from-blue-900 via-blue-800 to-purple-900 py-12 md:py-20 relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20"></div>
@@ -362,7 +367,7 @@ export default function Home() {
       </section>
 
       {/* How Swivel Changes Your Business Section */}
-      <section className="bg-white py-12 md:py-20">
+      <section className="w-full bg-white py-12 md:py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -494,7 +499,7 @@ export default function Home() {
       </section>
 
       {/* Features Section - 토스 스타일 */}
-      <section className="bg-white py-20">
+      <section className="w-full bg-white py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -683,7 +688,7 @@ export default function Home() {
       </section>
 
       {/* Target Audience Section */}
-      <section className="bg-white py-12 md:py-20">
+      <section className="w-full bg-white py-12 md:py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -726,7 +731,7 @@ export default function Home() {
       </section>
 
       {/* Call to Action Section */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 py-12 md:py-20">
+      <section className="w-full bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 py-12 md:py-20 overflow-hidden">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -788,7 +793,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
+      <footer className="w-full bg-gray-900 text-white py-8 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <p>&copy; 2025 {t('title')}. {t('footerText')}</p>
@@ -798,6 +803,9 @@ export default function Home() {
 
       {/* 인앱 브라우저 경고 모달 */}
       <InAppBrowserWarning />
+
+      {/* 모바일 하단 네비게이션을 위한 여백 */}
+      <div className="h-16 md:h-0"></div>
     </div>
   )
 }
