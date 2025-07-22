@@ -42,6 +42,9 @@ const translations = {
     signingIn: '로그인 중...',
     welcomeBack: '다시 오신 것을 환영합니다!',
     signInToAccount: '계정에 로그인하세요',
+    signInWithGoogleSupabase: 'Google로 로그인',
+    loginError: '로그인 중 오류가 발생했습니다.',
+    mobileLoginError: '모바일에서 문제가 지속되면 데스크톱 브라우저를 사용해보세요.',
 
     // Home
     title: 'Swivel',
@@ -60,6 +63,55 @@ const translations = {
     cardPreview: '명함 미리보기',
     uploadToSee: '명함을 업로드하여 마법을 경험해보세요!',
     footerText: '잃어버릴 걱정 없는 명함, 쌓여가는 인연. 당신의 네트워킹을 재정의합니다.',
+
+    // Platform Introduction Sections
+    newEraTitle: 'Swivel을 통해 경험하는 명함의 새로운 시대',
+    newEraSubtitle: '단순한 명함 교환을 넘어, 스마트한 네트워킹의 시작!',
+    problemStatement: '아직도 종이 명함을 들고 다니며 정보가 바뀔 때마다 새로 만드느라 번거로우신가요? 어렵게 받은 명함은 주머니 속에서 잊히고, 기존 디지털 명함은 저장하고 관리하기 불편하셨나요?',
+    solutionStatement: 'Swivel은 이 모든 문제점을 해결하고, 당신의 첫인상과 비즈니스 네트워킹을 혁신합니다.',
+    platformDefinition: 'Swivel은 기존 종이 명함의 한계를 넘어, 당신의 명함을 시각적으로 압도적인 디지털 경험으로 전환하고, 간편한 관리와 끊김 없는 연결을 제공하는 혁신적인 플랫폼입니다.',
+
+    // How Swivel Changes Your Business
+    businessChangeTitle: 'Swivel, 어떻게 당신의 비즈니스를 변화시킬까요?',
+
+    // Easy Card Creation
+    aiCreationTitle: '초간편 명함 생성: AI가 돕는 마법 같은 변환',
+    aiCreationDesc1: '"Create" 버튼을 누르는 순간, 당신의 명함은 새로운 생명을 얻습니다.',
+    aiCreationDesc2: '종이 명함의 앞/뒷면 이미지를 업로드하기만 하면, Swivel의 AI와 OCR 기술을 접목한 에이전트가 명함 속 정보를 정확하게 분석하고 추출합니다.',
+    aiCreationDesc3: '사용자는 추출된 정보를 최종 확인하고 필요시 수정하여, 단 몇 초 만에 완벽한 디지털 명함을 완성할 수 있습니다. 복잡한 디자인 도구 없이, 당신 명함의 본질을 그대로 디지털로 가져오세요.',
+
+    // Visual Appeal
+    visualImpactTitle: '압도적인 시각적 매력: 살아있는 \'카드 플립\' 명함',
+    visualImpactDesc: '당신의 디지털 명함은 단순한 이미지가 아닙니다. 클릭하거나 스와이프할 때마다 앞뒷면이 부드럽게 전환되는 \'카드 플립\' 애니메이션이 적용되어, 상대방에게 강렬하고 잊을 수 없는 첫인상을 선사합니다. 당신의 전문성과 트렌디함을 동시에 어필하세요.',
+
+    // Smart Sharing
+    smartShareTitle: '스마트한 공유: 언제 어디서든, 누구에게나',
+    smartShareDesc1: '생성된 당신의 디지털 명함은 고유한 웹 주소(URL)를 가집니다.',
+    smartShareDesc2: '자동 생성된 QR 코드와 함께 언제, 어디서든 스마트폰으로 간편하게 공유할 수 있습니다.',
+    smartShareDesc3: '명함을 받은 사람은 별도의 앱 설치 없이 웹 브라우저를 통해 당신의 명함을 바로 확인할 수 있습니다.',
+
+    // Digital Wallet Management
+    walletManagementTitle: '혁신적인 명함 관리: 내 손안의 \'디지털 명함 지갑\'',
+    walletManagementDesc1: '상대방을 위한 초간편 접속: 명함을 받은 사람은 해당 URL에 접속 후, 구글 로그인 버튼 하나만 누르면 가입/로그인이 동시에 완료됩니다.',
+    walletManagementDesc2: '자동 명함 저장: 공유받은 명함은 상대방의 \'디지털 명함 지갑\'에 자동으로 저장되어 체계적으로 관리됩니다. 잊어버리거나 잃어버릴 걱정이 없습니다.',
+    walletManagementDesc3: '정보 최신화: 당신의 명함 정보가 바뀌었다면, Swivel 대시보드에서 한 번만 수정하세요. 이전에 공유했던 모든 사람의 명함 지갑에 자동으로 최신 정보가 반영되어, 늘 정확한 정보를 유지할 수 있습니다.',
+    walletManagementDesc4: '명함 회수 기능: 더 이상 필요 없는 명함이 있다면, 대시보드에서 삭제하세요. 상대방의 명함 지갑에 저장된 당신의 명함도 자동으로 회수되어 개인 정보 관리와 관계 정리가 용이해집니다.',
+
+    // Target Audience
+    recommendationTitle: 'Swivel, 이런 분들께 강력 추천합니다!',
+    recommendation1: '첫인상을 더욱 특별하고 전문적으로 만들고 싶은 비즈니스맨',
+    recommendation2: '잦은 정보 변경으로 명함 재제작이 번거로웠던 분',
+    recommendation3: '복잡한 명함 관리에서 벗어나 스마트한 네트워킹을 원하는 분',
+    recommendation4: '명함 교환을 통해 효율적으로 인연을 만들고 관리하고 싶은 분',
+
+    // Call to Action
+    upgradeNetworking: 'Swivel에서 당신의 비즈니스 네트워킹을 한 단계 업그레이드하세요.',
+
+    // Wallet Management Feature Titles
+    easyAccess: '초간편 접속',
+    autoSave: '자동 저장',
+    realTimeUpdate: '실시간 업데이트',
+    cardRecall: '명함 회수',
 
     // Example Card Section
     clickCardTitle: '명함을 클릭해보세요',
@@ -274,6 +326,9 @@ const translations = {
     signingIn: 'ログイン中...',
     welcomeBack: 'おかえりなさい！',
     signInToAccount: 'アカウントにログインしてください',
+    signInWithGoogleSupabase: 'Googleでログイン (Supabase)',
+    loginError: 'ログイン中にエラーが発生しました。',
+    mobileLoginError: 'モバイルで問題が続く場合は、デスクトップブラウザをお試しください。',
 
     // Home
     title: 'Swivel',
@@ -292,6 +347,55 @@ const translations = {
     cardPreview: '名刺プレビュー',
     uploadToSee: '名刺をアップロードして魔法を体験してください！',
     footerText: '紛失の心配がない名刺、積み重なる縁。あなたのネットワーキングを再定義します。',
+
+    // Platform Introduction Sections
+    newEraTitle: 'Swivelで体験する名刺の新時代',
+    newEraSubtitle: '単純な名刺交換を超えた、スマートなネットワーキングの始まり！',
+    problemStatement: 'まだ紙の名刺を持ち歩き、情報が変わるたびに新しく作り直すのが面倒ですか？苦労して受け取った名刺はポケットの中で忘れられ、既存のデジタル名刺は保存や管理が不便でしたか？',
+    solutionStatement: 'Swivelはこれらすべての問題を解決し、あなたの第一印象とビジネスネットワーキングを革新します。',
+    platformDefinition: 'Swivelは従来の紙の名刺の限界を超え、あなたの名刺を視覚的に圧倒的なデジタル体験に変換し、簡単な管理と途切れのない接続を提供する革新的なプラットフォームです。',
+
+    // How Swivel Changes Your Business
+    businessChangeTitle: 'Swivel、どのようにあなたのビジネスを変えるのでしょうか？',
+
+    // Easy Card Creation
+    aiCreationTitle: '超簡単名刺作成：AIが支援する魔法のような変換',
+    aiCreationDesc1: '"Create"ボタンを押した瞬間、あなたの名刺は新しい生命を得ます。',
+    aiCreationDesc2: '紙の名刺の表/裏面画像をアップロードするだけで、SwivelのAIとOCR技術を組み合わせたエージェントが名刺内の情報を正確に分析・抽出します。',
+    aiCreationDesc3: 'ユーザーは抽出された情報を最終確認し、必要に応じて修正することで、わずか数秒で完璧なデジタル名刺を完成させることができます。複雑なデザインツールなしに、あなたの名刺の本質をそのままデジタルに移しましょう。',
+
+    // Visual Appeal
+    visualImpactTitle: '圧倒的な視覚的魅力：生きている「カードフリップ」名刺',
+    visualImpactDesc: 'あなたのデジタル名刺は単純な画像ではありません。クリックやスワイプするたびに表裏が滑らかに切り替わる「カードフリップ」アニメーションが適用され、相手に強烈で忘れられない第一印象を与えます。あなたの専門性とトレンディさを同時にアピールしましょう。',
+
+    // Smart Sharing
+    smartShareTitle: 'スマートな共有：いつでも、どこでも、誰にでも',
+    smartShareDesc1: '作成されたあなたのデジタル名刺は固有のウェブアドレス（URL）を持ちます。',
+    smartShareDesc2: '自動生成されたQRコードと共に、いつでも、どこでもスマートフォンで簡単に共有できます。',
+    smartShareDesc3: '名刺を受け取った人は、別途アプリをインストールすることなく、ウェブブラウザを通じてあなたの名刺をすぐに確認できます。',
+
+    // Digital Wallet Management
+    walletManagementTitle: '革新的な名刺管理：手のひらの中の「デジタル名刺ウォレット」',
+    walletManagementDesc1: '相手のための超簡単アクセス：名刺を受け取った人は該当URLにアクセス後、Googleログインボタンを一度押すだけで登録/ログインが同時に完了します。',
+    walletManagementDesc2: '自動名刺保存：共有された名刺は相手の「デジタル名刺ウォレット」に自動的に保存され、体系的に管理されます。忘れたり紛失したりする心配がありません。',
+    walletManagementDesc3: '情報の最新化：あなたの名刺情報が変わったら、Swivelダッシュボードで一度だけ修正してください。以前に共有したすべての人の名刺ウォレットに自動的に最新情報が反映され、常に正確な情報を維持できます。',
+    walletManagementDesc4: '名刺回収機能：もう必要のない名刺があれば、ダッシュボードから削除してください。相手の名刺ウォレットに保存されたあなたの名刺も自動的に回収され、個人情報管理と関係整理が容易になります。',
+
+    // Target Audience
+    recommendationTitle: 'Swivel、こんな方に強くお勧めします！',
+    recommendation1: '第一印象をより特別で専門的にしたいビジネスマン',
+    recommendation2: '頻繁な情報変更で名刺の再作成が面倒だった方',
+    recommendation3: '複雑な名刺管理から脱却してスマートなネットワーキングを望む方',
+    recommendation4: '名刺交換を通じて効率的に人脈を作り管理したい方',
+
+    // Call to Action
+    upgradeNetworking: 'Swivelであなたのビジネスネットワーキングを一段階アップグレードしましょう。',
+
+    // Wallet Management Feature Titles
+    easyAccess: '超簡単アクセス',
+    autoSave: '自動保存',
+    realTimeUpdate: 'リアルタイム更新',
+    cardRecall: '名刺回収',
 
     // Example Card Section
     clickCardTitle: '名刺をクリックしてみてください',
@@ -506,6 +610,9 @@ const translations = {
     signingIn: 'Signing in...',
     welcomeBack: 'Welcome back!',
     signInToAccount: 'Sign in to your account',
+    signInWithGoogleSupabase: 'Sign in with Google (Supabase)',
+    loginError: 'An error occurred during login.',
+    mobileLoginError: 'If problems persist on mobile, try using a desktop browser.',
 
     // Home
     title: 'Swivel',
@@ -524,6 +631,55 @@ const translations = {
     cardPreview: 'Card Preview',
     uploadToSee: 'Upload your card to see the magic!',
     footerText: 'Never lose a business card again. Build lasting connections. Redefine your networking.',
+
+    // Platform Introduction Sections
+    newEraTitle: 'Experience the New Era of Business Cards with Swivel',
+    newEraSubtitle: 'Beyond simple card exchange, the beginning of smart networking!',
+    problemStatement: 'Are you still carrying paper business cards and finding it tedious to remake them every time your information changes? Do the business cards you worked hard to receive get forgotten in your pocket, and are existing digital business cards inconvenient to save and manage?',
+    solutionStatement: 'Swivel solves all these problems and revolutionizes your first impression and business networking.',
+    platformDefinition: 'Swivel is an innovative platform that goes beyond the limitations of traditional paper business cards, transforming your cards into visually overwhelming digital experiences while providing easy management and seamless connections.',
+
+    // How Swivel Changes Your Business
+    businessChangeTitle: 'How Does Swivel Transform Your Business?',
+
+    // Easy Card Creation
+    aiCreationTitle: 'Ultra-Simple Card Creation: AI-Powered Magical Transformation',
+    aiCreationDesc1: 'The moment you press the "Create" button, your business card gains new life.',
+    aiCreationDesc2: 'Simply upload front/back images of your paper business card, and Swivel\'s AI and OCR technology agent will accurately analyze and extract the information from your card.',
+    aiCreationDesc3: 'Users can review the extracted information and make necessary edits to complete a perfect digital business card in just seconds. Bring the essence of your business card to digital without complex design tools.',
+
+    // Visual Appeal
+    visualImpactTitle: 'Overwhelming Visual Appeal: Living \'Card Flip\' Business Cards',
+    visualImpactDesc: 'Your digital business card is not just a simple image. With \'card flip\' animations that smoothly transition between front and back when clicked or swiped, it delivers a powerful and unforgettable first impression to others. Appeal to both your professionalism and trendiness simultaneously.',
+
+    // Smart Sharing
+    smartShareTitle: 'Smart Sharing: Anytime, Anywhere, to Anyone',
+    smartShareDesc1: 'Your generated digital business card has a unique web address (URL).',
+    smartShareDesc2: 'With automatically generated QR codes, you can easily share anytime, anywhere with your smartphone.',
+    smartShareDesc3: 'Recipients can immediately view your business card through a web browser without installing any additional apps.',
+
+    // Digital Wallet Management
+    walletManagementTitle: 'Revolutionary Card Management: \'Digital Business Card Wallet\' in Your Hand',
+    walletManagementDesc1: 'Ultra-simple access for recipients: After accessing the URL, recipients can complete registration/login simultaneously with just one click of the Google login button.',
+    walletManagementDesc2: 'Automatic card saving: Shared business cards are automatically saved in the recipient\'s \'Digital Business Card Wallet\' for systematic management. No worries about forgetting or losing them.',
+    walletManagementDesc3: 'Information updates: If your business card information changes, just edit it once in the Swivel dashboard. The latest information is automatically reflected in all previously shared recipients\' card wallets, maintaining accurate information at all times.',
+    walletManagementDesc4: 'Card recall feature: If you have business cards that are no longer needed, delete them from the dashboard. Your business cards stored in recipients\' card wallets are also automatically recalled, making personal information management and relationship organization easy.',
+
+    // Target Audience
+    recommendationTitle: 'Swivel is Strongly Recommended for These People!',
+    recommendation1: 'Businesspeople who want to make their first impression more special and professional',
+    recommendation2: 'Those who found business card recreation tedious due to frequent information changes',
+    recommendation3: 'Those who want to escape complex business card management and desire smart networking',
+    recommendation4: 'Those who want to efficiently create and manage connections through business card exchange',
+
+    // Call to Action
+    upgradeNetworking: 'Upgrade your business networking to the next level with Swivel.',
+
+    // Wallet Management Feature Titles
+    easyAccess: 'Easy Access',
+    autoSave: 'Auto Save',
+    realTimeUpdate: 'Real-time Update',
+    cardRecall: 'Card Recall',
 
     // Example Card Section
     clickCardTitle: 'Click the Business Card',

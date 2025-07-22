@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import { useTranslation } from '@/hooks/useTranslation'
 
 export default function SupabaseLoginButton() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { t } = useTranslation()
 
   const handleGoogleSignIn = async () => {
     try {
@@ -28,7 +30,7 @@ export default function SupabaseLoginButton() {
       }
     } catch (err: unknown) {
       console.error('Supabase Google Auth Error:', err)
-      setError(err instanceof Error ? err.message : '로그인 중 오류가 발생했습니다.')
+      setError(err instanceof Error ? err.message : t('loginError'))
     } finally {
       setIsLoading(false)
     }
@@ -59,7 +61,7 @@ export default function SupabaseLoginButton() {
             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
           />
         </svg>
-        {isLoading ? '로그인 중...' : 'Google로 로그인 (Supabase)'}
+        {isLoading ? t('signingIn') : t('signInWithGoogleSupabase')}
       </button>
 
       {error && (
