@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import ImageEditor from './ImageEditor'
 
 interface ImageUploadProps {
   onImageSelect: (file: File, preview: string) => void
@@ -11,6 +12,8 @@ interface ImageUploadProps {
   accept?: string
   maxSize?: number // in MB
   className?: string
+  enableEdit?: boolean // Enable image editing features
+  aspectRatio?: number // Aspect ratio for cropping (width/height)
 }
 
 export default function ImageUpload({
@@ -20,10 +23,14 @@ export default function ImageUpload({
   accept = 'image/*',
   maxSize = 10,
   className = '',
+  enableEdit = true,
+  aspectRatio,
 }: ImageUploadProps) {
   const [isDragOver, setIsDragOver] = useState(false)
   const [preview, setPreview] = useState<string | null>(currentImage || null)
   const [error, setError] = useState<string | null>(null)
+  const [showEditor, setShowEditor] = useState(false)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const validateFile = (file: File): string | null => {
@@ -53,10 +60,16 @@ export default function ImageUpload({
     reader.onload = (e) => {
       const result = e.target?.result as string
       setPreview(result)
-      onImageSelect(file, result)
+      setSelectedFile(file)
+
+      if (enableEdit) {
+        setShowEditor(true)
+      } else {
+        onImageSelect(file, result)
+      }
     }
     reader.readAsDataURL(file)
-  }, [onImageSelect, maxSize, validateFile])
+  }, [onImageSelect, maxSize, validateFile, enableEdit])
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -77,6 +90,29 @@ export default function ImageUpload({
     e.preventDefault()
     setIsDragOver(false)
   }, [])
+
+  const handleEditSave = useCallback((editedFile: File) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const result = e.target?.result as string
+      setPreview(result)
+      onImageSelect(editedFile, result)
+      setShowEditor(false)
+    }
+    reader.readAsDataURL(editedFile)
+  }, [onImageSelect])
+
+  const handleEditCancel = useCallback(() => {
+    setShowEditor(false)
+    setPreview(null)
+    setSelectedFile(null)
+  }, [])
+
+  const handleEditImage = useCallback(() => {
+    if (preview && selectedFile) {
+      setShowEditor(true)
+    }
+  }, [preview, selectedFile])
 
   const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -148,11 +184,23 @@ export default function ImageUpload({
             >
               ×
             </button>
+            {enableEdit && selectedFile && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleEditImage()
+                }}
+                className="absolute top-2 right-10 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-blue-600 transition-colors"
+                title="Edit image"
+              >
+                ✎
+              </button>
+            )}
             <p className="text-sm text-green-600 font-medium">
               Image uploaded successfully
             </p>
             <p className="text-xs text-gray-500 mt-1">
-              Click to change image
+              {enableEdit ? 'Click to change image or edit button to crop/rotate' : 'Click to change image'}
             </p>
           </div>
         ) : (
@@ -187,6 +235,16 @@ export default function ImageUpload({
         >
           {error}
         </motion.p>
+      )}
+
+      {/* Image Editor Modal */}
+      {showEditor && preview && (
+        <ImageEditor
+          imageUrl={preview}
+          onSave={handleEditSave}
+          onCancel={handleEditCancel}
+          aspectRatio={aspectRatio}
+        />
       )}
     </div>
   )

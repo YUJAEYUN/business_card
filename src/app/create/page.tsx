@@ -278,6 +278,8 @@ export default function CreatePage() {
                 currentImage={cardData.frontImage.preview || undefined}
                 label={`${t('frontImage')} *`}
                 className="mb-6"
+                enableEdit={true}
+                aspectRatio={cardData.cardType === 'horizontal' ? 16/9 : 9/16}
               />
 
               {/* Back Image Upload */}
@@ -286,6 +288,8 @@ export default function CreatePage() {
                 currentImage={cardData.backImage.preview || undefined}
                 label={`${t('backImage')} (${t('optional')})`}
                 className="mb-6"
+                enableEdit={true}
+                aspectRatio={cardData.cardType === 'horizontal' ? 16/9 : 9/16}
               />
 
               {/* OCR Section */}

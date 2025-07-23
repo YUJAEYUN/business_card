@@ -34,6 +34,12 @@ const translations = {
     versions: '버전들',
     changes: '변경사항',
 
+    // Image Editor
+    editImage: '이미지 편집',
+    rotate: '회전',
+    scale: '크기',
+    processing: '처리 중...',
+
     // Auth
     signIn: '로그인',
     signOut: '로그아웃',
@@ -157,13 +163,9 @@ const translations = {
 
     // Business Card Actions
     manage: '관리',
-    copyLink: '링크 복사',
-    copied: '복사됨',
     qrCode: 'QR 코드',
-    delete: '삭제',
     deleteCardTitle: '명함을 삭제하시겠어요?',
     deleteCardMessage: '명함이 영구적으로 삭제되며 복구할 수 없어요.',
-    cancel: '취소',
 
     // Wallet Filters
     searchByNickname: '닉네임이나 이름으로 검색...',
@@ -176,7 +178,6 @@ const translations = {
     // Category Management
     addCategory: '+ 추가',
     add: '추가',
-    edit: '수정',
     addCategoryTitle: '카테고리 추가',
     editCategoryTitle: '카테고리 수정',
 
@@ -278,9 +279,7 @@ const translations = {
     copy: '복사',
 
     // Dashboard Card Actions
-    manage: '관리',
     copyCardLink: '링크 복사',
-    qrCode: 'QR 코드',
     deleteBusinessCard: '명함 삭제',
     deleteConfirmMessage: '정말로 삭제하시겠습니까?',
     deleteConfirmDescription: '이 작업은 되돌릴 수 없습니다.',
@@ -309,6 +308,12 @@ const translations = {
     copyLink: 'リンクをコピー',
     share: '共有',
     customUrl: 'カスタムURL',
+
+    // Image Editor
+    editImage: '画像編集',
+    rotate: '回転',
+    scale: 'スケール',
+    processing: '処理中...',
     updateCard: 'カードを更新',
     versionHistory: 'バージョン履歴',
     update: '更新',
@@ -441,13 +446,9 @@ const translations = {
 
     // Business Card Actions
     manage: '管理',
-    copyLink: 'リンクをコピー',
-    copied: 'コピーしました',
     qrCode: 'QRコード',
-    delete: '削除',
     deleteCardTitle: '名刺を削除しますか？',
     deleteCardMessage: '名刺は永久に削除され、復元できません。',
-    cancel: 'キャンセル',
 
     // Wallet Filters
     searchByNickname: 'ニックネームや名前で検索...',
@@ -460,7 +461,6 @@ const translations = {
     // Category Management
     addCategory: '+ 追加',
     add: '追加',
-    edit: '編集',
     addCategoryTitle: 'カテゴリ追加',
     editCategoryTitle: 'カテゴリ編集',
 
@@ -562,9 +562,7 @@ const translations = {
     copy: 'コピー',
 
     // Dashboard Card Actions
-    manage: '管理',
     copyCardLink: 'リンクをコピー',
-    qrCode: 'QRコード',
     deleteBusinessCard: '名刺を削除',
     deleteConfirmMessage: '本当に削除しますか？',
     deleteConfirmDescription: 'この操作は元に戻せません。',
@@ -593,6 +591,12 @@ const translations = {
     copyLink: 'Copy Link',
     share: 'Share',
     customUrl: 'Custom URL',
+
+    // Image Editor
+    editImage: 'Edit Image',
+    rotate: 'Rotate',
+    scale: 'Scale',
+    processing: 'Processing...',
     updateCard: 'Update Card',
     versionHistory: 'Version History',
     update: 'Update',
@@ -725,13 +729,9 @@ const translations = {
 
     // Business Card Actions
     manage: 'Manage',
-    copyLink: 'Copy Link',
-    copied: 'Copied',
     qrCode: 'QR Code',
-    delete: 'Delete',
     deleteCardTitle: 'Delete this card?',
     deleteCardMessage: 'This card will be permanently deleted and cannot be recovered.',
-    cancel: 'Cancel',
 
     // Wallet Filters
     searchByNickname: 'Search by nickname or name...',
@@ -744,7 +744,6 @@ const translations = {
     // Category Management
     addCategory: '+ Add',
     add: 'Add',
-    edit: 'Edit',
     addCategoryTitle: 'Add Category',
     editCategoryTitle: 'Edit Category',
 
@@ -846,9 +845,7 @@ const translations = {
     copy: 'Copy',
 
     // Dashboard Card Actions
-    manage: 'Manage',
     copyCardLink: 'Copy Link',
-    qrCode: 'QR Code',
     deleteBusinessCard: 'Delete Business Card',
     deleteConfirmMessage: 'Are you sure you want to delete this?',
     deleteConfirmDescription: 'This action cannot be undone.',
