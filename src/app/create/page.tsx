@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/contexts/AuthContext'
@@ -10,7 +10,10 @@ import { uploadBusinessCardImage, compressImage } from '@/lib/storage'
 import { useTranslation } from '@/hooks/useTranslation'
 import Header from '@/components/layout/Header'
 import DualOCRProcessor from '@/components/OCR/DualOCRProcessor'
+import OnboardingTutorial from '@/components/Onboarding/OnboardingTutorial'
+import TutorialDebug from '@/components/Debug/TutorialDebug'
 import { BusinessCardData } from '@/lib/ocr/types'
+import { checkTutorialCompleted, markTutorialCompleted } from '@/lib/tutorial'
 
 interface CardData {
   title: string
@@ -41,11 +44,37 @@ export default function CreatePage() {
   const [error, setError] = useState<string | null>(null)
   const [tempCardId, setTempCardId] = useState<string | null>(null)
   const [pendingOCRData, setPendingOCRData] = useState<BusinessCardData | null>(null)
+  const [showOnboarding, setShowOnboarding] = useState(false)
+  const [isCheckingTutorial, setIsCheckingTutorial] = useState(true)
 
   const { t } = useTranslation()
 
   // OCR 기능 활성화 여부 확인
   const isOCREnabled = process.env.NEXT_PUBLIC_ENABLE_OCR === 'true'
+
+  // Check tutorial status when user is loaded
+  useEffect(() => {
+    const checkTutorial = async () => {
+      if (user && !loading) {
+        setIsCheckingTutorial(true)
+        try {
+          console.log('🚀 Starting tutorial check for user:', user.email)
+          const completed = await checkTutorialCompleted(user.email!)
+          console.log('🎯 Tutorial check result:', completed)
+          setShowOnboarding(!completed)
+        } catch (error) {
+          console.error('💥 Error in tutorial check useEffect:', error)
+          setShowOnboarding(false)
+        } finally {
+          setIsCheckingTutorial(false)
+        }
+      } else {
+        setIsCheckingTutorial(false)
+      }
+    }
+
+    checkTutorial()
+  }, [user, loading])
 
   // Redirect if not authenticated
   if (!loading && !user) {
@@ -70,6 +99,30 @@ export default function CreatePage() {
       ...prev,
       backImage: { file, preview }
     }))
+  }
+
+  const handleTutorialComplete = async () => {
+    if (user?.email) {
+      try {
+        await markTutorialCompleted(user.email)
+        setShowOnboarding(false)
+      } catch (error) {
+        console.error('Error marking tutorial as completed:', error)
+        setShowOnboarding(false)
+      }
+    }
+  }
+
+  const handleTutorialSkip = async () => {
+    if (user?.email) {
+      try {
+        await markTutorialCompleted(user.email)
+        setShowOnboarding(false)
+      } catch (error) {
+        console.error('Error marking tutorial as completed:', error)
+        setShowOnboarding(false)
+      }
+    }
   }
 
   const startAutoOCR = async () => {
@@ -506,6 +559,18 @@ export default function CreatePage() {
           </div>
         </div>
       </div>
+
+      {/* Onboarding Tutorial */}
+      {!isCheckingTutorial && (
+        <OnboardingTutorial
+          isOpen={showOnboarding}
+          onComplete={handleTutorialComplete}
+          onSkip={handleTutorialSkip}
+        />
+      )}
+
+      {/* Debug Tools (Development Only) */}
+      <TutorialDebug />
     </div>
   )
 }

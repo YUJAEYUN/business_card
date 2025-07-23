@@ -40,6 +40,16 @@ const translations = {
     scale: '크기',
     processing: '처리 중...',
 
+    // Onboarding Tutorial
+    onboardingTitle: '명함 만들기 가이드',
+    onboardingStep1Title: '명함 생성 시작',
+    onboardingStep1Desc: '명함 닉네임과 앞/뒷면 사진을 올려서, 나만의 명함을 만들어 보세요!',
+    onboardingStep2Title: 'AI 명함 분석',
+    onboardingStep2Desc: 'AI가 명함 정보를 자동으로 분석해 드려요. 틀린 정보가 있다면 직접 편집할 수도 있습니다.',
+    onboardingStep3Title: '명함 공유 및 자동 업데이트',
+    onboardingStep3Desc: '명함이 수정되면 공유받은 사람의 명함 정보도 자동으로 업데이트됩니다. 간편하게 명함을 관리해 보세요!',
+    skip: '건너뛰기',
+
     // Auth
     signIn: '로그인',
     signOut: '로그아웃',
@@ -314,6 +324,16 @@ const translations = {
     rotate: '回転',
     scale: 'スケール',
     processing: '処理中...',
+
+    // Onboarding Tutorial
+    onboardingTitle: '名刺作成ガイド',
+    onboardingStep1Title: '名刺作成開始',
+    onboardingStep1Desc: '名刺のニックネームと表/裏面の写真をアップロードして、あなただけの名刺を作成してみてください！',
+    onboardingStep2Title: 'AI名刺分析',
+    onboardingStep2Desc: 'AIが名刺情報を自動的に分析します。間違った情報があれば直接編集することもできます。',
+    onboardingStep3Title: '名刺共有と自動更新',
+    onboardingStep3Desc: '名刺が修正されると、共有を受けた人の名刺情報も自動的に更新されます。簡単に名刺を管理してみてください！',
+    skip: 'スキップ',
     updateCard: 'カードを更新',
     versionHistory: 'バージョン履歴',
     update: '更新',
@@ -597,6 +617,16 @@ const translations = {
     rotate: 'Rotate',
     scale: 'Scale',
     processing: 'Processing...',
+
+    // Onboarding Tutorial
+    onboardingTitle: 'Business Card Creation Guide',
+    onboardingStep1Title: 'Start Creating Your Card',
+    onboardingStep1Desc: 'Upload your card nickname and front/back photos to create your unique business card!',
+    onboardingStep2Title: 'AI Card Analysis',
+    onboardingStep2Desc: 'AI automatically analyzes your card information. You can edit any incorrect information directly.',
+    onboardingStep3Title: 'Card Sharing & Auto-Update',
+    onboardingStep3Desc: 'When your card is updated, the information in shared recipients\' card wallets is automatically updated too. Manage your cards easily!',
+    skip: 'Skip',
     updateCard: 'Update Card',
     versionHistory: 'Version History',
     update: 'Update',
