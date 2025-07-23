@@ -153,6 +153,18 @@ const translations = {
     english: 'English',
     selectLanguage: '언어 선택',
 
+    // Tutorial/User Guide
+    userGuide: '사용가이드',
+    start: '시작하기',
+    tutorialStep1Title: '인터랙티브 명함 만들기',
+    tutorialStep1Desc: '명함 이미지를 업로드하면 애니메이션이 적용된 공유하기 편리한 명함으로 변환해드려요!',
+    tutorialStep2Title: 'OCR + AI 자동 정보 추출',
+    tutorialStep2Desc: 'OCR 기술과 AI가 명함에서 이름, 회사, 연락처 등을 자동으로 읽어내고 정리해드려요. 잘못된 부분은 직접 수정할 수 있어요.',
+    tutorialStep3Title: 'QR코드로 간편 공유',
+    tutorialStep3Desc: '완성된 디지털 명함을 QR코드나 링크로 공유하세요. 상대방이 스캔하거나 링크를 열기만 하면 끝!',
+    tutorialStep4Title: '자동 명함지갑 저장',
+    tutorialStep4Desc: '내 명함을 받은 상대방의 계정에 자동으로 저장돼요. 내 정보가 바뀌면 상대방 명함지갑도 실시간 업데이트!',
+
     // Dashboard
     subtitle: '디지털 명함 관리',
     welcome: '환영합니다!',
@@ -446,6 +458,18 @@ const translations = {
     english: 'English',
     selectLanguage: '言語を選択',
 
+    // Tutorial/User Guide
+    userGuide: '使用ガイド',
+    start: '開始',
+    tutorialStep1Title: 'インタラクティブ名刺作成',
+    tutorialStep1Desc: '名刺画像をアップロードすると、アニメーション付きの共有しやすい名刺に変換します！',
+    tutorialStep2Title: 'OCR + AI自動情報抽出',
+    tutorialStep2Desc: 'OCR技術とAIが名刺から名前、会社、連絡先などを自動で読み取り整理します。間違った部分は直接修正できます。',
+    tutorialStep3Title: 'QRコードで簡単共有',
+    tutorialStep3Desc: '完成したデジタル名刺をQRコードやリンクで共有しましょう。相手がスキャンまたはリンクを開くだけで完了！',
+    tutorialStep4Title: '自動名刺ウォレット保存',
+    tutorialStep4Desc: 'あなたの名刺を受け取った相手のアカウントに自動保存されます。情報が変更されると相手の名刺ウォレットもリアルタイム更新！',
+
     // Dashboard
     subtitle: 'デジタル名刺を管理',
     welcome: 'ようこそ！',
@@ -738,6 +762,18 @@ const translations = {
     japanese: '日本語',
     english: 'English',
     selectLanguage: 'Select Language',
+
+    // Tutorial/User Guide
+    userGuide: 'User Guide',
+    start: 'Get Started',
+    tutorialStep1Title: 'Create Interactive Business Cards',
+    tutorialStep1Desc: 'Upload your business card images and we\'ll transform them into animated, shareable digital cards!',
+    tutorialStep2Title: 'OCR + AI Auto Information Extraction',
+    tutorialStep2Desc: 'OCR technology and AI automatically read and organize names, companies, contacts, etc. from your business cards. You can edit any incorrect parts directly.',
+    tutorialStep3Title: 'Easy Sharing with QR Codes',
+    tutorialStep3Desc: 'Share your completed digital business cards via QR codes or links. Recipients just need to scan or open the link!',
+    tutorialStep4Title: 'Auto Business Card Wallet Storage',
+    tutorialStep4Desc: 'Your business cards are automatically saved to recipients\' accounts. When your information changes, their card wallets update in real-time!',
 
     // Dashboard
     subtitle: 'Manage your digital business cards',

@@ -33,7 +33,7 @@ export default function TutorialDebug() {
       <button
         onClick={handleResetTutorial}
         disabled={isResetting || !user}
-        className="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-2 rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bg-blue-500 hover:bg-red-600 text-white text-xs px-3 py-2 rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isResetting ? '리셋 중...' : '사용가이드'}
       </button>

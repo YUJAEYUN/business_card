@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface ShareButtonsProps {
   url: string
@@ -9,6 +10,7 @@ interface ShareButtonsProps {
 }
 
 export default function ShareButtons({ url, title, description }: ShareButtonsProps) {
+  const { t } = useTranslation()
   const encodedUrl = encodeURIComponent(url)
   const encodedTitle = encodeURIComponent(title)
   const encodedDescription = encodeURIComponent(description || '')
@@ -122,7 +124,7 @@ export default function ShareButtons({ url, title, description }: ShareButtonsPr
       {/* Copy URL Section */}
       <div className="mt-4 pt-4 border-t border-gray-200">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          {t('directLink')}
+          직접 링크
         </label>
         <div className="flex">
           <input

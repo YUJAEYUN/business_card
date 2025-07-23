@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface OnboardingTutorialProps {
   isOpen: boolean
@@ -21,34 +22,35 @@ export default function OnboardingTutorial({
   onComplete,
   onSkip
 }: OnboardingTutorialProps) {
+  const { t } = useTranslation()
   const [currentStep, setCurrentStep] = useState(0)
 
   const steps: TutorialStep[] = useMemo(() => [
     {
       id: 1,
-      title: '인터랙티브 명함 만들기',
-      description: '명함 이미지를 업로드하면 애니메이션이 적용된 공유하기 편리한 명함으로 변환해드려요!',
+      title: t('tutorialStep1Title'),
+      description: t('tutorialStep1Desc'),
       duration: 4000
     },
     {
       id: 2,
-      title: 'OCR + AI 자동 정보 추출',
-      description: 'OCR 기술과 AI가 명함에서 이름, 회사, 연락처 등을 자동으로 읽어내고 정리해드려요. 잘못된 부분은 직접 수정할 수 있어요.',
+      title: t('tutorialStep2Title'),
+      description: t('tutorialStep2Desc'),
       duration: 10000
     },
     {
       id: 3,
-      title: 'QR코드로 간편 공유',
-      description: '완성된 디지털 명함을 QR코드나 링크로 공유하세요. 상대방이 스캔하거나 링크를 열기만 하면 끝!',
+      title: t('tutorialStep3Title'),
+      description: t('tutorialStep3Desc'),
       duration: 4000
     },
     {
       id: 4,
-      title: '자동 명함지갑 저장',
-      description: '내 명함을 받은 상대방의 계정에 자동으로 저장돼요. 내 정보가 바뀌면 상대방 명함지갑도 실시간 업데이트!',
+      title: t('tutorialStep4Title'),
+      description: t('tutorialStep4Desc'),
       duration: 4000
     }
-  ], [])
+  ], [t])
 
   const startTutorial = useCallback(() => {
     setCurrentStep(0)
@@ -128,7 +130,7 @@ export default function OnboardingTutorial({
 
             <div className="text-center">
               <h2 className="text-xl font-bold text-gray-900 mb-2">
-                사용가이드
+                {t('userGuide')}
               </h2>
               <div className="flex justify-center space-x-2 mb-4">
                 {steps.map((_, index) => (
@@ -170,7 +172,7 @@ export default function OnboardingTutorial({
                     onClick={handlePrevious}
                     className="flex-1 py-4 px-4 bg-gray-100 text-gray-700 rounded-2xl font-semibold hover:bg-gray-200 transition-all duration-200"
                   >
-                    이전
+                    {t('previous')}
                   </button>
                 )}
                 <button
@@ -179,7 +181,7 @@ export default function OnboardingTutorial({
                     currentStep === 0 ? 'flex-1' : 'flex-[2]'
                   }`}
                 >
-                  {currentStep === steps.length - 1 ? '시작하기' : '다음'}
+                  {currentStep === steps.length - 1 ? t('start') : t('next')}
                 </button>
               </div>
             </div>
