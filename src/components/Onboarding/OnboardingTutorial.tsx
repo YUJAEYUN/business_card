@@ -97,23 +97,23 @@ export default function OnboardingTutorial({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-2 sm:p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ duration: 0.3 }}
-          className="bg-white rounded-2xl max-w-md w-full mx-4 overflow-hidden shadow-2xl max-h-[90vh] flex flex-col"
+          className="bg-white rounded-2xl max-w-md w-full mx-2 sm:mx-4 overflow-hidden shadow-2xl max-h-[95vh] sm:max-h-[90vh] flex flex-col"
         >
           {/* Header */}
-          <div className="relative p-4 sm:p-6 pb-4 flex-shrink-0">
+          <div className="relative p-3 sm:p-6 pb-3 sm:pb-4 flex-shrink-0">
             {/* 새로고침 버튼 */}
             <button
               onClick={handleRestart}
-              className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute top-3 sm:top-4 left-3 sm:left-4 text-gray-400 hover:text-gray-600 transition-colors"
               title="처음부터 다시보기"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
             </button>
@@ -121,22 +121,22 @@ export default function OnboardingTutorial({
             {/* 닫기 버튼 */}
             <button
               onClick={handleSkip}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute top-3 sm:top-4 right-3 sm:right-4 text-gray-400 hover:text-gray-600 transition-colors"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
             <div className="text-center">
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
                 {t('userGuide')}
               </h2>
-              <div className="flex justify-center space-x-2 mb-4">
+              <div className="flex justify-center space-x-1.5 sm:space-x-2 mb-3 sm:mb-4">
                 {steps.map((_, index) => (
                   <div
                     key={index}
-                    className={`h-2 w-8 rounded-full transition-colors ${
+                    className={`h-1.5 sm:h-2 w-6 sm:w-8 rounded-full transition-colors ${
                       index === currentStep
                         ? 'bg-blue-500'
                         : index < currentStep
@@ -150,34 +150,34 @@ export default function OnboardingTutorial({
           </div>
 
           {/* Content */}
-          <div className="px-4 sm:px-6 pb-4 sm:pb-6 flex-1 overflow-auto">
+          <div className="px-3 sm:px-6 pb-3 sm:pb-6 flex-1 overflow-auto">
             {/* Animation Area - 토스식 그라데이션 */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 mb-6 h-48 flex items-center justify-center">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl sm:rounded-2xl p-4 sm:p-8 mb-4 sm:mb-6 h-32 sm:h-48 flex items-center justify-center">
               <TutorialAnimation key={currentStep} step={currentStep + 1} />
             </div>
 
             {/* Step Content */}
             <div className="text-center">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">
                 {currentStepData?.title}
               </h3>
-              <p className="text-gray-600 leading-relaxed mb-6">
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-6 px-1">
                 {currentStepData?.description}
               </p>
 
               {/* Navigation Controls - 토스식 디자인 */}
-              <div className="flex gap-3 mt-6">
+              <div className="flex gap-2 sm:gap-3 mt-4 sm:mt-6">
                 {currentStep > 0 && (
                   <button
                     onClick={handlePrevious}
-                    className="flex-1 py-4 px-4 bg-gray-100 text-gray-700 rounded-2xl font-semibold hover:bg-gray-200 transition-all duration-200"
+                    className="flex-1 py-3 sm:py-4 px-3 sm:px-4 bg-gray-100 text-gray-700 rounded-xl sm:rounded-2xl font-semibold hover:bg-gray-200 transition-all duration-200 text-sm sm:text-base"
                   >
                     {t('previous')}
                   </button>
                 )}
                 <button
                   onClick={handleNext}
-                  className={`py-4 px-6 bg-blue-500 text-white rounded-2xl font-semibold hover:bg-blue-600 transition-all duration-200 shadow-lg hover:shadow-xl ${
+                  className={`py-3 sm:py-4 px-4 sm:px-6 bg-blue-500 text-white rounded-xl sm:rounded-2xl font-semibold hover:bg-blue-600 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base ${
                     currentStep === 0 ? 'flex-1' : 'flex-[2]'
                   }`}
                 >
