@@ -29,7 +29,7 @@ export default function TutorialDebug() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed top-4 right-4 md:bottom-4 md:top-auto z-50">
       <button
         onClick={handleResetTutorial}
         disabled={isResetting || !user}
